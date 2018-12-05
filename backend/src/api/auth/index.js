@@ -1,11 +1,15 @@
 import Router from 'koa-router'
 import authCtrl from './auth.controller'
+import { isAuthenticated } from '../../lib/user'
 
 const app = new Router()
 
 app.post('/signin', authCtrl.getAuth)
-
 app.post('/signup', authCtrl.createUser)
+app.get('/profile',
+  isAuthenticated,
+  authCtrl.getUser
+)
 
 /*app.get('/', authCtrl.get)
 app.post('/', authCtrl.create)

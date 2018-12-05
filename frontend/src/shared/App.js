@@ -8,8 +8,7 @@ import {
   SignUp
 } from 'pages'
 import Menu from 'components/Menu'
-import { Button } from 'reactstrap'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 
 class App extends Component {
   render() {
@@ -25,11 +24,6 @@ class App extends Component {
         <Route path='/posts' component={Posts} />
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />
-        <Button
-          color='primary'
-        >
-          안녕
-        </Button>
       </>
     )
   }

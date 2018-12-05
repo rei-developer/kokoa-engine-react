@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bkfd2Password from 'pbkdf2-password'
-import crypto from '../../util/crypto'
-import sendMail from '../../util/email'
-import { isAuthenticated } from '../../util/user'
+import crypto from '../../lib/crypto'
+import sendMail from '../../lib/email'
 import getUser from '../../database/user/getUser'
 import createUser from '../../database/user/createUser'
 
@@ -31,6 +30,13 @@ exports.getAuth = async ctx => {
   } catch (e) {
     ctx.body = e
   }
+}
+
+exports.getUser = async ctx => {
+  const { jti } = ctx.request.user
+  const user = await getUser(jti)
+  if (!user) return ctx.body = { message: '존재하지 않는 계정입니다.', status: 'fail' }
+  ctx.body = { username: jti, user, status: 'ok' }
 }
 
 exports.createUser = async ctx => {
