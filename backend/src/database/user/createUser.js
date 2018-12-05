@@ -1,10 +1,10 @@
 import pool from '..'
 
-exports = async (username, password, salt, email) => {
+module.exports = async (username, nickname, email, password, salt) => {
   const result = await pool.query(
-    `INSERT INTO users (username, password, salt, email)
-     VALUES (?, ?, ?, ?)`,
-    [username, password, salt, email]
+    `INSERT INTO users (username, nickname, email, password, salt)
+     VALUES (?, ?, ?, ?, ?)`,
+    [username, nickname, email, password, salt]
   )
   return result.insertId
 }

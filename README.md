@@ -23,6 +23,8 @@ yarn start
 ```
 
 ## SYSTEM DEPENDENCY
+### MySQL
+* hawawa.sql => MySQL 8.0 settings
 ### nodemailer
 * #https://codeburst.io/sending-an-email-using-nodemailer-gmail-7cfa0712a799
 * .env.sample 파일을 참고하여 .env 파일 내에 smtp 설정을 완료하십시오.

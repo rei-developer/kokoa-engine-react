@@ -1,4 +1,6 @@
 import Koa from 'koa'
+import Logger from 'koa-logger'
+import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 import dotenv from 'dotenv'
 import api from './api'
@@ -8,17 +10,8 @@ dotenv.config()
 const app = new Koa()
 const router = new Router()
 
-router.use(async (ctx, next) => {
-    await next()
-    const rt = ctx.response.get('X-Response-Time')
-    console.log(`${ctx.method} ${ctx.url} - ${rt}`)
-})
-router.use(async (ctx, next) => {
-    const start = Date.now()
-    await next()
-    const ms = Date.now() - start
-    ctx.set('X-Response-Time', `${ms}ms`)
-})
+router.use(Logger())
+router.use(bodyParser())
 router.use('/api', api.routes())
 router.get('/', async ctx => ctx.body = 'HAWAWA')
 

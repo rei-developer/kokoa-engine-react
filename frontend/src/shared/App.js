@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { Home, About, Posts } from 'pages'
+import {
+  Home,
+  About,
+  Posts,
+  SignIn,
+  SignUp
+} from 'pages'
 import Menu from 'components/Menu'
 import { Button } from 'reactstrap'
 import { ToastContainer, toast } from 'react-toastify'
@@ -17,6 +23,8 @@ class App extends Component {
           <Route path='/about' component={About} />
         </Switch>
         <Route path='/posts' component={Posts} />
+        <Route path='/signin' component={SignIn} />
+        <Route path='/signup' component={SignUp} />
         <Button
           color='primary'
         >

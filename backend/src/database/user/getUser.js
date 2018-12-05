@@ -1,6 +1,6 @@
 import pool from '..'
 
-exports = async (username) => {
+module.exports = async (username) => {
   const result = await pool.query(
     `SELECT name, email, profileImageUrl, level, exp, point, isAdmin, isVerified FROM users WHERE username = ?`,
     [username]
@@ -9,7 +9,7 @@ exports = async (username) => {
   return result[0]
 }
 
-exports.auth = async (username) => {
+module.exports.auth = async (username) => {
   const result = await pool.query(
     `SELECT password, salt FROM users WHERE username = ?`,
     [username]
@@ -18,7 +18,7 @@ exports.auth = async (username) => {
   return result[0]
 }
 
-exports.username = async (username) => {
+module.exports.username = async (username) => {
   const result = await pool.query(
     `SELECT id FROM users WHERE username = ?`,
     [username]
@@ -27,7 +27,16 @@ exports.username = async (username) => {
   return result[0]
 }
 
-exports.email = async (email) => {
+module.exports.nickname = async (nickname) => {
+  const result = await pool.query(
+    `SELECT id FROM users WHERE nickname = ?`,
+    [nickname]
+  )
+  if (result.length < 1) return false
+  return result[0]
+}
+
+module.exports.email = async (email) => {
   const result = await pool.query(
     `SELECT id FROM users WHERE email = ?`,
     [email]
