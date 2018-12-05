@@ -6,6 +6,7 @@ const app = new Router()
 
 app.post('/signin', authCtrl.getAuth)
 app.post('/signup', authCtrl.createUser)
+app.post('/accept', authCtrl.sendMail)
 app.get('/profile',
   isAuthenticated,
   authCtrl.getUser

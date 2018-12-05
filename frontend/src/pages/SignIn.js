@@ -21,11 +21,13 @@ class SignIn extends React.Component {
       { username, password }
     )
     const data = response.data
-console.log(data)
-
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('로그인 성공')
     sessionStorage.token = data.token
+  }
+
+  signOut = () => {
+    sessionStorage.removeItem('token')
   }
 
   getProfile = async () => {
@@ -81,6 +83,13 @@ console.log(data)
           onClick={this.getProfile}
         >
           get Profile
+        </Button>
+        <Button
+          color='primary'
+          className='mr-2'
+          onClick={this.signOut}
+        >
+          로그아웃
         </Button>
       </>
     )

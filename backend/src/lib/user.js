@@ -12,7 +12,7 @@ exports.isAuthenticated = async (ctx, next) => {
       }
       return ctx.body = { message: err.message, status: 'fail' }
     }
-    ctx.request.user = user
+    ctx.state.user = user
     await next()
   })
 }

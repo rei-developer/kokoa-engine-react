@@ -33,7 +33,7 @@ exports.getAuth = async ctx => {
 }
 
 exports.getUser = async ctx => {
-  const { jti } = ctx.request.user
+  const { jti } = ctx.state.user
   const user = await getUser(jti)
   if (!user) return ctx.body = { message: '존재하지 않는 계정입니다.', status: 'fail' }
   ctx.body = { username: jti, user, status: 'ok' }
@@ -51,7 +51,7 @@ exports.createUser = async ctx => {
   try {
     if (email !== crypto.decrypt(authCode)) return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
   } catch (e) {
-    // return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
+    return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
   }
   try {
     const result = await new Promise((resolve, reject) => {
@@ -63,7 +63,24 @@ exports.createUser = async ctx => {
     })
     ctx.body = result
   } catch (e) {
-    //{ message: '잘못된 인증코드입니다.', status: 'failed' }
     ctx.body = e
+  }
+}
+
+exports.sendMail = async ctx => {
+  const { email } = ctx.request.body
+  if (email === '') return ctx.body = { message: '잘못된 요청입니다.', status: 'fail' }
+  const getEmail = await getUser.email(email)
+  if (getEmail) return ctx.body = { message: '이미 존재하는 이메일입니다.', status: 'fail' }
+  const decrypt = crypto.encrypt(email).replace(/=+/g, '')
+  const subject = `[HAWAWA] 회원가입 인증코드 발송 안내`
+  const content = `<p><h1>HAWAWA</h1></p>
+    <p><h3>인증코드 : ${decrypt}</h3></p>
+    <p>상기 인증코드를 기입해주세요.</p>`
+  try {
+    await sendMail(email, subject, content)
+    ctx.body = { status: 'ok' }
+  } catch (e) {
+    ctx.body = { message: e.message, status: 'failed' }
   }
 }
