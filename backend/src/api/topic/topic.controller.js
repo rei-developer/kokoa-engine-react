@@ -4,23 +4,18 @@ import getBoard from '../../database/board/getBoard'
 import getTopic from '../../database/topic/getTopic'
 
 exports.getList = async ctx => {
-  /*const { type, page } = ctx.params
-  const { ...query } = ctx.request.query
-  const page = query.page || 1
-  const limit = query.limit || 20
-
-
-
-  const columns = {}
-  if (query.boardName) columns.boardName = query.boardName
-  if (query.category) columns.category = query.category
-  if (query.isBest) columns.isBest = query.isBest
-
-  console.log(columns)*/
-
-
-
-  ctx.body = 'a'
+  const { ...body } = ctx.request.body
+  const domain = body.domain || 'all'
+  const page = body.page || 0
+  const limit = body.limit || 5
+  if (page < 0) return
+  //if (limit < 20 || limit > 100) return
+  const obj = {}
+  if (body.domain !== 'all') obj.boardDomain = domain
+  obj.isAllowed = 1
+  const count = await getTopic.count(obj)
+  const topics = await getTopic.topics(obj, page, limit)
+  ctx.body = { count, topics }
 }
 
 exports.getContent = async ctx => {

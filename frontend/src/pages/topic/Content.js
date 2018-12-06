@@ -28,18 +28,11 @@ class Content extends React.Component {
   }
 
   componentWillMount() {
-
-    console.log(this.props.match.params.id)
-
     const id = this.props.match.params.id
     this.getTopic(id)
   }
 
   componentWillReceiveProps(nextProps) {
-
-
-    console.log(nextProps)
-
     const id = nextProps.match.params.id
     this.reset()
     this.getTopic(id)

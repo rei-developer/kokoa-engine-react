@@ -27,8 +27,10 @@ class App extends Component {
           <Route path='/about' component={About} />
         </Switch>
         <Switch>
-          <Route path='/b/:boardDomain/write' component={TopicWrite} />
-          <Route path='/b/:boardDomain' component={TopicList} />
+          <Route path='/b/:domain/write' component={TopicWrite} />
+          <Route path='/b/:domain' component={TopicList} />
+          <Route path='/b/best' component={TopicList} />
+          <Route path='/b/all' component={TopicList} />
         </Switch>
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />

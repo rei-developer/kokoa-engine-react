@@ -17,6 +17,7 @@ module.exports = async (columns) => {
     return result.insertId
   } catch (e) {
     console.log(e.message)
+    return false
   }
 }
 
