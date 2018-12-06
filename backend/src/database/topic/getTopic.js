@@ -1,5 +1,4 @@
 import pool from '..'
-import _ from 'lodash'
 
 module.exports = async (id) => {
   const result = await pool.query(

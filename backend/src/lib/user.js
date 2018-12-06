@@ -27,7 +27,7 @@ module.exports.isAuthenticated = async (ctx, next) => {
     if (err) {
       switch (err.name) {
         case 'TokenExpiredError':
-          err.message = '토큰이 만료되었습니다. 새로 발급하시기 바랍니다.'
+          err.message = '토큰이 만료되었습니다. 새로 로그인하세요.'
           break
       }
       return ctx.body = { message: err.message, status: 'fail' }

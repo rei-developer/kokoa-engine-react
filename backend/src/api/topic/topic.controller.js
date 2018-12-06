@@ -1,5 +1,6 @@
 import { getUser } from '../../lib/user'
 import createTopic, { createTopicCounts } from '../../database/topic/createTopic'
+import getBoard from '../../database/board/getBoard'
 import getTopic from '../../database/topic/getTopic'
 
 exports.getList = async ctx => {
@@ -40,6 +41,12 @@ exports.createTopic = async ctx => {
     content,
     isNotice
   } = ctx.request.body
+  const isAdminOnly = await getBoard.isAdminOnly(boardDomain)
+  if (user.isAdmin < isAdminOnly) return ctx.body = { message: '권한이 없습니다.', status: 'fail' }
+  if (user.isAdmin < 1) {
+    //TODO: 관리자 전용 커스텀
+    if (isNotice > 0) isNotice = 0
+  }
   const ip = ctx.ip
   const header = ctx.header['user-agent']
   const isImage = false

@@ -12,12 +12,19 @@ class Write extends React.Component {
     super(props)
     this.state = {
       loading: false,
-      boardDomain: 'talk',
+      boardDomain: '',
       category: '',
       title: '',
       content: '',
       isNotice: false
     }
+  }
+
+  componentWillMount() {
+    const boardDomain = this.props.match.params.boardDomain
+    this.setState({
+      boardDomain
+    })
   }
 
   send = async () => {
@@ -45,12 +52,11 @@ class Write extends React.Component {
         headers: { 'x-access-token': token }
       })
       const data = await response.data
-      console.log(data)
       this.setState({
         loading: false
-      }, () => {
-        console.log('종료')
       })
+      if (data.status === 'fail') return toast.error(data.message)
+      this.props.history.push(`/b/${boardDomain}/${data.topicId}`)
     })
   }
 

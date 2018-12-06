@@ -3,12 +3,13 @@ import { Route, Switch } from 'react-router-dom'
 import {
   Home,
   About,
+  TopicContent,
   TopicList,
   TopicWrite,
   SignIn,
   SignUp
 } from 'pages'
-import Menu from 'components/Menu'
+import Header from 'components/Header'
 import { ToastContainer } from 'react-toastify'
 
 class App extends Component {
@@ -16,15 +17,18 @@ class App extends Component {
     return (
       <>
         <ToastContainer autoClose={2000} />
-        <Menu />
-        <Route exact path='/' component={Home} />
+        <Header />
+        <Switch>
+          <Route path='/read/:id' component={TopicContent} />
+          <Route exact path='/' component={Home} />
+        </Switch>
         <Switch>
           <Route path='/about/:name' component={About} />
           <Route path='/about' component={About} />
         </Switch>
         <Switch>
-          <Route path='/topic/write' component={TopicWrite} />
-          <Route path='/topic' component={TopicList} />
+          <Route path='/b/:boardDomain/write' component={TopicWrite} />
+          <Route path='/b/:boardDomain' component={TopicList} />
         </Switch>
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />

@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const init = {
   loading: true,
@@ -27,11 +28,18 @@ class Content extends React.Component {
   }
 
   componentWillMount() {
+
+    console.log(this.props.match.params.id)
+
     const id = this.props.match.params.id
     this.getTopic(id)
   }
 
   componentWillReceiveProps(nextProps) {
+
+
+    console.log(nextProps)
+
     const id = nextProps.match.params.id
     this.reset()
     this.getTopic(id)
@@ -44,6 +52,7 @@ class Content extends React.Component {
     }, async () => {
       const response = await axios.get(`/api/topic/read/${id}`)
       const data = await response.data
+      if (data.status === 'fail') return toast.error(data.message)
       this.setState({ ...data })
     })
   }
