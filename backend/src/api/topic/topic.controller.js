@@ -1,4 +1,6 @@
+import { isAuthState } from '../../lib/user'
 import getUser from '../../database/user/getUser'
+import createTopic, { createTopicCounts } from '../../database/topic/createTopic'
 import getTopic from '../../database/topic/getTopic'
 
 exports.getList = async ctx => {
@@ -21,21 +23,39 @@ exports.getList = async ctx => {
   ctx.body = 'a'
 }
 
+exports.getContent = async ctx => {
+  const { id } = ctx.params
+  if (id < 1) return
+  const topic = await getTopic(id)
+  if (!topic) return ctx.body = { status: 'fail' }
+  ctx.body = topic
+}
+
 exports.createTopic = async ctx => {
-  const { type, page } = ctx.params
-  const list = ctx.request.query.list || 20
-  const columns = {}
-  columns.author = ctx.request.query.author || ''
-  columns.title = ctx.request.query.title || ''
-  columns.content = ctx.request.query.content || ''
-  let result = {}
-  switch (type) {
-    case 'all':
-      break
-    case 'best':
-      break
-    default:
-      result = await getTopic(columns)
-  }
-  ctx.body = result
+  const user = await isAuthState(ctx.get('x-access-token'))
+  if (!user) return
+  let {
+    boardDomain,
+    category,
+    title,
+    content,
+    isNotice
+  } = ctx.request.body
+  const ip = ctx.ip
+  const header = ctx.header['user-agent']
+  const isImage = false
+  const topicId = await createTopic({
+    userId: user.id,
+    boardDomain,
+    category,
+    author: user.nickname,
+    title,
+    content,
+    ip,
+    header,
+    isImage,
+    isNotice
+  })
+  await createTopicCounts(topicId)
+  ctx.body = { topicId, status: 'ok' }
 }

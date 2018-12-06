@@ -34,7 +34,7 @@ class SignIn extends React.Component {
     const token = sessionStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.get(
-      '/api/auth/profile',
+      '/api/auth/check',
       { headers: { 'x-access-token': token } }
     )
     const data = response.data
@@ -58,7 +58,7 @@ class SignIn extends React.Component {
           <Input
             value={username}
             placeholder='Username'
-            onChange={(e) => this.setUsername(e)}
+            onChange={this.setUsername}
           />
         </InputGroup>
         <br />
@@ -67,7 +67,7 @@ class SignIn extends React.Component {
             type='password'
             value={password}
             placeholder='Password'
-            onChange={(e) => this.setPassword(e)}
+            onChange={this.setPassword}
           />
         </InputGroup>
         <br />

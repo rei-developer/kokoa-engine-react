@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import {
   Home,
   About,
-  Posts,
+  TopicList,
+  TopicWrite,
   SignIn,
   SignUp
 } from 'pages'
@@ -21,7 +22,10 @@ class App extends Component {
           <Route path='/about/:name' component={About} />
           <Route path='/about' component={About} />
         </Switch>
-        <Route path='/posts' component={Posts} />
+        <Switch>
+          <Route path='/topic/write' component={TopicWrite} />
+          <Route path='/topic' component={TopicList} />
+        </Switch>
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />
       </>

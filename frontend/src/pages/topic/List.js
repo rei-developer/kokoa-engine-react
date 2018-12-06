@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link, Route } from 'react-router-dom'
-import { Post } from 'pages'
+import { TopicContent } from 'pages'
 
-const Posts = ({ match }) => {
+const List = ({ match }) => {
     return (
         <div>
             <h2>Post List</h2>
@@ -13,9 +13,11 @@ const Posts = ({ match }) => {
                 <li><Link to={`${match.url}/4`}>Post #4</Link></li>
             </ul>
             <Route exact path={match.url} render={() => (<h3>Please select any post</h3>)} />
-            <Route path={`${match.url}/:id`} component={Post} />
+            <Route path={`${match.url}/:id`} component={TopicContent} />
+
+            <li><Link to={`${match.url}/write`}>Write</Link></li>
         </div>
     )
 }
 
-export default Posts
+export default List

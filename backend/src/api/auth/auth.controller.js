@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bkfd2Password from 'pbkdf2-password'
-import crypto from '../../lib/crypto'
-import sendMail from '../../lib/email'
+import Crypto from '../../lib/crypto'
+import SendMail from '../../lib/email'
 import getUser from '../../database/user/getUser'
 import createUser from '../../database/user/createUser'
 
@@ -19,7 +19,7 @@ exports.getAuth = async ctx => {
         if (user.password !== hash) return reject({ message: '비밀번호가 올바르지 않습니다.', status: 'fail' })
         if (user.isVerified < 1) return reject({ message: '이메일 인증을 완료해주십시오.', status: 'fail' })
         const token = jwt.sign(
-          { jti: username },
+          { jti: user.id },
           process.env.JWT_SECRET,
           { expiresIn: '1d' }
         )
@@ -32,13 +32,6 @@ exports.getAuth = async ctx => {
   }
 }
 
-exports.getUser = async ctx => {
-  const { jti } = ctx.state.user
-  const user = await getUser(jti)
-  if (!user) return ctx.body = { message: '존재하지 않는 계정입니다.', status: 'fail' }
-  ctx.body = { username: jti, user, status: 'ok' }
-}
-
 exports.createUser = async ctx => {
   const { username, nickname, email, authCode, password } = ctx.request.body
   if (username === '' || nickname === '' || email === '' || authCode === '' || password === '') return ctx.body = { message: '잘못된 요청입니다.', status: 'fail' }
@@ -49,7 +42,7 @@ exports.createUser = async ctx => {
   const getEmail = await getUser.email(email)
   if (getEmail) return ctx.body = { message: '이미 존재하는 이메일입니다.', status: 'fail' }
   try {
-    if (email !== crypto.decrypt(authCode)) return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
+    if (email !== Crypto.decrypt(authCode)) return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
   } catch (e) {
     return ctx.body = { message: '잘못된 인증코드입니다.', status: 'fail' }
   }
@@ -72,15 +65,20 @@ exports.sendMail = async ctx => {
   if (email === '') return ctx.body = { message: '잘못된 요청입니다.', status: 'fail' }
   const getEmail = await getUser.email(email)
   if (getEmail) return ctx.body = { message: '이미 존재하는 이메일입니다.', status: 'fail' }
-  const decrypt = crypto.encrypt(email).replace(/=+/g, '')
+  const decrypt = Crypto.encrypt(email).replace(/=+/g, '')
   const subject = `[HAWAWA] 회원가입 인증코드 발송 안내`
   const content = `<p><h1>HAWAWA</h1></p>
     <p><h3>인증코드 : ${decrypt}</h3></p>
     <p>상기 인증코드를 기입해주세요.</p>`
   try {
-    await sendMail(email, subject, content)
+    await SendMail(email, subject, content)
     ctx.body = { status: 'ok' }
   } catch (e) {
     ctx.body = { message: e.message, status: 'failed' }
   }
+}
+
+exports.getUser = async ctx => {
+  const user = ctx.state.user
+  ctx.body = { user, status: 'ok' }
 }

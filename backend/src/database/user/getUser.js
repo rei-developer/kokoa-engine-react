@@ -1,9 +1,9 @@
 import pool from '..'
 
-module.exports = async (username) => {
+module.exports = async (id) => {
   const result = await pool.query(
-    `SELECT nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM users WHERE username = ?`,
-    [username]
+    `SELECT username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM Users WHERE id = ?`,
+    [id]
   )
   if (result.length < 1) return false
   return result[0]
@@ -11,7 +11,7 @@ module.exports = async (username) => {
 
 module.exports.auth = async (username) => {
   const result = await pool.query(
-    `SELECT password, salt FROM users WHERE username = ?`,
+    `SELECT id, password, salt FROM Users WHERE username = ?`,
     [username]
   )
   if (result.length < 1) return false
@@ -20,7 +20,7 @@ module.exports.auth = async (username) => {
 
 module.exports.username = async (username) => {
   const result = await pool.query(
-    `SELECT id FROM users WHERE username = ?`,
+    `SELECT id FROM Users WHERE username = ?`,
     [username]
   )
   if (result.length < 1) return false
@@ -29,7 +29,7 @@ module.exports.username = async (username) => {
 
 module.exports.nickname = async (nickname) => {
   const result = await pool.query(
-    `SELECT id FROM users WHERE nickname = ?`,
+    `SELECT id FROM Users WHERE nickname = ?`,
     [nickname]
   )
   if (result.length < 1) return false
@@ -38,7 +38,7 @@ module.exports.nickname = async (nickname) => {
 
 module.exports.email = async (email) => {
   const result = await pool.query(
-    `SELECT id FROM users WHERE email = ?`,
+    `SELECT id FROM Users WHERE email = ?`,
     [email]
   )
   if (result.length < 1) return false
