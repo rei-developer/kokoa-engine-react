@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import getUser from '../database/user/getUser'
 
-module.exports.isAuthState = async (token) => {
+module.exports.getUser = async (token) => {
   const TOKEN = token || ''
   if (TOKEN.split('.').length < 3) return false
   try {

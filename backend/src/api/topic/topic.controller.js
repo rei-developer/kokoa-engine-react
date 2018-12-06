@@ -1,5 +1,4 @@
-import { isAuthState } from '../../lib/user'
-import getUser from '../../database/user/getUser'
+import { getUser } from '../../lib/user'
 import createTopic, { createTopicCounts } from '../../database/topic/createTopic'
 import getTopic from '../../database/topic/getTopic'
 
@@ -32,7 +31,7 @@ exports.getContent = async ctx => {
 }
 
 exports.createTopic = async ctx => {
-  const user = await isAuthState(ctx.get('x-access-token'))
+  const user = await getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
     boardDomain,
