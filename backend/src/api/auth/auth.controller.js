@@ -57,7 +57,7 @@ exports.createUser = async ctx => {
     const result = await new Promise((resolve, reject) => {
       hasher({ password }, async (err, pass, salt, hash) => {
         if (err) return reject({ message: err, status: 'failed' })
-        await createUser(username, nickname, email, hash, salt)
+        await createUser({ username, nickname, email, password: hash, salt })
         resolve({ status: 'ok' })
       })
     })

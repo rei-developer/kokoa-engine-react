@@ -15,24 +15,6 @@ router.use(bodyParser())
 router.use('/api', api.routes())
 router.get('/', async ctx => ctx.body = 'HAWAWA')
 
-/*router.get('/about', (ctx, next) => {
-    ctx.body = '소개'
-})
-
-router.get('/about/:name', (ctx, next) => {
-    const { name } = ctx.params
-    ctx.body = name + '의 소개'
-})
-
-router.get('/post', (ctx, next) => {
-    const { id } = ctx.request.query
-    if (id) {
-        ctx.body = '포스트 #' + id
-    } else {
-        ctx.body = '포스트 아이디가 없습니다.'
-    }
-})*/
-
 app.use(router.routes()).use(router.allowedMethods())
 
 const { PORT, CONSOLE_CLEAN } = process.env

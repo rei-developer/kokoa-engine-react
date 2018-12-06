@@ -2,7 +2,7 @@ import getUser from '../../database/user/getUser'
 import getTopic from '../../database/topic/getTopic'
 
 exports.getList = async ctx => {
-  const { type, page } = ctx.params
+  /*const { type, page } = ctx.params
   const { ...query } = ctx.request.query
   const page = query.page || 1
   const limit = query.limit || 20
@@ -14,7 +14,7 @@ exports.getList = async ctx => {
   if (query.category) columns.category = query.category
   if (query.isBest) columns.isBest = query.isBest
 
-  console.log(columns)
+  console.log(columns)*/
 
 
 

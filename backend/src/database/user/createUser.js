@@ -1,10 +1,17 @@
 import pool from '..'
+import _ from 'lodash'
 
-module.exports = async (username, nickname, email, password, salt) => {
+module.exports = async (columns) => {
+  let keys = []
+  let values = []
+  _.forIn(columns, (value, key) => {
+    keys.push(key)
+    values.push(value)
+  })
   const result = await pool.query(
-    `INSERT INTO users (username, nickname, email, password, salt)
-     VALUES (?, ?, ?, ?, ?)`,
-    [username, nickname, email, password, salt]
+    `INSERT INTO Users SET
+    ${keys.map(key => `${key} = ?`).join(', ')}`,
+    [...values]
   )
   return result.insertId
 }
