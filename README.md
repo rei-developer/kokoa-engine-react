@@ -4,11 +4,11 @@
 - DEVELOPMENT
 ```
 1. yarn
-2. yarn start:dev
+2. yarn start
 ```
 - PRODUCTION
 ```
-yarn start
+yarn start:prod
 ```
 ### FRONTEND
 - DEVELOPMENT

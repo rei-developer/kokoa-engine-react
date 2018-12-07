@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "node src babel-node",
-    "start:dev": "nodemon --watch src/ src/index.js --exec babel-node"
+    "start": "nodemon --watch src/ src/index.js --exec babel-node",
+    "start:prod": "node src babel-node"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",

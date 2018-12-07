@@ -1,11 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import {
-  InputGroup,
-  Input,
-  Button
-} from 'reactstrap'
 
 class Write extends React.Component {
   constructor(props) {
@@ -67,10 +62,7 @@ class Write extends React.Component {
   setContent = (e) => {
     this.setState({ content: e.target.value })
   }
-
-  render() {
-    return (
-      <>
+/*
         <InputGroup>
           <Input
             placeholder='title'
@@ -91,6 +83,11 @@ class Write extends React.Component {
         >
           전송
         </Button>
+        */
+  render() {
+    return (
+      <>
+
       </>
     )
   }

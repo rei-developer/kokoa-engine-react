@@ -1,12 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import {
-  InputGroup,
-  InputGroupAddon,
-  Input,
-  Button
-} from 'reactstrap'
 
 class SignUp extends React.Component {
   state = {
@@ -62,11 +56,7 @@ class SignUp extends React.Component {
   setPassword = (e) => {
     this.setState({ password: e.target.value })
   }
-
-  render() {
-    const { username, nickname, email, authCode, password } = this.state
-    return (
-      <>
+/*
         <InputGroup>
           <Input
             value={username}
@@ -124,6 +114,12 @@ class SignUp extends React.Component {
         >
           Sign Up
         </Button>
+        */
+  render() {
+    const { username, nickname, email, authCode, password } = this.state
+    return (
+      <>
+
       </>
     )
   }

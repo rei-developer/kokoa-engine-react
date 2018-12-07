@@ -7,9 +7,9 @@ exports.getList = async ctx => {
   const { ...body } = ctx.request.body
   const domain = body.domain || 'all'
   const page = body.page || 0
-  const limit = body.limit || 5
+  const limit = body.limit || 20
   if (page < 0) return
-  //if (limit < 20 || limit > 100) return
+  if (limit < 10 || limit > 50) return
   const obj = {}
   if (body.domain !== 'all') obj.boardDomain = domain
   obj.isAllowed = 1
