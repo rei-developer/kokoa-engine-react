@@ -5,12 +5,13 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
   InputBase,
   Badge,
   Button,
   MenuItem,
-  Menu
+  Menu,
+  Grid,
+  Hidden
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
@@ -23,11 +24,13 @@ import {
   Comment,
   Whatshot
 } from '@material-ui/icons'
+import Logo from '../Logo.png'
 
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   },
+  shadows: Array(25).fill('none'),
   palette: {
     primary: {
       main: '#fff',
@@ -45,21 +48,36 @@ const theme = createMuiTheme({
 
 const styles = theme => ({
   root: {
-    width: '100%'
+    width: '100%',
+    marginBottom: '1rem',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .05)'
   },
   grow: {
     flexGrow: 1
   },
+  toolbar: {
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  button: {
+    borderBottom: '2px solid transparent',
+    borderRadius: '0',
+    '&:hover': {
+      backgroundColor: 'transparent',
+      borderBottom: '2px solid ' + theme.palette.primary.main
+    }
+  },
   menuButton: {
-    marginLeft: -12,
     marginRight: 20
   },
   title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block'
+    [theme.breakpoints.down('sm')]: {
+      width: 100,
+      height: 20
     },
-    marginRight: 20
+    marginTop: 4,
+    marginRight: 20,
+    height: 40
   },
   search: {
     position: 'relative',
@@ -188,53 +206,65 @@ class Header extends React.Component {
     )
 
     return (
-      <MuiThemeProvider className={classes.root} theme={theme}>
-        <AppBar position='static'>
-          <Toolbar>
-            <IconButton className={classes.menuButton} color='inherit' aria-label='Open drawer'>
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.title} variant='h6' color='inherit' noWrap>
-              테스트
-            </Typography>
-            <div className={classes.sectionDesktop}>
-              <Button component={NavLink} to='/b/all' color='inherit'><Comment className={classes.leftIcon} />전체글</Button>
-              <Button component={NavLink} to='/b/best' color='inherit'><Whatshot className={classes.leftIcon} />인기글</Button>
-            </div>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder='Search…'
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
-            </div>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <IconButton color='inherit'>
-                <Badge badgeContent={17} color='secondary'>
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                aria-haspopup='true'
-                onClick={this.handleProfileMenuOpen}
-                color='inherit'
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
-                <MoreIcon />
-              </IconButton>
-            </div>
-          </Toolbar>
+      <MuiThemeProvider theme={theme}>
+        <AppBar position='static' className={classes.root}>
+          <Grid container>
+            <Hidden mdDown>
+              <Grid item xs={2} />
+            </Hidden>
+            <Grid item xs>
+              <Toolbar className={classes.toolbar}>
+                <div className={classes.sectionMobile}>
+                  <IconButton className={classes.menuButton} color='inherit' aria-label='Open drawer'>
+                    <MenuIcon />
+                  </IconButton>
+                </div>
+                <NavLink to='/'>
+                  <img src={Logo} className={classes.title} />
+                </NavLink>
+                <div className={classes.sectionDesktop}>
+                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Whatshot className={classes.leftIcon} />인기글</Button>
+                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><Comment className={classes.leftIcon} />전체글</Button>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder='Search…'
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className={classes.grow} />
+                <div className={classes.sectionDesktop}>
+                  <IconButton color='inherit'>
+                    <Badge badgeContent={17} color='secondary'>
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton
+                    aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                    aria-haspopup='true'
+                    onClick={this.handleProfileMenuOpen}
+                    color='inherit'
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </div>
+                <div className={classes.sectionMobile}>
+                  <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
+                    <MoreIcon />
+                  </IconButton>
+                </div>
+              </Toolbar>
+            </Grid>
+            <Hidden mdDown>
+              <Grid item xs={2} />
+            </Hidden>
+          </Grid>
         </AppBar>
         {renderMenu}
         {renderMobileMenu}
@@ -248,33 +278,3 @@ Header.propTypes = {
 }
 
 export default withStyles(styles)(Header)
-
-
-/*import React from 'react'
-import { NavLink } from 'react-router-dom'
-
-const Header = () => {
-  const activeStyle = {
-    color: 'green',
-    fontSize: '2rem'
-  }
-
-  return (
-    <div>
-      <ul>
-        <li><NavLink exact to='/' activeStyle={activeStyle}>Home</NavLink></li>
-        <li><NavLink exact to='/about' activeStyle={activeStyle}>About</NavLink></li>
-        <li><NavLink to='/about/foo' activeStyle={activeStyle}>About Foo</NavLink></li>
-        <li><NavLink to='/b/best' activeStyle={activeStyle}>Best</NavLink></li>
-        <li><NavLink to='/b/all' activeStyle={activeStyle}>All</NavLink></li>
-        <li><NavLink to='/b/notice' activeStyle={activeStyle}>Notice</NavLink></li>
-        <li><NavLink to='/b/talk' activeStyle={activeStyle}>Talk</NavLink></li>
-        <li><NavLink to='/signin' activeStyle={activeStyle}>SignIn</NavLink></li>
-        <li><NavLink to='/signup' activeStyle={activeStyle}>SignUp</NavLink></li>
-      </ul>
-      <hr />
-    </div>
-  )
-}
-
-export default Header*/

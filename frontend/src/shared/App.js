@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
+import { Grid, Hidden } from '@material-ui/core'
 import {
   Home,
   About,
@@ -18,22 +19,32 @@ class App extends Component {
       <>
         <ToastContainer autoClose={2000} />
         <Header />
-        <Switch>
-          <Route path='/read/:id' component={TopicContent} />
-          <Route exact path='/' component={Home} />
-        </Switch>
-        <Switch>
-          <Route path='/about/:name' component={About} />
-          <Route path='/about' component={About} />
-        </Switch>
-        <Switch>
-          <Route path='/b/:domain/write' component={TopicWrite} />
-          <Route path='/b/:domain' component={TopicList} />
-          <Route path='/b/best' component={TopicList} />
-          <Route path='/b/all' component={TopicList} />
-        </Switch>
-        <Route path='/signin' component={SignIn} />
-        <Route path='/signup' component={SignUp} />
+        <Grid container>
+          <Hidden mdDown>
+            <Grid item xs={2} />
+          </Hidden>
+          <Grid item xs>
+            <Switch>
+              <Route path='/read/:id' component={TopicContent} />
+              <Route exact path='/' component={Home} />
+            </Switch>
+            <Switch>
+              <Route path='/about/:name' component={About} />
+              <Route path='/about' component={About} />
+            </Switch>
+            <Switch>
+              <Route path='/b/:domain/write' component={TopicWrite} />
+              <Route path='/b/:domain' component={TopicList} />
+              <Route path='/b/best' component={TopicList} />
+              <Route path='/b/all' component={TopicList} />
+            </Switch>
+            <Route path='/signin' component={SignIn} />
+            <Route path='/signup' component={SignUp} />
+          </Grid>
+          <Hidden mdDown>
+            <Grid item xs={2} />
+          </Hidden>
+        </Grid>
       </>
     )
   }

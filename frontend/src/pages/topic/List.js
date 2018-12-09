@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, Route } from 'react-router-dom'
-import axios from 'axios'
 import { toast } from 'react-toastify'
+import axios from 'axios'
 import { TopicContent } from 'pages'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
@@ -13,8 +13,7 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-  Paper,
-  IconButton,
+  IconButton
 } from '@material-ui/core'
 import {
   FirstPage as FirstPageIcon,
@@ -203,56 +202,52 @@ class List extends React.Component {
     const { loading, topics, rowsPerPage, count, page } = this.state
     return (
       <>
-        <Paper className={classes.root}>
-          <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
-        </Paper>
+        <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
         <Link to={`${this.props.match.url}/write`}>Write</Link>
-        <Paper className={classes.root}>
-          <div className={classes.tableWrapper}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>순번</TableCell>
-                  <TableCell>제목</TableCell>
-                  <TableCell>작성자</TableCell>
-                  <TableCell>조회</TableCell>
-                  <TableCell>추천</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className={classes.pointer}>
-                {topics.map(i => {
-                  return (
-                    <TableRow
-                      key={i.id}
-                      selected={false}
-                      onClick={e => this.handleClick(e, i.id)}
-                      hover
-                    >
-                      <TableCell className={classes.numeric}>{i.id}</TableCell>
-                      <TableCell component='th' scope='row'>{i.title}</TableCell>
-                      <TableCell className={classes.author}>{i.author}</TableCell>
-                      <TableCell className={classes.numeric}>{i.hits}</TableCell>
-                      <TableCell className={classes.numeric}>{i.likes}</TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[10, 20, 30, 40, 50]}
-                    count={count}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={this.handleChangePage}
-                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActionsWrapped}
-                  />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </div>
-        </Paper>
+        <div className={classes.tableWrapper}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>순번</TableCell>
+                <TableCell>제목</TableCell>
+                <TableCell>작성자</TableCell>
+                <TableCell>조회</TableCell>
+                <TableCell>추천</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className={classes.pointer}>
+              {topics.map(i => {
+                return (
+                  <TableRow
+                    key={i.id}
+                    selected={false}
+                    onClick={e => this.handleClick(e, i.id)}
+                    hover
+                  >
+                    <TableCell className={classes.numeric}>{i.id}</TableCell>
+                    <TableCell component='th' scope='row'>{i.title}</TableCell>
+                    <TableCell className={classes.author}>{i.author}</TableCell>
+                    <TableCell className={classes.numeric}>{i.hits}</TableCell>
+                    <TableCell className={classes.numeric}>{i.likes}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10, 20, 30, 40, 50]}
+                  count={count}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActionsWrapped}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
       </>
     )
   }
