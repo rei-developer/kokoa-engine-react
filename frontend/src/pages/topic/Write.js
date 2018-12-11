@@ -11,6 +11,7 @@ import {
   Card
 } from '@material-ui/core'
 import { Editor } from '@tinymce/tinymce-react'
+import { MoonLoader } from 'react-spinners'
 
 const styles = theme => ({
   container: {
@@ -145,9 +146,27 @@ class Write extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { title, content } = this.state
+    const { title } = this.state
+    const override = {
+      position: 'absolute',
+      width: '78px',
+      height: '78px',
+      margin: '-39px 0 0 -39px',
+      top: '50%',
+      left: '50%',
+      zIndex: 50000
+    }
     return (
       <MuiThemeProvider theme={theme}>
+        <div className='sweet-loading' style={override}>
+          <MoonLoader
+            sizeUnit='px'
+            size={60}
+            margin='2px'
+            color='#36D7B7'
+            loading={this.state.loading}
+          />
+        </div>
         <FormControl className={classes.mb} fullWidth>
           <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>제목</InputLabel>
           <InputBase
@@ -165,11 +184,11 @@ class Write extends React.Component {
             apiKey='lb1yt4yj6dls6cpmvksg1dnp32tuhj9xw0rig7nxprz0wj2x'
             cloudChannel='dev'
             init={{
-              plugins: 'link image code',
-              toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
               setup: editor => {
                 this.setState({ editor })
-              }
+              },
+              plugins: 'link image code',
+              toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
             }}
             onChange={this.handleEditorChange}
           />
