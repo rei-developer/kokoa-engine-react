@@ -25,6 +25,7 @@ import {
   KeyboardArrowRight,
   Create
 } from '@material-ui/icons'
+import { observer, inject } from 'mobx-react'
 
 const actionsStyles = theme => ({
   root: {
@@ -153,6 +154,8 @@ const init = {
   domain: ''
 }
 
+@inject('user')
+@observer
 class List extends React.Component {
   constructor(props) {
     super(props)
@@ -222,13 +225,13 @@ class List extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, user } = this.props
     const { loading, topics, rowsPerPage, count, page } = this.state
     const domain = this.props.match.params.domain
     return (
       <MuiThemeProvider theme={theme}>
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
-        {domain !== 'all' && domain !== 'best' && (
+        {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
               <Create className={classes.leftIcon} />

@@ -1,11 +1,19 @@
 import React from 'react'
 import axios from 'axios'
+import moment from 'moment'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
   Card,
-  Button
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Typography,
+  Divider
 } from '@material-ui/core'
 import {
   Create
@@ -26,6 +34,13 @@ const styles = theme => ({
   card: {
     borderRadius: 0,
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+  },
+  item: {
+    paddingLeft: '10px'
+  },
+  avatar: {
+    width: 64,
+    height: 64
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -88,7 +103,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, id, content } = this.state
+    const { loading, id, category, author, title, content, created } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -112,8 +127,23 @@ class Content extends React.Component {
         {!loading && (
           <>
             <Card className={classes.card}>
-              {loading ? "true" : "false"}
-              {id}
+              <ListItem className={classes.item}>
+                <ListItemAvatar>
+                  <Avatar src='https://material-ui.com/static/images/avatar/3.jpg'
+                    className={classes.avatar}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={title}
+                  secondary={
+                    <>
+                      <Typography component='span' className={classes.inline} color='textPrimary'>{author}</Typography>
+                      {moment(created).format('YYYY/MM/DD HH:mm:ss')}
+                    </>
+                  }
+                />
+              </ListItem>
+              <Divider />
               <div dangerouslySetInnerHTML={{ __html: content }} />
             </Card>
             <div className={classes.mb} />
