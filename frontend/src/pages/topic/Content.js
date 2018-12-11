@@ -107,7 +107,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, id, category, author, title, content, created } = this.state
+    const { loading, id, boardDomain, category, author, title, content, created } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
