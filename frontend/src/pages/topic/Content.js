@@ -94,7 +94,7 @@ class Content extends React.Component {
         <Card className={classes.card}>
           {loading ? "true" : "false"}
           {id}
-          {content}
+          <div dangerouslySetInnerHTML={{ __html: content }} />
         </Card>
         <div className={classes.mb} />
       </MuiThemeProvider>

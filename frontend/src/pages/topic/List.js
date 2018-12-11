@@ -223,15 +223,18 @@ class List extends React.Component {
   render() {
     const { classes } = this.props
     const { loading, topics, rowsPerPage, count, page } = this.state
+    const domain = this.props.match.params.domain
     return (
       <MuiThemeProvider theme={theme}>
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
-        <div className={classes.mb}>
-          <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
-            <Create className={classes.leftIcon} />
-            글쓰기
-          </Button>
-        </div>
+        {domain !== 'all' && domain !== 'best' && (
+          <div className={classes.mb}>
+            <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
+              <Create className={classes.leftIcon} />
+              글쓰기
+            </Button>
+          </div>
+        )}
         <Card className={classes.card}>
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>

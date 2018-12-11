@@ -4,10 +4,7 @@ import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
-  Input,
   InputBase,
-  InputLabel,
-  TextField,
   FormControl,
   Button,
   Card,

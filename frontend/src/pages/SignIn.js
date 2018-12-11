@@ -4,10 +4,7 @@ import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
-  Input,
   InputBase,
-  InputLabel,
-  TextField,
   FormControl,
   Button,
   Card,
@@ -52,7 +49,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '10px 12px',
+    padding: '8px 10px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',

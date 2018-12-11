@@ -248,6 +248,7 @@ class Header extends React.Component {
                 <div className={classes.sectionDesktop}>
                   <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Star className={classes.leftIcon} />테스트1</Button>
                   <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><Pageview className={classes.leftIcon} />테스트2</Button>
+                  <Button component={NavLink} to='/b/talk' color='inherit' className={classes.button}>자유</Button>
                   <div className={classes.search}>
                     <div className={classes.searchIcon}>
                       <SearchIcon />

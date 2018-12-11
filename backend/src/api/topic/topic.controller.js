@@ -30,13 +30,14 @@ exports.createTopic = async ctx => {
   const user = await getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
-    boardDomain,
+    domain,
     category,
     title,
     content,
     isNotice
   } = ctx.request.body
-  const isAdminOnly = await getBoard.isAdminOnly(boardDomain)
+  const isAdminOnly = await getBoard.isAdminOnly(domain)
+  if (isAdminOnly < 0) return
   if (user.isAdmin < isAdminOnly) return ctx.body = { message: '권한이 없습니다.', status: 'fail' }
   if (user.isAdmin < 1) {
     //TODO: 관리자 전용 커스텀
@@ -47,7 +48,7 @@ exports.createTopic = async ctx => {
   const isImage = false
   const topicId = await createTopic({
     userId: user.id,
-    boardDomain,
+    boardDomain: domain,
     category,
     author: user.nickname,
     title,

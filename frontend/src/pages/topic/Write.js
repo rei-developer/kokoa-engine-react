@@ -4,20 +4,39 @@ import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
-  Input,
   InputBase,
   InputLabel,
-  TextField,
-  FormControl
+  FormControl,
+  Button,
+  Card
 } from '@material-ui/core'
+import { Editor } from '@tinymce/tinymce-react'
 
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  margin: {
+  fullWidth: {
+    width: '100%'
+  },
+  mr: {
+    marginRight: theme.spacing.unit
+  },
+  mb: {
+    marginBottom: theme.spacing.unit
+  },
+  pl: {
+    paddingLeft: theme.spacing.unit / 2
+  },
+  pr: {
+    paddingRight: theme.spacing.unit / 2
+  },
+  card: {
     margin: theme.spacing.unit,
+    padding: theme.spacing.unit,
+    borderRadius: '.25rem',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
   },
   bootstrapRoot: {
     'label + &': {
@@ -29,11 +48,11 @@ const styles = theme => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '10px 12px',
+    padding: '8px 10px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0, 123, 255, .25)'
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
     },
   },
   bootstrapFormLabel: {
@@ -45,20 +64,7 @@ const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   },
-  shadows: Array(25).fill('none'),
-  palette: {
-    primary: {
-      main: '#fff',
-      dark: '#fff',
-      contrastText: '#3f50b5'
-    },
-    secondary: {
-      light: '#757ce8',
-      main: '#3f50b5',
-      dark: '#002884',
-      contrastText: '#fff'
-    }
-  }
+  shadows: Array(25).fill('none')
 })
 
 class Write extends React.Component {
@@ -66,7 +72,7 @@ class Write extends React.Component {
     super(props)
     this.state = {
       loading: false,
-      boardDomain: '',
+      domain: '',
       category: '',
       title: '',
       content: '',
@@ -75,16 +81,31 @@ class Write extends React.Component {
   }
 
   componentWillMount() {
-    const boardDomain = this.props.match.params.boardDomain
+    const domain = this.props.match.params.domain
     this.setState({
-      boardDomain
+      domain
+    })
+  }
+
+  handleEditorChange = (e) => {
+    this.setState({
+      content: e.target.getContent()
+    })
+  }
+
+  append = () => {
+    const text = '<p>test</p>'
+    this.setState({
+      content: this.state.content + text
+    }, () => {
+      this.state.editor.setContent(this.state.content)
     })
   }
 
   send = async () => {
     const {
       loading,
-      boardDomain,
+      domain,
       category,
       title,
       content,
@@ -97,7 +118,7 @@ class Write extends React.Component {
       const token = sessionStorage.token
       if (!token) return toast.error('토큰을 새로 발급하세요.')
       const response = await axios.post(`/api/topic/write`, {
-        boardDomain,
+        domain,
         category,
         title,
         content,
@@ -110,7 +131,7 @@ class Write extends React.Component {
         loading: false
       })
       if (data.status === 'fail') return toast.error(data.message)
-      this.props.history.push(`/b/${boardDomain}/${data.topicId}`)
+      this.props.history.push(`/b/${domain}/${data.topicId}`)
     })
   }
 
@@ -121,58 +142,49 @@ class Write extends React.Component {
   setContent = (e) => {
     this.setState({ content: e.target.value })
   }
-/*
-        <InputGroup>
-          <Input
-            placeholder='title'
-            onChange={this.setTitle}
-          />
-        </InputGroup>
-        <br />
-        <InputGroup>
-          <Input
-            placeholder='content'
-            onChange={this.setContent}
-          />
-        </InputGroup>
-        <br />
-        <Button
-          color='primary'
-          onClick={this.send}
-        >
-          전송
-        </Button>
-        */
+
   render() {
     const { classes } = this.props
+    const { title, content } = this.state
     return (
-      <>
-        <FormControl className={classes.margin} fullWidth>
+      <MuiThemeProvider theme={theme}>
+        <FormControl className={classes.mb} fullWidth>
           <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>제목</InputLabel>
           <InputBase
-            id='bootstrap-input'
-            defaultValue='react-bootstrap'
+            value={title}
             classes={{
               root: classes.bootstrapRoot,
               input: classes.bootstrapInput
             }}
+            onChange={this.setTitle}
           />
         </FormControl>
-        <FormControl className={classes.margin} fullWidth>
+        <FormControl className={classes.mb} fullWidth>
           <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>내용</InputLabel>
-          <InputBase
-            id='bootstrap-input'
-            defaultValue='react-bootstrap'
-            multiline
-            rows='15'
-            rowsMax='15'
-            classes={{
-              root: classes.bootstrapRoot,
-              input: classes.bootstrapInput
+          <Editor
+            apiKey='lb1yt4yj6dls6cpmvksg1dnp32tuhj9xw0rig7nxprz0wj2x'
+            cloudChannel='dev'
+            init={{
+              plugins: 'link image code',
+              toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+              setup: editor => {
+                this.setState({ editor })
+              }
             }}
+            onChange={this.handleEditorChange}
           />
         </FormControl>
-      </>
+        <button onClick={this.append}>테스트</button>
+        <FormControl fullWidth>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={this.send}
+          >
+            글쓰기
+          </Button>
+        </FormControl>
+      </MuiThemeProvider>
     )
   }
 }
