@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
+  Grid,
   Card,
   Button,
   List,
@@ -13,10 +14,13 @@ import {
   ListItemAvatar,
   Avatar,
   Typography,
-  Divider
+  Divider,
+  Chip
 } from '@material-ui/core'
 import {
-  Create
+  Create,
+  ThumbUp,
+  ThumbDown
 } from '@material-ui/icons'
 import { MoonLoader } from 'react-spinners'
 
@@ -134,7 +138,18 @@ class Content extends React.Component {
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={title}
+                  primary={
+                    <>
+                      {category !== '' && (
+                        <Chip
+                          label={category}
+                          color='primary'
+                          className={classes.leftIcon}
+                        />
+                      )}
+                      {title}
+                    </>
+                  }
                   secondary={
                     <>
                       <Typography component='span' className={classes.inline} color='textPrimary'>{author}</Typography>
@@ -145,6 +160,24 @@ class Content extends React.Component {
               </ListItem>
               <Divider />
               <div dangerouslySetInnerHTML={{ __html: content }} />
+              <Grid
+                container
+                justify='center'
+                className={classes.mb}
+              >
+                <Chip
+                  label='좋아요 0'
+                  color='primary'
+                  icon={<ThumbUp />}
+                  className={classes.leftIcon}
+                  onClick={() => alert('test')}
+                />
+                <Chip
+                  label='싫어요 0'
+                  color='primary'
+                  icon={<ThumbDown />}
+                />
+              </Grid>
             </Card>
             <div className={classes.mb} />
           </>
