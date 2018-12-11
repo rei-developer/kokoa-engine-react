@@ -18,6 +18,15 @@ exports.getList = async ctx => {
   ctx.body = { count, topics }
 }
 
+exports.getBoardName = async ctx => {
+  const { domain } = ctx.params
+  if (domain === 'all') return ctx.body = '전체글'
+  else if (domain === 'best') return ctx.body = '인기글'
+  const board = await getBoard.name(domain)
+  if (!board) return ctx.body = { status: 'fail' }
+  ctx.body = board
+}
+
 exports.getContent = async ctx => {
   const { id } = ctx.params
   if (id < 1) return

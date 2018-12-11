@@ -8,10 +8,19 @@ import {
   TopicList,
   TopicWrite,
   SignIn,
-  SignUp
+  SignUp,
+  Profile
 } from 'pages'
 import Header from 'components/Header'
 import { ToastContainer } from 'react-toastify'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faUser,
+  faPencilAlt
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faUser)
+library.add(faPencilAlt)
 
 class App extends Component {
   render() {
@@ -44,6 +53,7 @@ class App extends Component {
             </Switch>
             <Route path='/signin' component={SignIn} />
             <Route path='/signup' component={SignUp} />
+            <Route path='/profile' component={Profile} />
           </Grid>
           <Hidden mdDown>
             <Grid item xs={2} />

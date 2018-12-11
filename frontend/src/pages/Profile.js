@@ -7,11 +7,20 @@ import {
   InputBase,
   FormControl,
   Button,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
   Card,
   Grid,
-  Hidden
+  Hidden,
+  Divider
 } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
+import AdminIcon from '../images/Admin.png'
+import UserIcon from '../images/User.png'
 
 const styles = theme => ({
   container: {
@@ -39,6 +48,14 @@ const styles = theme => ({
     borderRadius: '.25rem',
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
   },
+  item: {
+    paddingTop: 0,
+    paddingLeft: 0
+  },
+  avatar: {
+    width: 48,
+    height: 48
+  },
   bootstrapRoot: {
     'label + &': {
       marginTop: theme.spacing.unit * 3,
@@ -58,6 +75,9 @@ const styles = theme => ({
   },
   bootstrapFormLabel: {
     fontSize: 18,
+  },
+  leftMiniIcon: {
+    marginRight: theme.spacing.unit / 2
   }
 })
 
@@ -70,7 +90,7 @@ const theme = createMuiTheme({
 
 @inject('user')
 @observer
-class SignUp extends React.Component {
+class Profile extends React.Component {
   state = {
     username: '',
     nickname: '',
@@ -144,76 +164,34 @@ class SignUp extends React.Component {
           </Hidden>
           <Grid item xs>
             <Card className={classes.card}>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={username}
-                  placeholder='username'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setUsername}
+              <ListItem className={classes.item}>
+                <ListItemAvatar>
+                  <Avatar src='https://material-ui.com/static/images/avatar/3.jpg' className={classes.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <>
+                      <img src={user.isAdmin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                      {user.username}
+                    </>
+                  }
+                  secondary={user.email}
                 />
-              </FormControl>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={nickname}
-                  placeholder='nickname'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setNickname}
-                />
-              </FormControl>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  type='password'
-                  value={password}
-                  placeholder='password'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setPassword}
-                />
-              </FormControl>
-              <Grid className={classes.mb} container>
-                <Grid item xs={9} className={classes.pr}>
-                  <InputBase
-                    type='email'
-                    value={email}
-                    placeholder='email'
-                    classes={{
-                      root: classes.bootstrapRoot,
-                      input: classes.bootstrapInput
-                    }}
-                    className={classes.fullWidth}
-                    onChange={this.setEmail}
-                  />
-                </Grid>
-                <Grid item xs={3} className={classes.pl}>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    className={classes.fullWidth}
-                    onClick={this.accept}
-                  >
-                    전송
-                  </Button>
-                </Grid>
-              </Grid>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={authCode}
-                  placeholder='auth code'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setAuthCode}
-                />
-              </FormControl>
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemIcon>
+                  <FontAwesomeIcon icon='user' />
+                </ListItemIcon>
+                <ListItemText primary={user.username} />
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemIcon>
+                  <FontAwesomeIcon icon='pencil-alt' />
+                </ListItemIcon>
+                <ListItemText primary={user.nickname} />
+              </ListItem>
               <FormControl fullWidth>
                 <Button
                   variant='contained'
@@ -221,17 +199,6 @@ class SignUp extends React.Component {
                   onClick={this.signUp}
                 >
                   회원가입
-                </Button>
-              </FormControl>
-            </Card>
-            {user.email}
-            <Card className={classes.card}>
-              <FormControl fullWidth>
-                <Button
-                  color='primary'
-                  onClick={this.signIn}
-                >
-                  계정이 있으시다면 로그인하세요
                 </Button>
               </FormControl>
             </Card>
@@ -245,8 +212,8 @@ class SignUp extends React.Component {
   }
 }
 
-SignUp.propTypes = {
+Profile.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(SignUp)
+export default withStyles(styles)(Profile)

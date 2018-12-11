@@ -8,7 +8,6 @@ import {
   Grid,
   Card,
   Button,
-  List,
   ListItem,
   ListItemText,
   ListItemAvatar,

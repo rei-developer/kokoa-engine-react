@@ -42,7 +42,8 @@ module.exports.topics = async (columns, page, limit) => {
     const result = await pool.query(
       `SELECT id, userId, originBoardDomain, category, author, title, created, isImage, isBest, isNotice,
       (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
-      (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes
+      (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes,
+      (SELECT isAdmin FROM Users WHERE id = A.userId) admin
       FROM Topics A WHERE
       ${keys.map(key => `${key} = ?`).join(' AND ')}
       ORDER BY id DESC

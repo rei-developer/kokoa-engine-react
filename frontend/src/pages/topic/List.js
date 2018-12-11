@@ -3,6 +3,7 @@ import { Link, Route } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cn from 'classnames'
 import axios from 'axios'
+import moment from 'moment'
 import { TopicContent } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
@@ -16,16 +17,24 @@ import {
   TableRow,
   IconButton,
   Card,
-  Button
+  Button,
+  Chip
 } from '@material-ui/core'
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
   KeyboardArrowLeft,
   KeyboardArrowRight,
-  Create
+  Create,
+  Replay,
+  Star
 } from '@material-ui/icons'
 import { observer, inject } from 'mobx-react'
+import { MoonLoader } from 'react-spinners'
+import StarIcon from '../../images/Star.svg'
+import BurnIcon from '../../images/Burn.svg'
+import AdminIcon from '../../images/Admin.png'
+import UserIcon from '../../images/User.png'
 
 const actionsStyles = theme => ({
   root: {
@@ -128,17 +137,40 @@ const styles = theme => ({
   rightIcon: {
     marginLeft: theme.spacing.unit
   },
+  leftMiniIcon: {
+    marginRight: theme.spacing.unit / 2
+  },
+  boardTitle: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  boardChip: {
+    paddingBottom: '3px',
+    borderRadius: 0
+  },
   table: {
     minWidth: 500
   },
   tableWrapper: {
     overflowX: 'auto'
   },
+  tableSubject: {
+    textAlign: 'center'
+  },
   author: {
     width: 140
   },
+  regdate: {
+    width: 120
+  },
   numeric: {
-    width: 40
+    width: 40,
+    textAlign: 'center'
+  },
+  star: {
+    width: 18,
+    height: 18,
+    marginRight: theme.spacing.unit / 2,
+    verticalAlign: 'middle'
   },
   pointer: {
     cursor: 'pointer'
@@ -151,7 +183,8 @@ const init = {
   count: 0,
   page: 0,
   rowsPerPage: 20,
-  domain: ''
+  domain: '',
+  boardName: ''
 }
 
 @inject('user')
@@ -164,6 +197,7 @@ class List extends React.Component {
 
   componentWillMount() {
     const domain = this.props.match.params.domain
+    this.getBoardName(domain)
     this.getTopics(domain)
   }
 
@@ -172,6 +206,7 @@ class List extends React.Component {
     const nextDomain = nextProps.match.params.domain
     if (domain === nextDomain) return
     this.reset()
+    this.getBoardName(nextDomain)
     this.getTopics(nextDomain)
   }
 
@@ -183,7 +218,6 @@ class List extends React.Component {
   handleChangePage = (e, page) => {
     const domain = this.props.match.params.domain
     this.setState({
-      loading: true,
       page
     }, () => {
       this.getTopics(domain)
@@ -193,17 +227,25 @@ class List extends React.Component {
   handleChangeRowsPerPage = e => {
     const domain = this.props.match.params.domain
     this.setState({
-      loading: true,
       rowsPerPage: e.target.value
     }, () => {
       this.getTopics(domain)
     })
   }
 
+  getBoardName = async (domain) => {
+    const response = await axios.get(`/api/topic/boardName/${domain}`)
+    const data = await response.data
+    if (data.status === 'fail') return
+    this.setState({
+      boardName: data
+    })
+  }
+
   getTopics = (domain) => {
     const { page, rowsPerPage } = this.state
     this.setState({
-      loading: false,
+      loading: true,
       domain
     }, async () => {
       const obj = {}
@@ -220,16 +262,51 @@ class List extends React.Component {
     })
   }
 
-  reset() {
+  replay = () => {
+    const { domain } = this.state
+    this.getTopics(domain)
+  }
+
+  reset = () => {
     this.setState(init)
   }
 
   render() {
     const { classes, user } = this.props
-    const { loading, topics, rowsPerPage, count, page } = this.state
+    const { loading, topics, rowsPerPage, count, page, boardName } = this.state
     const domain = this.props.match.params.domain
+    const override = {
+      position: 'absolute',
+      width: '78px',
+      height: '78px',
+      margin: '-39px 0 0 -39px',
+      top: '50%',
+      left: '50%',
+      zIndex: 50000
+    }
     return (
       <MuiThemeProvider theme={theme}>
+        <div className='sweet-loading' style={override}>
+          <MoonLoader
+            sizeUnit='px'
+            size={60}
+            margin='2px'
+            color='#36D7B7'
+            loading={loading}
+          />
+        </div>
+        {boardName !== '' && (
+          <div className={classes.boardTitle}>
+            <Chip
+              color='primary'
+              label={`${boardName} (${count})`}
+              onDelete={this.replay}
+              deleteIcon={<Replay />}
+              className={classes.boardChip}
+              clickable
+            />
+          </div>
+        )}
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
@@ -244,11 +321,12 @@ class List extends React.Component {
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <TableCell>순번</TableCell>
-                  <TableCell>제목</TableCell>
-                  <TableCell>작성자</TableCell>
-                  <TableCell>조회</TableCell>
-                  <TableCell>추천</TableCell>
+                  <TableCell className={classes.tableSubject}>순번</TableCell>
+                  <TableCell className={classes.tableSubject}>제목</TableCell>
+                  <TableCell className={classes.tableSubject}>작성자</TableCell>
+                  <TableCell className={classes.tableSubject}>작성일</TableCell>
+                  <TableCell className={classes.tableSubject}>조회</TableCell>
+                  <TableCell className={classes.tableSubject}>추천</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className={classes.pointer}>
@@ -261,8 +339,17 @@ class List extends React.Component {
                       hover
                     >
                       <TableCell className={classes.numeric}>{i.id}</TableCell>
-                      <TableCell component='th' scope='row'>{i.title}</TableCell>
-                      <TableCell className={classes.author}>{i.author}</TableCell>
+                      <TableCell component='th' scope='row'>
+                        {i.isBest > 0 && (
+                          <img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
+                        )}
+                        {i.title}
+                      </TableCell>
+                      <TableCell className={classes.author}>
+                        <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                        <strong>{i.author}</strong>
+                      </TableCell>
+                      <TableCell className={classes.regdate}>{moment(i.created).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
                       <TableCell className={classes.numeric}>{i.hits}</TableCell>
                       <TableCell className={classes.numeric}>{i.likes}</TableCell>
                     </TableRow>
@@ -285,6 +372,14 @@ class List extends React.Component {
             </Table>
           </div>
         </Card>
+        {user.isLogged && domain !== 'all' && domain !== 'best' && (
+          <div className={classes.mb}>
+            <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
+              <Create className={classes.leftIcon} />
+              글쓰기
+            </Button>
+          </div>
+        )}
       </MuiThemeProvider>
     )
   }

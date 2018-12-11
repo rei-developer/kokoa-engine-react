@@ -81,7 +81,6 @@ const styles = theme => ({
     cursor: 'pointer'
   },
   title: {
-    display: 'none',
     [theme.breakpoints.down('sm')]: {
       width: 100,
       height: 20
@@ -204,8 +203,7 @@ class Header extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+        <MenuItem component={NavLink} to='/profile' onClick={this.handleMenuClose}>프로필 편집</MenuItem>
         <MenuItem onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
