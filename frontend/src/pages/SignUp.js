@@ -14,6 +14,7 @@ import {
   Grid,
   Hidden
 } from '@material-ui/core'
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   container: {
@@ -70,6 +71,8 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none')
 })
 
+@inject('user')
+@observer
 class SignUp extends React.Component {
   state = {
     username: '',
@@ -134,7 +137,7 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, user } = this.props
     const { username, nickname, email, authCode, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
@@ -224,6 +227,7 @@ class SignUp extends React.Component {
                 </Button>
               </FormControl>
             </Card>
+            {user.email}
             <Card className={classes.card}>
               <FormControl fullWidth>
                 <Button

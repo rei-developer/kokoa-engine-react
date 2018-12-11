@@ -17,6 +17,7 @@ import {
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import {
+  Input as InputIcon,
   Menu as MenuIcon,
   Search as SearchIcon,
   MoreVert as MoreIcon,
@@ -25,6 +26,7 @@ import {
   Star,
   Pageview
 } from '@material-ui/icons'
+import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 
 const theme = createMuiTheme({
@@ -148,6 +150,8 @@ const styles = theme => ({
   }
 })
 
+@inject('user')
+@observer
 class Header extends React.Component {
   state = {
     anchorEl: null,
@@ -156,6 +160,14 @@ class Header extends React.Component {
 
   handleProfileMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleSignOut = () => {
+    const { user } = this.props
+    sessionStorage.removeItem('token')
+    user.signOut()
+    this.handleMenuClose()
+    this.handleMobileMenuClose()
   }
 
   handleMenuClose = () => {
@@ -173,7 +185,7 @@ class Header extends React.Component {
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state
-    const { classes } = this.props
+    const { classes, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -187,6 +199,7 @@ class Header extends React.Component {
       >
         <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
         <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+        <MenuItem onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
 
@@ -249,26 +262,39 @@ class Header extends React.Component {
                   </div>
                 </div>
                 <div className={classes.grow} />
-                <div className={classes.sectionDesktop}>
-                  <IconButton color='inherit'>
-                    <Badge badgeContent={17} color='secondary'>
-                      <NotificationsIcon />
-                    </Badge>
-                  </IconButton>
-                  <IconButton
-                    aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                    aria-haspopup='true'
-                    onClick={this.handleProfileMenuOpen}
+                {user.isLogged ? (
+                  <>
+                    <div className={classes.sectionDesktop}>
+                      <IconButton color='inherit'>
+                        <Badge badgeContent={17} color='secondary'>
+                          <NotificationsIcon />
+                        </Badge>
+                      </IconButton>
+                      <IconButton
+                        aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                        aria-haspopup='true'
+                        onClick={this.handleProfileMenuOpen}
+                        color='inherit'
+                      >
+                        <AccountCircle />
+                      </IconButton>
+                    </div>
+                    <div className={classes.sectionMobile}>
+                      <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
+                        <MoreIcon />
+                      </IconButton>
+                    </div>
+                  </>
+                ) : (
+                  <Button
+                    component={NavLink}
+                    to='/signin'
                     color='inherit'
                   >
-                    <AccountCircle />
-                  </IconButton>
-                </div>
-                <div className={classes.sectionMobile}>
-                  <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
-                    <MoreIcon />
-                  </IconButton>
-                </div>
+                    <InputIcon className={classes.leftIcon} />
+                    로그인
+                  </Button>
+                )}
               </Toolbar>
             </Grid>
             <Hidden mdDown>

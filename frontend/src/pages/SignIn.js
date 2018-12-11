@@ -14,6 +14,7 @@ import {
   Grid,
   Hidden
 } from '@material-ui/core'
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   container: {
@@ -36,6 +37,7 @@ const styles = theme => ({
     paddingRight: theme.spacing.unit / 2
   },
   card: {
+    margin: theme.spacing.unit,
     padding: theme.spacing.unit,
     borderRadius: '.25rem',
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
@@ -69,6 +71,8 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none')
 })
 
+@inject('user')
+@observer
 class SignIn extends React.Component {
   state = {
     username: '',
@@ -86,26 +90,13 @@ class SignIn extends React.Component {
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('로그인 성공')
     sessionStorage.token = data.token
+    const { user } = this.props
+    user.signIn()
+    this.props.history.push('/')
   }
 
   signUp = () => {
     this.props.history.push('/signup')
-  }
-
-  signOut = () => {
-    sessionStorage.removeItem('token')
-  }
-
-  getProfile = async () => {
-    const token = sessionStorage.token
-    if (!token) return toast.error('토큰을 새로 발급하세요.')
-    const response = await axios.get(
-      '/api/auth/check',
-      { headers: { 'x-access-token': token } }
-    )
-    const data = response.data
-    if (data.status === 'fail') return toast.error(data.message)
-    console.log(data)
   }
 
   setUsername = (e) => {
@@ -117,7 +108,7 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, user } = this.props
     const { username, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
