@@ -146,7 +146,7 @@ class Write extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { title } = this.state
+    const { loading, title } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -164,7 +164,7 @@ class Write extends React.Component {
             size={60}
             margin='2px'
             color='#36D7B7'
-            loading={this.state.loading}
+            loading={loading}
           />
         </div>
         <FormControl className={classes.mb} fullWidth>

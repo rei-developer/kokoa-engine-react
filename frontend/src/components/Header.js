@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import cs from 'classnames'
+import cn from 'classnames'
 import PropTypes from 'prop-types'
 import {
   AppBar,
@@ -283,7 +283,7 @@ class Header extends React.Component {
                         aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                         aria-haspopup='true'
                         onClick={this.handleProfileMenuOpen}
-                        className={cs(classes.avatar, classes.rightIcon)}
+                        className={cn(classes.avatar, classes.rightIcon)}
                       />
                     </div>
                     <div className={classes.sectionMobile}>

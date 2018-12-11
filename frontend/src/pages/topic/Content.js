@@ -10,6 +10,7 @@ import {
 import {
   Create
 } from '@material-ui/icons'
+import { MoonLoader } from 'react-spinners'
 
 const theme = createMuiTheme({
   typography: {
@@ -70,15 +71,14 @@ class Content extends React.Component {
     this.getTopic(id)
   }
 
-  getTopic = (id) => {
+  getTopic = async (id) => {
+    const response = await axios.get(`/api/topic/read/${id}`)
+    const data = await response.data
+    if (data.status === 'fail') return toast.error(data.message)
     this.setState({
       loading: false,
-      id
-    }, async () => {
-      const response = await axios.get(`/api/topic/read/${id}`)
-      const data = await response.data
-      if (data.status === 'fail') return toast.error(data.message)
-      this.setState({ ...data })
+      id,
+      ...data
     })
   }
 
@@ -89,14 +89,36 @@ class Content extends React.Component {
   render() {
     const { classes } = this.props
     const { loading, id, content } = this.state
+    const override = {
+      position: 'absolute',
+      width: '78px',
+      height: '78px',
+      margin: '-39px 0 0 -39px',
+      top: '50%',
+      left: '50%',
+      zIndex: 50000
+    }
     return (
       <MuiThemeProvider theme={theme}>
-        <Card className={classes.card}>
-          {loading ? "true" : "false"}
-          {id}
-          <div dangerouslySetInnerHTML={{ __html: content }} />
-        </Card>
-        <div className={classes.mb} />
+        <div className='sweet-loading' style={override}>
+          <MoonLoader
+            sizeUnit='px'
+            size={60}
+            margin='2px'
+            color='#36D7B7'
+            loading={loading}
+          />
+        </div>
+        {!loading && (
+          <>
+            <Card className={classes.card}>
+              {loading ? "true" : "false"}
+              {id}
+              <div dangerouslySetInnerHTML={{ __html: content }} />
+            </Card>
+            <div className={classes.mb} />
+          </>
+        )}
       </MuiThemeProvider>
     )
   }

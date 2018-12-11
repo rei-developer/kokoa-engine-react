@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, Route } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import cn from 'classnames'
 import axios from 'axios'
 import { TopicContent } from 'pages'
 import PropTypes from 'prop-types'
@@ -235,7 +236,7 @@ class List extends React.Component {
             </Button>
           </div>
         )}
-        <Card className={classes.card}>
+        <Card className={cn(classes.card, classes.mb)}>
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>
               <TableHead>
