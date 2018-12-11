@@ -1,6 +1,74 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import PropTypes from 'prop-types'
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import {
+  Input,
+  InputBase,
+  InputLabel,
+  TextField,
+  FormControl,
+  Button,
+  Card,
+  Grid,
+  Hidden
+} from '@material-ui/core'
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  fullWidth: {
+    width: '100%'
+  },
+  mr: {
+    marginRight: theme.spacing.unit
+  },
+  mb: {
+    marginBottom: theme.spacing.unit
+  },
+  pl: {
+    paddingLeft: theme.spacing.unit / 2
+  },
+  pr: {
+    paddingRight: theme.spacing.unit / 2
+  },
+  card: {
+    margin: theme.spacing.unit,
+    padding: theme.spacing.unit,
+    borderRadius: '.25rem',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+  },
+  bootstrapRoot: {
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+  },
+  bootstrapInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '8px 10px',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
+    },
+  },
+  bootstrapFormLabel: {
+    fontSize: 18,
+  }
+})
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none')
+})
 
 class SignUp extends React.Component {
   state = {
@@ -24,8 +92,16 @@ class SignUp extends React.Component {
     toast.success('이메일에 인증코드를 전송했습니다.')
   }
 
+  signIn = () => {
+    this.props.history.push('/signin')
+  }
+
+  signOut = () => {
+    sessionStorage.removeItem('token')
+  }
+
   signUp = async () => {
-    const { username, nickname, email, authCode, password} = this.state
+    const { username, nickname, email, authCode, password } = this.state
     if (username === '' || nickname === '' || email === '' || authCode === '' || password === '') return toast.error('빈 칸을 입력하세요.')
     const response = await axios.post(
       '/api/auth/signup',
@@ -56,6 +132,124 @@ class SignUp extends React.Component {
   setPassword = (e) => {
     this.setState({ password: e.target.value })
   }
+
+  render() {
+    const { classes } = this.props
+    const { username, nickname, email, authCode, password } = this.state
+    return (
+      <MuiThemeProvider theme={theme}>
+        <Grid container>
+          <Hidden mdDown>
+            <Grid item xs={4} />
+          </Hidden>
+          <Grid item xs>
+            <Card className={classes.card}>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  value={username}
+                  placeholder='username'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setUsername}
+                />
+              </FormControl>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  value={nickname}
+                  placeholder='nickname'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setNickname}
+                />
+              </FormControl>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  type='password'
+                  value={password}
+                  placeholder='password'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setPassword}
+                />
+              </FormControl>
+              <Grid className={classes.mb} container>
+                <Grid item xs={9} className={classes.pr}>
+                  <InputBase
+                    type='email'
+                    value={email}
+                    placeholder='email'
+                    classes={{
+                      root: classes.bootstrapRoot,
+                      input: classes.bootstrapInput
+                    }}
+                    className={classes.fullWidth}
+                    onChange={this.setEmail}
+                  />
+                </Grid>
+                <Grid item xs={3} className={classes.pl}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.fullWidth}
+                    onClick={this.accept}
+                  >
+                    전송
+                  </Button>
+                </Grid>
+              </Grid>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  value={authCode}
+                  placeholder='auth code'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setAuthCode}
+                />
+              </FormControl>
+              <FormControl fullWidth>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={this.signUp}
+                >
+                  회원가입
+                </Button>
+              </FormControl>
+            </Card>
+            <Card className={classes.card}>
+              <FormControl fullWidth>
+                <Button
+                  color='primary'
+                  onClick={this.signIn}
+                >
+                  계정이 있으시다면 로그인하세요
+                </Button>
+              </FormControl>
+            </Card>
+          </Grid>
+          <Hidden mdDown>
+            <Grid item xs={4} />
+          </Hidden>
+        </Grid>
+      </MuiThemeProvider>
+    )
+  }
+}
+
+SignUp.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(SignUp)
+
 /*
         <InputGroup>
           <Input
@@ -115,14 +309,3 @@ class SignUp extends React.Component {
           Sign Up
         </Button>
         */
-  render() {
-    const { username, nickname, email, authCode, password } = this.state
-    return (
-      <>
-
-      </>
-    )
-  }
-}
-
-export default SignUp

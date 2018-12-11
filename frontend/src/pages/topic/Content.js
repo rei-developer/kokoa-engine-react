@@ -1,6 +1,38 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import PropTypes from 'prop-types'
+import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
+import {
+  Card,
+  Button
+} from '@material-ui/core'
+import {
+  Create
+} from '@material-ui/icons'
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none')
+})
+
+const styles = theme => ({
+  mb: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  card: {
+    borderRadius: 0,
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit
+  }
+})
 
 const init = {
   loading: true,
@@ -55,15 +87,23 @@ class Content extends React.Component {
   }
 
   render() {
+    const { classes } = this.props
     const { loading, id, content } = this.state
     return (
-      <div>
-        {loading ? "true" : "false"}
-        {id}
-        {content}
-      </div>
+      <MuiThemeProvider theme={theme}>
+        <Card className={classes.card}>
+          {loading ? "true" : "false"}
+          {id}
+          {content}
+        </Card>
+        <div className={classes.mb} />
+      </MuiThemeProvider>
     )
   }
 }
 
-export default Content
+Content.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Content)

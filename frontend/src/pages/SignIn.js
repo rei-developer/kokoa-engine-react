@@ -1,6 +1,73 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import PropTypes from 'prop-types'
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import {
+  Input,
+  InputBase,
+  InputLabel,
+  TextField,
+  FormControl,
+  Button,
+  Card,
+  Grid,
+  Hidden
+} from '@material-ui/core'
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  fullWidth: {
+    width: '100%'
+  },
+  mr: {
+    marginRight: theme.spacing.unit
+  },
+  mb: {
+    marginBottom: theme.spacing.unit
+  },
+  pl: {
+    paddingLeft: theme.spacing.unit / 2
+  },
+  pr: {
+    paddingRight: theme.spacing.unit / 2
+  },
+  card: {
+    padding: theme.spacing.unit,
+    borderRadius: '.25rem',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+  },
+  bootstrapRoot: {
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+  },
+  bootstrapInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
+    },
+  },
+  bootstrapFormLabel: {
+    fontSize: 18,
+  }
+})
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none')
+})
 
 class SignIn extends React.Component {
   state = {
@@ -19,6 +86,10 @@ class SignIn extends React.Component {
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('로그인 성공')
     sessionStorage.token = data.token
+  }
+
+  signUp = () => {
+    this.props.history.push('/signup')
   }
 
   signOut = () => {
@@ -44,55 +115,76 @@ class SignIn extends React.Component {
   setPassword = (e) => {
     this.setState({ password: e.target.value })
   }
-/*
 
-        <InputGroup>
-          <Input
-            value={username}
-            placeholder='Username'
-            onChange={this.setUsername}
-          />
-        </InputGroup>
-        <br />
-        <InputGroup>
-          <Input
-            type='password'
-            value={password}
-            placeholder='Password'
-            onChange={this.setPassword}
-          />
-        </InputGroup>
-        <br />
-        <Button
-          color='primary'
-          className='mr-2'
-          onClick={this.signIn}
-        >
-          로그인
-        </Button>
-        <Button
-          color='primary'
-          onClick={this.getProfile}
-        >
-          get Profile
-        </Button>
-        <Button
-          color='primary'
-          className='mr-2'
-          onClick={this.signOut}
-        >
-          로그아웃
-        </Button>
-
-        */
   render() {
+    const { classes } = this.props
     const { username, password } = this.state
     return (
-      <>
-
-      </>
+      <MuiThemeProvider theme={theme}>
+        <Grid container>
+          <Hidden mdDown>
+            <Grid item xs={4} />
+          </Hidden>
+          <Grid item xs>
+            <Card className={classes.card}>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  value={username}
+                  placeholder='username'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setUsername}
+                />
+              </FormControl>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  type='password'
+                  value={password}
+                  placeholder='password'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setPassword}
+                />
+              </FormControl>
+              <Grid container>
+                <Grid item xs={6} className={classes.pr}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.fullWidth}
+                    onClick={this.signIn}
+                  >
+                    로그인
+                  </Button>
+                </Grid>
+                <Grid item xs={6} className={classes.pl}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.fullWidth}
+                    onClick={this.signUp}
+                  >
+                    회원가입
+                  </Button>
+                </Grid>
+              </Grid>
+            </Card>
+          </Grid>
+          <Hidden mdDown>
+            <Grid item xs={4} />
+          </Hidden>
+        </Grid>
+      </MuiThemeProvider>
     )
   }
 }
 
-export default SignIn
+SignIn.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(SignIn)

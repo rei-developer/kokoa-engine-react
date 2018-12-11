@@ -1,6 +1,65 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import PropTypes from 'prop-types'
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import {
+  Input,
+  InputBase,
+  InputLabel,
+  TextField,
+  FormControl
+} from '@material-ui/core'
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  margin: {
+    margin: theme.spacing.unit,
+  },
+  bootstrapRoot: {
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+  },
+  bootstrapInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0, 123, 255, .25)'
+    },
+  },
+  bootstrapFormLabel: {
+    fontSize: 18,
+  }
+})
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#fff',
+      dark: '#fff',
+      contrastText: '#3f50b5'
+    },
+    secondary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
+})
 
 class Write extends React.Component {
   constructor(props) {
@@ -85,12 +144,41 @@ class Write extends React.Component {
         </Button>
         */
   render() {
+    const { classes } = this.props
     return (
       <>
-
+        <FormControl className={classes.margin} fullWidth>
+          <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>제목</InputLabel>
+          <InputBase
+            id='bootstrap-input'
+            defaultValue='react-bootstrap'
+            classes={{
+              root: classes.bootstrapRoot,
+              input: classes.bootstrapInput
+            }}
+          />
+        </FormControl>
+        <FormControl className={classes.margin} fullWidth>
+          <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>내용</InputLabel>
+          <InputBase
+            id='bootstrap-input'
+            defaultValue='react-bootstrap'
+            multiline
+            rows='15'
+            rowsMax='15'
+            classes={{
+              root: classes.bootstrapRoot,
+              input: classes.bootstrapInput
+            }}
+          />
+        </FormControl>
       </>
     )
   }
 }
 
-export default Write
+Write.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Write)

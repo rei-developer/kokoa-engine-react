@@ -15,8 +15,12 @@ import { ToastContainer } from 'react-toastify'
 
 class App extends Component {
   render() {
+    const style = {
+      background: '#FAFAFA',
+      minHeight: '100vh'
+    }
     return (
-      <>
+      <div style={style}>
         <ToastContainer autoClose={2000} />
         <Header />
         <Grid container>
@@ -45,7 +49,7 @@ class App extends Component {
             <Grid item xs={2} />
           </Hidden>
         </Grid>
-      </>
+      </div>
     )
   }
 }

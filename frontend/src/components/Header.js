@@ -8,6 +8,7 @@ import {
   InputBase,
   Badge,
   Button,
+  Fab,
   MenuItem,
   Menu,
   Grid,
@@ -21,8 +22,8 @@ import {
   MoreVert as MoreIcon,
   Notifications as NotificationsIcon,
   AccountCircle,
-  Comment,
-  Whatshot
+  Star,
+  Pageview
 } from '@material-ui/icons'
 import Logo from '../Logo.png'
 
@@ -50,7 +51,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     marginBottom: '1rem',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .05)'
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
   },
   grow: {
     flexGrow: 1
@@ -71,6 +72,7 @@ const styles = theme => ({
     marginRight: 20
   },
   title: {
+    display: 'none',
     [theme.breakpoints.down('sm')]: {
       width: 100,
       height: 20
@@ -135,6 +137,14 @@ const styles = theme => ({
   },
   rightIcon: {
     marginLeft: theme.spacing.unit
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 3,
+    left: theme.spacing.unit * 3,
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
   }
 })
 
@@ -223,8 +233,8 @@ class Header extends React.Component {
                   <img src={Logo} className={classes.title} />
                 </NavLink>
                 <div className={classes.sectionDesktop}>
-                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Whatshot className={classes.leftIcon} />인기글</Button>
-                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><Comment className={classes.leftIcon} />전체글</Button>
+                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Star className={classes.leftIcon} />테스트1</Button>
+                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><Pageview className={classes.leftIcon} />테스트2</Button>
                   <div className={classes.search}>
                     <div className={classes.searchIcon}>
                       <SearchIcon />
@@ -268,6 +278,9 @@ class Header extends React.Component {
         </AppBar>
         {renderMenu}
         {renderMobileMenu}
+        <Fab color='secondary' aria-label='Add' className={classes.fab}>
+          <MenuIcon />
+        </Fab>
       </MuiThemeProvider>
     )
   }

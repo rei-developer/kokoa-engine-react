@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { TopicContent } from 'pages'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
   Table,
   TableHead,
@@ -13,13 +13,16 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-  IconButton
+  IconButton,
+  Card,
+  Button
 } from '@material-ui/core'
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
   KeyboardArrowLeft,
-  KeyboardArrowRight
+  KeyboardArrowRight,
+  Create
 } from '@material-ui/icons'
 
 const actionsStyles = theme => ({
@@ -97,11 +100,31 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
   TablePaginationActions
 )
 
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none')
+})
+
 const styles = theme => ({
   root: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3
+  },
+  mb: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  card: {
+    borderRadius: '.25rem',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit
   },
   table: {
     minWidth: 500
@@ -201,54 +224,61 @@ class List extends React.Component {
     const { classes } = this.props
     const { loading, topics, rowsPerPage, count, page } = this.state
     return (
-      <>
+      <MuiThemeProvider theme={theme}>
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
-        <Link to={`${this.props.match.url}/write`}>Write</Link>
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>순번</TableCell>
-                <TableCell>제목</TableCell>
-                <TableCell>작성자</TableCell>
-                <TableCell>조회</TableCell>
-                <TableCell>추천</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody className={classes.pointer}>
-              {topics.map(i => {
-                return (
-                  <TableRow
-                    key={i.id}
-                    selected={false}
-                    onClick={e => this.handleClick(e, i.id)}
-                    hover
-                  >
-                    <TableCell className={classes.numeric}>{i.id}</TableCell>
-                    <TableCell component='th' scope='row'>{i.title}</TableCell>
-                    <TableCell className={classes.author}>{i.author}</TableCell>
-                    <TableCell className={classes.numeric}>{i.hits}</TableCell>
-                    <TableCell className={classes.numeric}>{i.likes}</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 20, 30, 40, 50]}
-                  count={count}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onChangePage={this.handleChangePage}
-                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActionsWrapped}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
+        <div className={classes.mb}>
+          <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
+            <Create className={classes.leftIcon} />
+            글쓰기
+          </Button>
         </div>
-      </>
+        <Card className={classes.card}>
+          <div className={classes.tableWrapper}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>순번</TableCell>
+                  <TableCell>제목</TableCell>
+                  <TableCell>작성자</TableCell>
+                  <TableCell>조회</TableCell>
+                  <TableCell>추천</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody className={classes.pointer}>
+                {topics.map(i => {
+                  return (
+                    <TableRow
+                      key={i.id}
+                      selected={false}
+                      onClick={e => this.handleClick(e, i.id)}
+                      hover
+                    >
+                      <TableCell className={classes.numeric}>{i.id}</TableCell>
+                      <TableCell component='th' scope='row'>{i.title}</TableCell>
+                      <TableCell className={classes.author}>{i.author}</TableCell>
+                      <TableCell className={classes.numeric}>{i.hits}</TableCell>
+                      <TableCell className={classes.numeric}>{i.likes}</TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[10, 20, 30, 40, 50]}
+                    count={count}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={this.handleChangePage}
+                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActionsWrapped}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
+        </Card>
+      </MuiThemeProvider>
     )
   }
 }
