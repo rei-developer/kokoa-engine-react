@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import cs from 'classnames'
 import PropTypes from 'prop-types'
 import {
   AppBar,
@@ -12,7 +13,8 @@ import {
   MenuItem,
   Menu,
   Grid,
-  Hidden
+  Hidden,
+  Avatar
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
@@ -72,6 +74,11 @@ const styles = theme => ({
   },
   menuButton: {
     marginRight: 20
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    cursor: 'pointer'
   },
   title: {
     display: 'none',
@@ -243,7 +250,7 @@ class Header extends React.Component {
                   </IconButton>
                 </div>
                 <NavLink to='/'>
-                  <img src={Logo} className={classes.title} />
+                  <img src={Logo} alt='Logo' className={classes.title} />
                 </NavLink>
                 <div className={classes.sectionDesktop}>
                   <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Star className={classes.leftIcon} />테스트1</Button>
@@ -271,14 +278,13 @@ class Header extends React.Component {
                           <NotificationsIcon />
                         </Badge>
                       </IconButton>
-                      <IconButton
+                      <Avatar
+                        src='https://material-ui.com/static/images/avatar/1.jpg'
                         aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                         aria-haspopup='true'
                         onClick={this.handleProfileMenuOpen}
-                        color='inherit'
-                      >
-                        <AccountCircle />
-                      </IconButton>
+                        className={cs(classes.avatar, classes.rightIcon)}
+                      />
                     </div>
                     <div className={classes.sectionMobile}>
                       <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>

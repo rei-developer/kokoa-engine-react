@@ -105,7 +105,7 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { classes, user } = this.props
+    const { classes } = this.props
     const { username, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
