@@ -67,6 +67,9 @@ const init = {
   header: '',
   created: '',
   updated: '',
+  hits: 0,
+  likes: 0,
+  hates: 0,
   isImage: false,
   isBest: false,
   isNotice: false
@@ -100,13 +103,28 @@ class Content extends React.Component {
     })
   }
 
+  handleLikes = async () => {
+    const { id } = this.state
+    if (id < 1) return
+    const token = sessionStorage.token
+    if (!token) return toast.error('토큰을 새로 발급하세요.')
+    const response = await axios.post(
+      '/api/topic/vote',
+      { id, likes: true },
+      { headers: { 'x-access-token': token } }
+    )
+    const data = response.data
+    if (data.status === 'fail') return toast.error(data.message)
+    toast.success('투표했습니다.')
+  }
+
   reset() {
     this.setState(init)
   }
 
   render() {
     const { classes } = this.props
-    const { loading, id, boardDomain, category, author, title, content, created } = this.state
+    const { loading, id, boardDomain, category, author, title, content, created, likes, hates } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -165,14 +183,14 @@ class Content extends React.Component {
                 className={classes.mb}
               >
                 <Chip
-                  label='좋아요 0'
+                  label={`좋아요 ${likes}`}
                   color='primary'
                   icon={<ThumbUp />}
                   className={classes.leftIcon}
-                  onClick={() => alert('test')}
+                  onClick={this.handleLikes}
                 />
                 <Chip
-                  label='싫어요 0'
+                  label={`싫어요 ${hates}`}
                   color='primary'
                   icon={<ThumbDown />}
                 />

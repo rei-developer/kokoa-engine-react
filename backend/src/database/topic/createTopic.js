@@ -27,3 +27,10 @@ module.exports.createTopicCounts = async (topicId) => {
     [topicId]
   )
 }
+
+module.exports.createTopicVotes = async (userId, topicId, ip) => {
+  await pool.query(
+    `INSERT INTO TopicVotes (userId, topicId, ip) VALUES (?, ?, ?)`,
+    [userId, topicId, ip]
+  )
+}
