@@ -7,6 +7,7 @@ app.get('/boardName/:domain', topicCtrl.getBoardName)
 app.get('/read/:id', topicCtrl.getContent)
 app.post('/list', topicCtrl.getList)
 app.post('/write', topicCtrl.createTopic)
-app.post('/vote', topicCtrl.createTopicVotes)
+app.post('/vote/topic', topicCtrl.createTopicVotes)
+app.post('/vote/post', topicCtrl.createPostVotes)
 
 module.exports = app

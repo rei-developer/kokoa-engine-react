@@ -133,3 +133,7 @@ exports.createTopicVotes = async ctx => {
   await createTopicVotes(user.id, id, ip)
   ctx.body = { move, status: 'ok' }
 }
+
+exports.createPostVotes = async ctx => {
+
+}

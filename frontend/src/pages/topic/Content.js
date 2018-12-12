@@ -109,13 +109,23 @@ class Content extends React.Component {
     const token = sessionStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.post(
-      '/api/topic/vote',
+      '/api/topic/vote/topic',
       { id, likes: true },
       { headers: { 'x-access-token': token } }
     )
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('투표했습니다.')
+    console.log(data.move)
+
+    switch (data.move) {
+      case 'BEST':
+        toast('베스트로 보냈습니다.')
+        break
+      case 'DELETE':
+        toast('게시물이 삭제되었습니다.')
+        break
+    }
   }
 
   reset() {
