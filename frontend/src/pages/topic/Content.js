@@ -18,6 +18,8 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MoonLoader } from 'react-spinners'
+import StarIcon from '../../images/Star.svg'
+import BurnIcon from '../../images/Burn.svg'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
 
@@ -51,6 +53,12 @@ const styles = theme => ({
   },
   leftMiniIcon: {
     marginRight: theme.spacing.unit / 2
+  },
+  star: {
+    width: 18,
+    height: 18,
+    marginRight: theme.spacing.unit / 2,
+    verticalAlign: 'middle'
   }
 })
 
@@ -126,7 +134,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, category, author, title, content, created, likes, hates, admin } = this.state
+    const { loading, category, author, title, content, created, isBest, isNotice, hits, likes, hates, admin } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -159,6 +167,9 @@ class Content extends React.Component {
                 <ListItemText
                   primary={
                     <>
+                      {isBest > 0 && (
+                        <img src={isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
+                      )}
                       {category !== '' && (
                         <Chip
                           label={category}
