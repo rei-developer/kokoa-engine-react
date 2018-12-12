@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken'
 import bkfd2Password from 'pbkdf2-password'
+import User from '../../lib/user'
 import Crypto from '../../lib/crypto'
 import SendMail from '../../lib/email'
 import getUser from '../../database/user/getUser'
 import createUser from '../../database/user/createUser'
+import updateUser from '../../database/user/updateUser'
 
 const hasher = bkfd2Password()
 
@@ -81,4 +83,15 @@ exports.sendMail = async ctx => {
 exports.getUser = async ctx => {
   const user = ctx.state.user
   ctx.body = { user, status: 'ok' }
+}
+
+exports.updateUser = async ctx => {
+  const user = await User.getUser(ctx.get('x-access-token'))
+  if (!user) return
+  const { nickname } = ctx.request.body
+  if (nickname === '') return
+  const getNickname = await getUser.nickname(nickname)
+  if (getNickname) return ctx.body = { message: '이미 존재하는 닉네임입니다.', status: 'fail' }
+  await updateUser({ nickname }, user.id)
+  ctx.body = { status: 'ok' }
 }

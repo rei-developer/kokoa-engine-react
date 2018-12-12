@@ -16,11 +16,17 @@ import { ToastContainer } from 'react-toastify'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUser,
-  faPencilAlt
+  faPencilAlt,
+  faCalendarAlt,
+  faSeedling,
+  faGift
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUser)
 library.add(faPencilAlt)
+library.add(faCalendarAlt)
+library.add(faSeedling)
+library.add(faGift)
 
 class App extends Component {
   render() {

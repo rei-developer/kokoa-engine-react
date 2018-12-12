@@ -1,4 +1,4 @@
-import { getUser } from '../../lib/user'
+import User from '../../lib/user'
 import createTopic, { createTopicCounts } from '../../database/topic/createTopic'
 import getBoard from '../../database/board/getBoard'
 import getTopic from '../../database/topic/getTopic'
@@ -36,7 +36,7 @@ exports.getContent = async ctx => {
 }
 
 exports.createTopic = async ctx => {
-  const user = await getUser(ctx.get('x-access-token'))
+  const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
     domain,

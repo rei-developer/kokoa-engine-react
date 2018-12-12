@@ -1,5 +1,7 @@
 import React from 'react'
 import axios from 'axios'
+import moment from 'moment'
+import cn from 'classnames'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
@@ -8,7 +10,6 @@ import {
   FormControl,
   Button,
   ListItem,
-  ListItemIcon,
   ListItemText,
   ListItemAvatar,
   Avatar,
@@ -30,6 +31,9 @@ const styles = theme => ({
   fullWidth: {
     width: '100%'
   },
+  mt: {
+    marginTop: theme.spacing.unit
+  },
   mr: {
     marginRight: theme.spacing.unit
   },
@@ -42,15 +46,25 @@ const styles = theme => ({
   pr: {
     paddingRight: theme.spacing.unit / 2
   },
+  ptz: {
+    paddingTop: 0
+  },
+  plz: {
+    paddingLeft: 0
+  },
+  pz: {
+    padding: 0
+  },
+  naked: {
+    padding: 0,
+    border: 0,
+    fontSize: 15
+  },
   card: {
     margin: theme.spacing.unit,
     padding: theme.spacing.unit,
     borderRadius: '.25rem',
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
-  },
-  item: {
-    paddingTop: 0,
-    paddingLeft: 0
   },
   avatar: {
     width: 48,
@@ -65,8 +79,8 @@ const styles = theme => ({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '8px 10px',
+    fontSize: 14,
+    padding: '4px 6px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',
@@ -92,70 +106,32 @@ const theme = createMuiTheme({
 @observer
 class Profile extends React.Component {
   state = {
-    username: '',
-    nickname: '',
-    email: '',
-    authCode: '',
-    password: ''
+    nickname: ''
   }
 
-  accept = async () => {
-    const { email } = this.state
-    if (email === '') return toast.error('이메일을 입력하세요.')
-    toast('이메일을 전송합니다...')
-    const response = await axios.post(
-      '/api/auth/accept',
-      { email }
+  edit = async () => {
+    const { nickname } = this.state
+    if (nickname === '') return toast.error('빈 칸을 입력하세요.')
+    const token = sessionStorage.token
+    if (!token) return toast.error('토큰을 새로 발급하세요.')
+    const response = await axios.patch(
+      '/api/auth/edit',
+      { nickname },
+      { headers: { 'x-access-token': token } }
     )
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
-    toast.success('이메일에 인증코드를 전송했습니다.')
-  }
-
-  signIn = () => {
-    this.props.history.push('/signin')
-  }
-
-  signOut = () => {
-    sessionStorage.removeItem('token')
-  }
-
-  signUp = async () => {
-    const { username, nickname, email, authCode, password } = this.state
-    if (username === '' || nickname === '' || email === '' || authCode === '' || password === '') return toast.error('빈 칸을 입력하세요.')
-    const response = await axios.post(
-      '/api/auth/signup',
-      { username, nickname, email, authCode, password }
-    )
-    const data = response.data
-    if (data.status === 'fail') return toast.error(data.message)
-    this.props.history.push('/signin')
-    toast.success('회원가입 성공')
-  }
-
-  setUsername = (e) => {
-    this.setState({ username: e.target.value })
+    toast.success('프로필 편집 성공')
+    const { user } = this.props
+    user.setNickname(nickname)
   }
 
   setNickname = (e) => {
     this.setState({ nickname: e.target.value })
   }
 
-  setEmail = (e) => {
-    this.setState({ email: e.target.value })
-  }
-
-  setAuthCode = (e) => {
-    this.setState({ authCode: e.target.value })
-  }
-
-  setPassword = (e) => {
-    this.setState({ password: e.target.value })
-  }
-
   render() {
     const { classes, user } = this.props
-    const { username, nickname, email, authCode, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container>
@@ -164,7 +140,7 @@ class Profile extends React.Component {
           </Hidden>
           <Grid item xs>
             <Card className={classes.card}>
-              <ListItem className={classes.item}>
+              <ListItem className={cn(classes.ptz, classes.plz)}>
                 <ListItemAvatar>
                   <Avatar src='https://material-ui.com/static/images/avatar/3.jpg' className={classes.avatar} />
                 </ListItemAvatar>
@@ -172,33 +148,67 @@ class Profile extends React.Component {
                   primary={
                     <>
                       <img src={user.isAdmin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
-                      {user.username}
+                      <input
+                        placeholder={user.nickname}
+                        className={classes.naked}
+                        onChange={this.setNickname}
+                      />
                     </>
                   }
                   secondary={user.email}
                 />
               </ListItem>
               <Divider />
-              <ListItem>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon='user' />
-                </ListItemIcon>
-                <ListItemText primary={user.username} />
-              </ListItem>
+              <div className={cn(classes.mt, classes.mb)}>
+                <Grid container spacing={8} alignItems='flex-end'>
+                  <Grid item xs={1}>
+                    <FontAwesomeIcon icon='user' />
+                  </Grid>
+                  <Grid item>
+                    {user.username}
+                  </Grid>
+                </Grid>
+              </div>
               <Divider />
-              <ListItem>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon='pencil-alt' />
-                </ListItemIcon>
-                <ListItemText primary={user.nickname} />
-              </ListItem>
+              <div className={cn(classes.mt, classes.mb)}>
+                <Grid container spacing={8} alignItems='flex-end'>
+                  <Grid item xs={1}>
+                    <FontAwesomeIcon icon='calendar-alt' />
+                  </Grid>
+                  <Grid item>
+                    {moment(user.registerDate).format('YYYY/MM/DD HH:mm:ss')}
+                  </Grid>
+                </Grid>
+              </div>
+              <Divider />
+              <div className={cn(classes.mt, classes.mb)}>
+                <Grid container spacing={8} alignItems='flex-end'>
+                  <Grid item xs={1}>
+                    <FontAwesomeIcon icon='seedling' />
+                  </Grid>
+                  <Grid item>
+                    Lv. {user.level} ({user.exp} EXP)
+                  </Grid>
+                </Grid>
+              </div>
+              <Divider />
+              <div className={cn(classes.mt, classes.mb)}>
+                <Grid container spacing={8} alignItems='flex-end'>
+                  <Grid item xs={1}>
+                    <FontAwesomeIcon icon='gift' />
+                  </Grid>
+                  <Grid item>
+                    {user.point} P
+                  </Grid>
+                </Grid>
+              </div>
               <FormControl fullWidth>
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={this.signUp}
+                  onClick={this.edit}
                 >
-                  회원가입
+                  프로필 편집
                 </Button>
               </FormControl>
             </Card>

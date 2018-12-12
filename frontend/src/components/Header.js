@@ -81,6 +81,7 @@ const styles = theme => ({
     cursor: 'pointer'
   },
   title: {
+    display: 'none',
     [theme.breakpoints.down('sm')]: {
       width: 100,
       height: 20

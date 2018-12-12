@@ -62,4 +62,8 @@ export default class UserStore {
   @action signOut = () => {
     this.init()
   }
+
+  @action setNickname = (nickname) => {
+    this.nickname = nickname
+  }
 }
