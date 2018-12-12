@@ -16,11 +16,7 @@ import {
   Divider,
   Chip
 } from '@material-ui/core'
-import {
-  Create,
-  ThumbUp,
-  ThumbDown
-} from '@material-ui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MoonLoader } from 'react-spinners'
 
 const theme = createMuiTheme({
@@ -103,29 +99,20 @@ class Content extends React.Component {
     })
   }
 
-  handleLikes = async () => {
+  handleVotes = async (flag) => {
     const { id } = this.state
     if (id < 1) return
     const token = sessionStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.post(
       '/api/topic/vote/topic',
-      { id, likes: true },
+      { id, likes: flag },
       { headers: { 'x-access-token': token } }
     )
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('투표했습니다.')
-    console.log(data.move)
-
-    switch (data.move) {
-      case 'BEST':
-        toast('베스트로 보냈습니다.')
-        break
-      case 'DELETE':
-        toast('게시물이 삭제되었습니다.')
-        break
-    }
+    if (data.move === 'BEST') toast('베스트로 보냈습니다.')
   }
 
   reset() {
@@ -195,14 +182,15 @@ class Content extends React.Component {
                 <Chip
                   label={`좋아요 ${likes}`}
                   color='primary'
-                  icon={<ThumbUp />}
+                  icon={<FontAwesomeIcon icon='thumbs-up' />}
                   className={classes.leftIcon}
-                  onClick={this.handleLikes}
+                  onClick={() => this.handleVotes(true)}
                 />
                 <Chip
                   label={`싫어요 ${hates}`}
                   color='primary'
-                  icon={<ThumbDown />}
+                  icon={<FontAwesomeIcon icon='thumbs-down' />}
+                  onClick={() => this.handleVotes(false)}
                 />
               </Grid>
             </Card>

@@ -2,6 +2,7 @@ import Koa from 'koa'
 import Logger from 'koa-logger'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
+import helmet from 'koa-helmet'
 import dotenv from 'dotenv'
 import api from './api'
 
@@ -10,6 +11,7 @@ dotenv.config()
 const app = new Koa()
 const router = new Router()
 
+router.use(helmet())
 router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())

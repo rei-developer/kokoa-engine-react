@@ -20,9 +20,9 @@ module.exports.isAdminOnly = async (domain) => {
 
 module.exports.categories = async (boardDomain) => {
   const result = await pool.query(
-    `SELECT name FROM BoardCategories WHERE boardDomain = ?`,
+    `SELECT name FROM Categories WHERE boardDomain = ?`,
     [boardDomain]
   )
   if (result.length < 1) return false
-  return result[0]
+  return result
 }

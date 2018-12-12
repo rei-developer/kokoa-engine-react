@@ -36,6 +36,21 @@ module.exports.count = async (columns) => {
   }
 }
 
+module.exports.notices = async (domain) => {
+  const result = await pool.query(
+    `SELECT id, userId, originBoardDomain, category, author, title, created,
+    (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
+    (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes,
+    (SELECT isAdmin FROM Users WHERE id = A.userId) admin
+    FROM Topics A
+    WHERE boardDomain = ? AND isNotice = 1
+    ORDER BY id DESC`,
+    [domain]
+  )
+  if (result.length < 1) return false
+  return result
+}
+
 module.exports.topics = async (columns, page, limit) => {
   let keys = []
   let values = []
@@ -61,6 +76,20 @@ module.exports.topics = async (columns, page, limit) => {
     console.log(e.message)
     return false
   }
+}
+
+module.exports.topicsToWidget = async (limit) => {
+  const result = await pool.query(
+    `SELECT id, boardDomain, category, title, created,
+    (SELECT name FROM Boards WHERE domain = A.boardDomain) boardName
+    FROM Topics A
+    WHERE isAllowed = 1
+    ORDER BY id DESC
+    LIMIT ?`,
+    [limit]
+  )
+  if (result.length < 1) return false
+  return result
 }
 
 module.exports.topicVotes = async (userId, topicId, ip) => {

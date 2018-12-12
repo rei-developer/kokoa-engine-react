@@ -20,15 +20,7 @@ import {
   Button,
   Chip
 } from '@material-ui/core'
-import {
-  FirstPage as FirstPageIcon,
-  LastPage as LastPageIcon,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Create,
-  Replay,
-  Star
-} from '@material-ui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import { MoonLoader } from 'react-spinners'
 import StarIcon from '../../images/Star.svg'
@@ -70,28 +62,28 @@ class TablePaginationActions extends React.Component {
           disabled={page === 0}
           aria-label='First Page'
         >
-          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+          {theme.direction === 'rtl' ? <FontAwesomeIcon icon='angle-double-right' /> : <FontAwesomeIcon icon='angle-double-left' />}
         </IconButton>
         <IconButton
           onClick={this.handleBackButtonClick}
           disabled={page === 0}
           aria-label='Previous Page'
         >
-          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+          {theme.direction === 'rtl' ? <FontAwesomeIcon icon='angle-right' /> : <FontAwesomeIcon icon='angle-left' />}
         </IconButton>
         <IconButton
           onClick={this.handleNextButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
           aria-label='Next Page'
         >
-          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+          {theme.direction === 'rtl' ? <FontAwesomeIcon icon='angle-left' /> : <FontAwesomeIcon icon='angle-right' />}
         </IconButton>
         <IconButton
           onClick={this.handleLastPageButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
           aria-label='Last Page'
         >
-          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+          {theme.direction === 'rtl' ? <FontAwesomeIcon icon='angle-double-left' /> : <FontAwesomeIcon icon='angle-double-right' />}
         </IconButton>
       </div>
     )
@@ -156,6 +148,12 @@ const styles = theme => ({
   tableSubject: {
     textAlign: 'center'
   },
+  row: {
+    backgroundColor: theme.palette.background.default
+  },
+  bold: {
+    fontWeight: 'bold'
+  },
   author: {
     width: 140
   },
@@ -179,7 +177,10 @@ const styles = theme => ({
 
 const init = {
   loading: true,
+  notices: [],
   topics: [],
+  categories: [],
+  category: '',
   count: 0,
   page: 0,
   rowsPerPage: 20,
@@ -198,6 +199,7 @@ class List extends React.Component {
   componentWillMount() {
     const domain = this.props.match.params.domain
     this.getBoardName(domain)
+    this.getCategories(domain)
     this.getTopics(domain)
   }
 
@@ -207,6 +209,7 @@ class List extends React.Component {
     if (domain === nextDomain) return
     this.reset()
     this.getBoardName(nextDomain)
+    this.getCategories(nextDomain)
     this.getTopics(nextDomain)
   }
 
@@ -242,20 +245,31 @@ class List extends React.Component {
     })
   }
 
+  getCategories = async (domain) => {
+    const response = await axios.get(`/api/topic/categories/${domain}`)
+    const data = await response.data
+    if (data.status === 'fail') return
+    this.setState({
+      categories: data
+    })
+  }
+
   getTopics = (domain) => {
-    const { page, rowsPerPage } = this.state
+    const { category, page, rowsPerPage } = this.state
     this.setState({
       loading: true,
       domain
     }, async () => {
       const obj = {}
       obj.domain = domain
+      if (category !== '') obj.category = category
       obj.page = page
       if (rowsPerPage !== init.rowsPerPage) obj.limit = rowsPerPage
       const response = await axios.post('/api/topic/list', obj)
       const data = await response.data
       this.setState({
         loading: false,
+        notices: data.notices ? [...data.notices] : [],
         topics: data.topics ? [...data.topics] : [],
         count: data.count
       })
@@ -273,8 +287,36 @@ class List extends React.Component {
 
   render() {
     const { classes, user } = this.props
-    const { loading, topics, rowsPerPage, count, page, boardName } = this.state
+    const { loading, notices, topics, rowsPerPage, count, page, boardName } = this.state
     const domain = this.props.match.params.domain
+    const extract = (item, notice = false) => (
+      item.map(i => {
+        return (
+          <TableRow
+            key={i.id}
+            selected={false}
+            onClick={e => this.handleClick(e, i.id)}
+            className={notice && classes.row}
+            hover
+          >
+            <TableCell className={classes.numeric}>{notice ? (<FontAwesomeIcon icon='flag' />) : i.id}</TableCell>
+            <TableCell className={notice && classes.bold} component='th' scope='row'>
+              {i.isBest > 0 && (
+                <img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
+              )}
+              {i.title}
+            </TableCell>
+            <TableCell className={classes.author}>
+              <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+              <strong>{i.author}</strong>
+            </TableCell>
+            <TableCell className={classes.regdate}>{moment(i.created).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
+            <TableCell className={classes.numeric}>{i.hits}</TableCell>
+            <TableCell className={classes.numeric}>{i.likes}</TableCell>
+          </TableRow>
+        )
+      })
+    )
     const override = {
       position: 'absolute',
       width: '78px',
@@ -301,7 +343,7 @@ class List extends React.Component {
               color='primary'
               label={`${boardName} (${count})`}
               onDelete={this.replay}
-              deleteIcon={<Replay />}
+              deleteIcon={<FontAwesomeIcon icon='sync' />}
               className={classes.boardChip}
               clickable
             />
@@ -311,7 +353,7 @@ class List extends React.Component {
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
-              <Create className={classes.leftIcon} />
+              <FontAwesomeIcon icon='pencil-alt' className={classes.leftIcon} />
               글쓰기
             </Button>
           </div>
@@ -330,31 +372,8 @@ class List extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody className={classes.pointer}>
-                {topics.map(i => {
-                  return (
-                    <TableRow
-                      key={i.id}
-                      selected={false}
-                      onClick={e => this.handleClick(e, i.id)}
-                      hover
-                    >
-                      <TableCell className={classes.numeric}>{i.id}</TableCell>
-                      <TableCell component='th' scope='row'>
-                        {i.isBest > 0 && (
-                          <img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
-                        )}
-                        {i.title}
-                      </TableCell>
-                      <TableCell className={classes.author}>
-                        <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
-                        <strong>{i.author}</strong>
-                      </TableCell>
-                      <TableCell className={classes.regdate}>{moment(i.created).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
-                      <TableCell className={classes.numeric}>{i.hits}</TableCell>
-                      <TableCell className={classes.numeric}>{i.likes}</TableCell>
-                    </TableRow>
-                  )
-                })}
+                {extract(notices, true)}
+                {extract(topics)}
               </TableBody>
               <TableFooter>
                 <TableRow>
@@ -375,7 +394,7 @@ class List extends React.Component {
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
-              <Create className={classes.leftIcon} />
+              <FontAwesomeIcon icon='pencil-alt' className={classes.leftIcon} />
               글쓰기
             </Button>
           </div>

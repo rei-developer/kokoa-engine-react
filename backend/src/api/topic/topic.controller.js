@@ -21,6 +21,7 @@ const DELETE_LIMIT = 10
 exports.getList = async ctx => {
   const { ...body } = ctx.request.body
   const domain = body.domain || 'all'
+  const category = body.category || ''
   const page = body.page || 0
   const limit = body.limit || 20
   if (page < 0) return
@@ -28,10 +29,17 @@ exports.getList = async ctx => {
   const obj = {}
   if (domain === 'best') obj.isBest = 2
   else if (domain !== 'all') obj.boardDomain = domain
+  if (category !== '') obj.category = category
   obj.isAllowed = 1
   const count = await getTopic.count(obj)
+  const notices = await getTopic.notices(domain)
   const topics = await getTopic.topics(obj, page, limit)
-  ctx.body = { count, topics }
+  ctx.body = { count, notices, topics }
+}
+
+exports.getListToWidget = async ctx => {
+  const topics = await getTopic.topicsToWidget(20)
+  ctx.body = topics
 }
 
 exports.getBoardName = async ctx => {
@@ -41,6 +49,12 @@ exports.getBoardName = async ctx => {
   const board = await getBoard.name(domain)
   if (!board) return ctx.body = { status: 'fail' }
   ctx.body = board
+}
+
+exports.getCategories = async ctx => {
+  const { domain } = ctx.params
+  const categories = await getBoard.categories(domain)
+  ctx.body = categories
 }
 
 exports.getContent = async ctx => {

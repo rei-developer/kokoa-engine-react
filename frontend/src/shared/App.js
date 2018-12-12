@@ -19,7 +19,23 @@ import {
   faPencilAlt,
   faCalendarAlt,
   faSeedling,
-  faGift
+  faGift,
+  faSearch,
+  faBell,
+  faEllipsisV,
+  faBars,
+  faSignInAlt,
+  faFire,
+  faStar,
+  faCommentDots,
+  faSync,
+  faAngleLeft,
+  faAngleRight,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+  faThumbsUp,
+  faThumbsDown,
+  faFlag
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUser)
@@ -27,6 +43,22 @@ library.add(faPencilAlt)
 library.add(faCalendarAlt)
 library.add(faSeedling)
 library.add(faGift)
+library.add(faSearch)
+library.add(faBell)
+library.add(faEllipsisV)
+library.add(faBars)
+library.add(faSignInAlt)
+library.add(faFire)
+library.add(faStar)
+library.add(faCommentDots)
+library.add(faSync)
+library.add(faAngleLeft)
+library.add(faAngleRight)
+library.add(faAngleDoubleLeft)
+library.add(faAngleDoubleRight)
+library.add(faThumbsUp)
+library.add(faThumbsDown)
+library.add(faFlag)
 
 class App extends Component {
   render() {

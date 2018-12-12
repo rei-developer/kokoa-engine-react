@@ -18,16 +18,7 @@ import {
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import {
-  Input as InputIcon,
-  Menu as MenuIcon,
-  Search as SearchIcon,
-  MoreVert as MoreIcon,
-  Notifications as NotificationsIcon,
-  AccountCircle,
-  Star,
-  Pageview
-} from '@material-ui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 
@@ -220,14 +211,14 @@ class Header extends React.Component {
         <MenuItem>
           <IconButton color='inherit'>
             <Badge badgeContent={11} color='secondary'>
-              <NotificationsIcon />
+              <FontAwesomeIcon icon='bell' />
             </Badge>
           </IconButton>
           <p>Notifications</p>
         </MenuItem>
         <MenuItem onClick={this.handleProfileMenuOpen}>
           <IconButton color='inherit'>
-            <AccountCircle />
+            <FontAwesomeIcon icon='user' />
           </IconButton>
           <p>Profile</p>
         </MenuItem>
@@ -245,36 +236,28 @@ class Header extends React.Component {
               <Toolbar className={classes.toolbar}>
                 <div className={classes.sectionMobile}>
                   <IconButton className={classes.menuButton} color='inherit' aria-label='Open drawer'>
-                    <MenuIcon />
+                    <FontAwesomeIcon icon='bars' />
                   </IconButton>
                 </div>
                 <NavLink to='/'>
+                test
                   <img src={Logo} alt='Logo' className={classes.title} />
                 </NavLink>
                 <div className={classes.sectionDesktop}>
-                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><Star className={classes.leftIcon} />테스트1</Button>
-                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><Pageview className={classes.leftIcon} />테스트2</Button>
+                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><FontAwesomeIcon icon='star' className={classes.leftIcon} />테스트1</Button>
+                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><FontAwesomeIcon icon='comment-dots' className={classes.leftIcon} />테스트2</Button>
                   <Button component={NavLink} to='/b/talk' color='inherit' className={classes.button}>자유</Button>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
-                    </div>
-                    <InputBase
-                      placeholder='Search…'
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                    />
-                  </div>
                 </div>
                 <div className={classes.grow} />
+                <IconButton color='inherit'>
+                  <FontAwesomeIcon icon='search' />
+                </IconButton>
                 {user.isLogged ? (
                   <>
                     <div className={classes.sectionDesktop}>
                       <IconButton color='inherit'>
                         <Badge badgeContent={17} color='secondary'>
-                          <NotificationsIcon />
+                          <FontAwesomeIcon icon='bell' />
                         </Badge>
                       </IconButton>
                       <Avatar
@@ -287,7 +270,7 @@ class Header extends React.Component {
                     </div>
                     <div className={classes.sectionMobile}>
                       <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
-                        <MoreIcon />
+                        <FontAwesomeIcon icon='ellipsis-v' />
                       </IconButton>
                     </div>
                   </>
@@ -297,7 +280,7 @@ class Header extends React.Component {
                     to='/signin'
                     color='inherit'
                   >
-                    <InputIcon className={classes.leftIcon} />
+                    <FontAwesomeIcon icon='sign-in-alt' className={classes.leftIcon} />
                     로그인
                   </Button>
                 )}
@@ -311,7 +294,7 @@ class Header extends React.Component {
         {renderMenu}
         {renderMobileMenu}
         <Fab color='secondary' aria-label='Add' className={classes.fab}>
-          <MenuIcon />
+          <FontAwesomeIcon icon='bars' />
         </Fab>
       </MuiThemeProvider>
     )
