@@ -6,7 +6,8 @@ module.exports = async (id) => {
     `SELECT userId, boardDomain, originBoardDomain, category, author, title, content, ip, header, created, updated, isImage, isBest, isNotice, isAllowed,
     (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
     (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes,
-    (SELECT hates FROM TopicCounts WHERE topicId = A.id) hates
+    (SELECT hates FROM TopicCounts WHERE topicId = A.id) hates,
+    (SELECT isAdmin FROM Users WHERE id = A.userId) admin
     FROM Topics A
     WHERE id = ?`,
     [id]

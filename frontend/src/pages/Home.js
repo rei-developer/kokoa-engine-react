@@ -15,7 +15,6 @@ import {
   Avatar
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 
 const theme = createMuiTheme({
   typography: {

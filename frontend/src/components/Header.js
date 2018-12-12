@@ -63,6 +63,10 @@ const styles = theme => ({
       borderBottom: '2px solid ' + theme.palette.primary.main
     }
   },
+  IconButton: {
+    width: 48,
+    height: 48
+  },
   menuButton: {
     marginRight: 20
   },
@@ -139,9 +143,10 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit
   },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing.unit * 3,
     left: theme.spacing.unit * 3,
+    zIndex: 200,
     [theme.breakpoints.up('md')]: {
       display: 'none'
     }
@@ -209,7 +214,7 @@ class Header extends React.Component {
         onClose={this.handleMobileMenuClose}
       >
         <MenuItem>
-          <IconButton color='inherit'>
+          <IconButton color='inherit' className={classes.IconButton}>
             <Badge badgeContent={11} color='secondary'>
               <FontAwesomeIcon icon='bell' />
             </Badge>
@@ -217,7 +222,7 @@ class Header extends React.Component {
           <p>Notifications</p>
         </MenuItem>
         <MenuItem onClick={this.handleProfileMenuOpen}>
-          <IconButton color='inherit'>
+          <IconButton color='inherit' className={classes.IconButton}>
             <FontAwesomeIcon icon='user' />
           </IconButton>
           <p>Profile</p>
@@ -235,7 +240,7 @@ class Header extends React.Component {
             <Grid item xs>
               <Toolbar className={classes.toolbar}>
                 <div className={classes.sectionMobile}>
-                  <IconButton className={classes.menuButton} color='inherit' aria-label='Open drawer'>
+                  <IconButton className={cn(classes.IconButton, classes.menuButton)} color='inherit' aria-label='Open drawer'>
                     <FontAwesomeIcon icon='bars' />
                   </IconButton>
                 </div>
@@ -249,13 +254,13 @@ class Header extends React.Component {
                   <Button component={NavLink} to='/b/talk' color='inherit' className={classes.button}>자유</Button>
                 </div>
                 <div className={classes.grow} />
-                <IconButton color='inherit'>
+                <IconButton color='inherit' className={classes.IconButton}>
                   <FontAwesomeIcon icon='search' />
                 </IconButton>
                 {user.isLogged ? (
                   <>
                     <div className={classes.sectionDesktop}>
-                      <IconButton color='inherit'>
+                      <IconButton color='inherit' className={classes.IconButton}>
                         <Badge badgeContent={17} color='secondary'>
                           <FontAwesomeIcon icon='bell' />
                         </Badge>
@@ -269,7 +274,7 @@ class Header extends React.Component {
                       />
                     </div>
                     <div className={classes.sectionMobile}>
-                      <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit'>
+                      <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit' className={classes.IconButton}>
                         <FontAwesomeIcon icon='ellipsis-v' />
                       </IconButton>
                     </div>

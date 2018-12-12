@@ -113,6 +113,7 @@ class Write extends React.Component {
       isNotice
     } = this.state
     if (loading) return
+    if (title === '' || content === '') return toast.error('빈 칸을 입력하세요.')
     this.setState({
       loading: true
     }, async () => {

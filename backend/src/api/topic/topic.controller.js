@@ -75,6 +75,7 @@ exports.createTopic = async ctx => {
     content,
     isNotice
   } = ctx.request.body
+  if (title === '' || content === '') return
   const isAdminOnly = await getBoard.isAdminOnly(domain)
   if (isAdminOnly < 0) return
   if (user.isAdmin < isAdminOnly) return ctx.body = { message: '권한이 없습니다.', status: 'fail' }

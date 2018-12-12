@@ -18,6 +18,8 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MoonLoader } from 'react-spinners'
+import AdminIcon from '../../images/Admin.png'
+import UserIcon from '../../images/User.png'
 
 const theme = createMuiTheme({
   typography: {
@@ -46,6 +48,9 @@ const styles = theme => ({
   },
   rightIcon: {
     marginLeft: theme.spacing.unit
+  },
+  leftMiniIcon: {
+    marginRight: theme.spacing.unit / 2
   }
 })
 
@@ -121,7 +126,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, id, boardDomain, category, author, title, content, created, likes, hates } = this.state
+    const { loading, category, author, title, content, created, likes, hates, admin } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -166,7 +171,10 @@ class Content extends React.Component {
                   }
                   secondary={
                     <>
-                      <Typography component='span' className={classes.inline} color='textPrimary'>{author}</Typography>
+                      <Typography component='span' className={classes.inline} color='textPrimary'>
+                        <img src={admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                        <strong>{author}</strong>
+                      </Typography>
                       {moment(created).format('YYYY/MM/DD HH:mm:ss')}
                     </>
                   }
