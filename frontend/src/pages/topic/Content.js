@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import { toast } from 'react-toastify'
@@ -34,6 +36,26 @@ const styles = theme => ({
   mb: {
     marginBottom: theme.spacing.unit * 2
   },
+  padding: {
+    padding: theme.spacing.unit
+  },
+  content: {
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    '& img': {
+      maxWidth: '100%',
+      height: 'auto'
+    },
+    '& iframe': {
+      maxWidth: '100%',
+      height: 'auto',
+      border: 0
+    },
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2
+    }
+  },
   card: {
     borderRadius: 0,
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
@@ -53,6 +75,10 @@ const styles = theme => ({
   },
   leftMiniIcon: {
     marginRight: theme.spacing.unit / 2
+  },
+  category: {
+    height: 19,
+    lineHeight: 19
   },
   star: {
     width: 18,
@@ -81,7 +107,9 @@ const init = {
   hates: 0,
   isImage: false,
   isBest: false,
-  isNotice: false
+  isNotice: false,
+  profile: '',
+  admin: 0
 }
 
 class Content extends React.Component {
@@ -108,7 +136,7 @@ class Content extends React.Component {
     this.setState({
       loading: false,
       id,
-      ...data
+      ...data.topic
     })
   }
 
@@ -174,7 +202,7 @@ class Content extends React.Component {
                         <Chip
                           label={category}
                           color='primary'
-                          className={classes.leftIcon}
+                          className={cn(classes.category, classes.leftIcon)}
                         />
                       )}
                       {title}
@@ -186,13 +214,16 @@ class Content extends React.Component {
                         <img src={admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
                         <strong>{author}</strong>
                       </Typography>
-                      {moment(created).format('YYYY/MM/DD HH:mm:ss')}
+                      {moment(created).fromNow()}
                     </>
                   }
                 />
               </ListItem>
               <Divider />
-              <div dangerouslySetInnerHTML={{ __html: content }} />
+              <div
+                dangerouslySetInnerHTML={{ __html: content }}
+                className={classes.content}
+              />
               <Grid
                 container
                 justify='center'

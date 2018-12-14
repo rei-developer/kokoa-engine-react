@@ -35,7 +35,8 @@ import {
   faAngleDoubleRight,
   faThumbsUp,
   faThumbsDown,
-  faFlag
+  faFlag,
+  faImage
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUser)
@@ -59,6 +60,7 @@ library.add(faAngleDoubleRight)
 library.add(faThumbsUp)
 library.add(faThumbsDown)
 library.add(faFlag)
+library.add(faImage)
 
 class App extends Component {
   render() {

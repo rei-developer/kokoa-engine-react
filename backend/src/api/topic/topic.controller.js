@@ -64,7 +64,7 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  ctx.body = topic
+  ctx.body = { topic }
 }
 
 exports.createTopic = async ctx => {

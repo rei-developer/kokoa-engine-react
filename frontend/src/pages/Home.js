@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -52,6 +53,10 @@ const styles = theme => ({
   rightIcon: {
     marginLeft: theme.spacing.unit
   },
+  category: {
+    height: 19,
+    lineHeight: 19
+  },
   star: {
     width: 18,
     height: 18,
@@ -79,10 +84,10 @@ class Home extends React.Component {
     const { classes } = this.props
     const { loading, topics } = this.state
     const extract = (
-      topics.map(i => {
+      topics.map((i, index) => {
         return (
           <React.Fragment key={i.id}>
-            <Divider />
+            {index > 0 && (<Divider />)}
             <ListItem
               component={Link} to={`/b/${i.boardDomain}/${i.id}`}
               className={classes.pl}
@@ -97,6 +102,13 @@ class Home extends React.Component {
                 secondary={
                   <>
                     <Typography component='span' className={classes.inline} color='textPrimary'>
+                      {i.category !== '' && (
+                        <Chip
+                          label={i.category}
+                          color='primary'
+                          className={cn(classes.category, classes.leftIcon)}
+                        />
+                      )}
                       {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
                       {i.title}
                     </Typography>

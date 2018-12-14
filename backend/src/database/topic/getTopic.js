@@ -95,6 +95,15 @@ module.exports.topicsToWidget = async (limit) => {
   return result
 }
 
+module.exports.topicImages = async (topicId) => {
+  const result = await pool.query(
+    `SELECT name, imageUrl FROM TopicImages WHERE topicId = ?`,
+    [topicId]
+  )
+  if (result.length < 1) return false
+  return result
+}
+
 module.exports.topicVotes = async (userId, topicId, ip) => {
   const result = await pool.query(
     `SELECT created FROM TopicVotes

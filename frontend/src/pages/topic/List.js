@@ -155,6 +155,10 @@ const styles = theme => ({
   bold: {
     fontWeight: 'bold'
   },
+  category: {
+    height: 19,
+    lineHeight: 19
+  },
   author: {
     width: 140
   },
@@ -302,6 +306,13 @@ class List extends React.Component {
           >
             <TableCell className={classes.numeric}>{notice ? (<FontAwesomeIcon icon='flag' />) : i.id}</TableCell>
             <TableCell className={notice ? classes.bold : null} component='th' scope='row'>
+              {i.category !== '' && (
+                <Chip
+                  label={i.category}
+                  color='primary'
+                  className={cn(classes.category, classes.leftIcon)}
+                />
+              )}
               {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
               {i.isImage > 0 && (<img src={ImageIcon} className={classes.star} />)}
               {i.title}
