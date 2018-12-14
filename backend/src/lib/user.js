@@ -1,5 +1,23 @@
 import jwt from 'jsonwebtoken'
 import getUser from '../database/user/getUser'
+import updateUser from '../database/user/updateUser'
+
+const getUpperByExp = (user, exp) => {
+  const sumExp = user.exp + exp
+  const maxExp = Math.pow(user.level, 2) * 50
+  const underMaxExp = Math.pow(user.level - 1, 2) * 50
+  const upper = { level: user.level, exp: user.exp }
+  if (user.level <= 100 && sumExp >= maxExp) {
+    upper.level++
+    upper.exp = 0
+  } else if (user.level > 0 && sumExp < 0) {
+    upper.level--
+    upper.exp = underMaxExp + exp
+  } else {
+    upper.exp += exp
+  }
+  return upper
+}
 
 module.exports.getUser = async (token) => {
   const TOKEN = token || ''
@@ -10,7 +28,6 @@ module.exports.getUser = async (token) => {
         if (err) return reject(false)
         const user = await getUser(payload.jti)
         if (!user) return reject(false)
-        user.id = payload.jti
         resolve(user)
       })
     })
@@ -37,4 +54,30 @@ module.exports.isAuthenticated = async (ctx, next) => {
     ctx.state.user = user
     await next()
   })
+}
+
+module.exports.setLevel = async (user, level = 1) => {
+  await updateUser({ level }, user.id)
+}
+
+module.exports.setExp = async (user, exp) => {
+  await updateUser({ exp }, user.id)
+}
+
+module.exports.setPoint = async (user, point) => {
+  await updateUser({ point }, user.id)
+}
+
+module.exports.setUpExp = async (user, exp) => {
+  const upper = await getUpperByExp(user, exp)
+  await updateUser({ level: upper.level, exp: upper.exp }, user.id)
+}
+
+module.exports.setUpPoint = async (user, point) => {
+  await updateUser({ point: user.point + point }, user.id)
+}
+
+module.exports.setUpExpAndPoint = async (user, exp, point) => {
+  const upper = await getUpperByExp(user, exp)
+  await updateUser({ level: upper.level, exp: upper.exp, point: user.point + point }, user.id)
 }

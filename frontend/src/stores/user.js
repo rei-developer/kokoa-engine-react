@@ -66,4 +66,8 @@ export default class UserStore {
   @action setNickname = (nickname) => {
     this.nickname = nickname
   }
+
+  @action setProfileImage = (url) => {
+    this.profileImageUrl = url
+  }
 }

@@ -2,7 +2,7 @@ import pool from '..'
 
 module.exports = async (id) => {
   const result = await pool.query(
-    `SELECT username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM Users WHERE id = ?`,
+    `SELECT id, username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM Users WHERE id = ?`,
     [id]
   )
   if (result.length < 1) return false

@@ -6,6 +6,7 @@ import createTopic, {
 } from '../../database/topic/createTopic'
 import getBoard from '../../database/board/getBoard'
 import getTopic from '../../database/topic/getTopic'
+import getUser from '../../database/user/getUser'
 import {
   updateTopicByIsBest,
   updateTopicByIsAllowed,
@@ -99,6 +100,7 @@ exports.createTopic = async ctx => {
     isNotice
   })
   await createTopicCounts(topicId)
+  await User.setUpExpAndPoint(user, 10, 10)
   ctx.body = { topicId, status: 'ok' }
 }
 
@@ -113,7 +115,7 @@ exports.createTopicVotes = async ctx => {
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
   const ip = ctx.ip
-  if (topic.userId === user.id || topic.ip === ip) return ctx.body = { message: '본인에게 투표할 수 없습니다.', status: 'fail' }
+  if (targetUser === user.id || topic.ip === ip) return ctx.body = { message: '본인에게 투표할 수 없습니다.', status: 'fail' }
   const duration = moment.duration(moment().diff(topic.created))
   const hours = duration.asHours()
   if (hours > 72) return ctx.body = { message: '3일이 지난 게시물은 투표할 수 없습니다.', status: 'fail' }
@@ -122,26 +124,36 @@ exports.createTopicVotes = async ctx => {
     const created = moment(date).format('YYYY/MM/DD HH:mm:ss')
     return ctx.body = { message: `이미 투표한 게시물입니다. (${created})`, status: 'fail' }
   }
+  const targetUser = await getUser(topic.userId)
   let move = ''
   if (likes) {
     if (topic.isBest === 0 && topic.likes - topic.hates >= BURN_LIMIT) {
       move = 'BURN'
       await updateTopicByIsBest(id, 1)
+      await User.setUpExpAndPoint(targetUser, 20, 20)
     } else if (topic.isBest === 1 && topic.likes - topic.hates >= BEST_LIMIT) {
       move = 'BEST'
       await updateTopicByIsBest(id, 2)
+      await User.setUpExpAndPoint(targetUser, 100, 100)
+    } else {
+      await User.setUpExpAndPoint(targetUser, 5, 5)
     }
     await updateTopicCountsByLikes(id)
   } else {
     if (topic.isBest === 2 && topic.hates - topic.likes >= BEST_LIMIT) {
       move = 'BURN'
       await updateTopicByIsBest(id, 1)
+      await User.setUpExpAndPoint(targetUser, -100, -100)
     } else if (topic.isBest === 1 && topic.hates - topic.likes >= BURN_LIMIT) {
       move = 'DEFAULT'
       await updateTopicByIsBest(id)
+      await User.setUpExpAndPoint(targetUser, -20, -20)
     } else if (topic.hates - topic.likes >= DELETE_LIMIT) {
       move = 'DELETE'
       await updateTopicByIsAllowed(id)
+      await User.setUpExpAndPoint(targetUser, -10, -10)
+    } else {
+      await User.setUpExpAndPoint(targetUser, -5, -5)
     }
     await updateTopicCountsByHates(id)
   }

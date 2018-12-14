@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
-  InputBase,
+  Tooltip,
   FormControl,
   Button,
   ListItem,
@@ -92,6 +92,13 @@ const styles = theme => ({
   },
   leftMiniIcon: {
     marginRight: theme.spacing.unit / 2
+  },
+  file: {
+    position: 'absolute',
+    width: 48,
+    height: 48,
+    opacity: 0,
+    zIndex: 5
   }
 })
 
@@ -107,6 +114,44 @@ const theme = createMuiTheme({
 class Profile extends React.Component {
   state = {
     nickname: ''
+  }
+
+  imageUpload = async e => {
+    const token = sessionStorage.token
+    if (!token) return toast.error('토큰을 새로 발급하세요.')
+    const { REACT_APP_CLIENT_ID } = process.env
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('type', 'file')
+    formData.append('image', file)
+    toast('이미지 업로드 시도중...')
+    const response = await fetch('https://api.imgur.com/3/upload.json', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
+      },
+      body: formData
+    })
+    const data = await response.json()
+    if (data.success) {
+      this.editByProfileImage(token, data.data.link)
+    } else {
+      toast.error('이미지 업로드 실패...')
+    }
+  }
+
+  editByProfileImage = async (token, url) => {
+    const response = await axios.patch(
+      '/api/auth/edit/profile',
+      { url },
+      { headers: { 'x-access-token': token } }
+    )
+    const data = response.data
+    if (data.status === 'fail') return toast.error(data.message)
+    toast.success('프로필 사진 편집 성공')
+    const { user } = this.props
+    user.setProfileImage(url)
   }
 
   edit = async () => {
@@ -142,7 +187,16 @@ class Profile extends React.Component {
             <Card className={classes.card}>
               <ListItem className={cn(classes.ptz, classes.plz)}>
                 <ListItemAvatar>
-                  <Avatar src='https://material-ui.com/static/images/avatar/3.jpg' className={classes.avatar} />
+                  <>
+                    <Tooltip title='프로필 사진 변경' placement='right'>
+                      <input
+                        type='file'
+                        className={classes.file}
+                        onChange={this.imageUpload}
+                      />
+                    </Tooltip>
+                    <Avatar src={user.profileImageUrl} className={classes.avatar} />
+                  </>
                 </ListItemAvatar>
                 <ListItemText
                   primary={

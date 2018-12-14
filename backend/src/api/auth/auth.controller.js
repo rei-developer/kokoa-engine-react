@@ -85,6 +85,15 @@ exports.getUser = async ctx => {
   ctx.body = { user, status: 'ok' }
 }
 
+exports.updateUserbyProfileImage = async ctx => {
+  const user = await User.getUser(ctx.get('x-access-token'))
+  if (!user) return
+  const { url } = ctx.request.body
+  if (url === '') return
+  await updateUser({ profileImageUrl: url }, user.id)
+  ctx.body = { status: 'ok' }
+}
+
 exports.updateUser = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return

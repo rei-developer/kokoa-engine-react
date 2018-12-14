@@ -266,7 +266,7 @@ class Header extends React.Component {
                         </Badge>
                       </IconButton>
                       <Avatar
-                        src='https://material-ui.com/static/images/avatar/1.jpg'
+                        src={user.profileImageUrl}
                         aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                         aria-haspopup='true'
                         onClick={this.handleProfileMenuOpen}

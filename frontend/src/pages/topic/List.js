@@ -296,11 +296,11 @@ class List extends React.Component {
             key={i.id}
             selected={false}
             onClick={e => this.handleClick(e, i.id)}
-            className={notice && classes.row}
+            className={notice ? classes.row : null}
             hover
           >
             <TableCell className={classes.numeric}>{notice ? (<FontAwesomeIcon icon='flag' />) : i.id}</TableCell>
-            <TableCell className={notice && classes.bold} component='th' scope='row'>
+            <TableCell className={notice ? classes.bold : null} component='th' scope='row'>
               {i.isBest > 0 && (
                 <img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
               )}

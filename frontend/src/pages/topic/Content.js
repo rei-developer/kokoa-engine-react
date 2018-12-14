@@ -134,7 +134,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, category, author, title, content, created, isBest, isNotice, hits, likes, hates, admin } = this.state
+    const { loading, category, author, title, content, created, isBest, isNotice, hits, likes, hates, profile, admin } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -160,7 +160,7 @@ class Content extends React.Component {
             <Card className={classes.card}>
               <ListItem className={classes.item}>
                 <ListItemAvatar>
-                  <Avatar src='https://material-ui.com/static/images/avatar/3.jpg'
+                  <Avatar src={profile}
                     className={classes.avatar}
                   />
                 </ListItemAvatar>
