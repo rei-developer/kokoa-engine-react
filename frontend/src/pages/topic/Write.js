@@ -170,7 +170,7 @@ class Write extends React.Component {
     const data = await response.data
     if (data.success) {
       const name = files[index].name
-      // console.log(`${index}번째 이미지 (${name}) 업로드 성공!`)
+      toast.success(`${index}번째 이미지 (${name}) 업로드 성공!`)
       this.setState({
         images: [
           ...this.state.images,

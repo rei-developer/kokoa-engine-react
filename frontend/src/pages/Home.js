@@ -15,6 +15,8 @@ import {
   Avatar
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
+import StarIcon from '../images/Star.svg'
+import BurnIcon from '../images/Burn.svg'
 
 const theme = createMuiTheme({
   typography: {
@@ -32,12 +34,30 @@ const theme = createMuiTheme({
 })
 
 const styles = theme => ({
+  pl: {
+    paddingLeft: theme.spacing.unit
+  },
+  ptz: {
+    paddingTop: 0
+  },
+  plz: {
+    paddingLeft: 0
+  },
+  pz: {
+    padding: 0
+  },
   leftIcon: {
     marginRight: theme.spacing.unit
   },
   rightIcon: {
     marginLeft: theme.spacing.unit
-  }
+  },
+  star: {
+    width: 18,
+    height: 18,
+    marginRight: theme.spacing.unit / 2,
+    verticalAlign: 'middle'
+  },
 })
 
 class Home extends React.Component {
@@ -61,28 +81,31 @@ class Home extends React.Component {
     const extract = (
       topics.map(i => {
         return (
-          <>
+          <React.Fragment key={i.id}>
             <Divider />
             <ListItem
               component={Link} to={`/b/${i.boardDomain}/${i.id}`}
-              className={classes.item}
+              className={classes.pl}
               button
             >
               <ListItemAvatar>
-                <Avatar src='https://material-ui.com/static/images/avatar/3.jpg'
+                <Avatar src={i.imageUrl}
                   className={classes.avatar}
                 />
               </ListItemAvatar>
               <ListItemText
                 secondary={
                   <>
-                    <Typography component='span' className={classes.inline} color='textPrimary'>{i.title}</Typography>
+                    <Typography component='span' className={classes.inline} color='textPrimary'>
+                      {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
+                      {i.title}
+                    </Typography>
                     {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
                   </>
                 }
               />
             </ListItem>
-          </>
+          </React.Fragment>
         )
       })
     )
