@@ -8,7 +8,8 @@ import {
   InputLabel,
   FormControl,
   Button,
-  Card
+  Card,
+  Select
 } from '@material-ui/core'
 import { Editor } from '@tinymce/tinymce-react'
 import { MoonLoader } from 'react-spinners'
@@ -77,7 +78,9 @@ class Write extends React.Component {
       category: '',
       title: '',
       content: '',
-      isNotice: false
+      isNotice: false,
+      images: [],
+      selectedImageDeletehash: ''
     }
   }
 
@@ -94,8 +97,7 @@ class Write extends React.Component {
     })
   }
 
-  append = () => {
-    const text = '<p>test</p>'
+  append = (text) => {
     this.setState({
       content: this.state.content + text
     }, () => {
@@ -110,7 +112,8 @@ class Write extends React.Component {
       category,
       title,
       content,
-      isNotice
+      isNotice,
+      images
     } = this.state
     if (loading) return
     if (title === '' || content === '') return toast.error('빈 칸을 입력하세요.')
@@ -124,7 +127,8 @@ class Write extends React.Component {
         category,
         title,
         content,
-        isNotice
+        isNotice,
+        images
       }, {
         headers: { 'x-access-token': token }
       })
@@ -137,6 +141,109 @@ class Write extends React.Component {
     })
   }
 
+  imageUpload = async e => {
+    const { loading } = this.state
+    if (loading) return
+    const token = sessionStorage.token
+    if (!token) return toast.error('토큰을 새로 발급하세요.')
+    this.setState({ loading: true })
+    let files = []
+    for (const file of e.target.files)
+      files.push(file)
+    await this.imageUploadToImgur(files)
+  }
+
+  imageUploadToImgur = async (files, index = 0) => {
+    const { REACT_APP_CLIENT_ID } = process.env
+    const formData = new FormData()
+    formData.append('type', 'file')
+    formData.append('image', files[index])
+    const response = await axios.post('https://api.imgur.com/3/upload.json',
+      formData,
+      {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
+        }
+      }
+    )
+    const data = await response.data
+    if (data.success) {
+      const name = files[index].name
+      // console.log(`${index}번째 이미지 (${name}) 업로드 성공!`)
+      this.setState({
+        images: [
+          ...this.state.images,
+          {
+            name,
+            link: data.data.link,
+            deletehash: data.data.deletehash
+          }
+        ],
+        selectedImageDeletehash: data.data.deletehash
+      }, () => {
+        this.append(`<p><img src='${data.data.link}' data-deletehash='${data.data.deletehash}'></p><p></p>`)
+      })
+    } else {
+      toast.error(`${index}번째 이미지 업로드 실패...`)
+    }
+    if (index === files.length - 1) return this.setState({ loading: false })
+    await this.imageUploadToImgur(files, index + 1)
+  }
+
+  imageRemove = async deletehash => {
+    const { REACT_APP_CLIENT_ID } = process.env
+    this.setState({ loading: true })
+    const response = await axios.delete(`https://api.imgur.com/3/image/${deletehash}`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
+      }
+    })
+    const data = await response.data
+    this.setState({ loading: false })
+    if (!data.success) return toast.error('이미지 삭제 실패...')
+    console.log(this.state.images.filter((item, index) => index === 0)[0].deletehash)
+    const newDeletehash = this.state.images.length > 0 ? this.state.images.filter((item, index) => index === 0)[0].deletehash : ''
+    this.setState({
+      images: this.state.images.filter(i => i.deletehash !== deletehash),
+      selectedImageDeletehash: newDeletehash
+    })
+  }
+
+  imageRemoveAll = async () => {
+    const { REACT_APP_CLIENT_ID } = process.env
+    this.setState({ loading: true })
+    const promise = this.state.images.map((item) => {
+      return axios.delete(`https://api.imgur.com/3/image/${item.deletehash}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
+        }
+      })
+        .then(() => {
+          return item.deletehash
+        })
+    })
+    Promise.all(promise)
+      .then(data => {
+        data.map(deletehash => this.setState({ images: this.state.images.filter(i => i.deletehash !== deletehash) }))
+      })
+      .then(() => {
+        this.setState({ loading: false })
+      })
+  }
+
+  setselectedImageDeletehash = e => {
+    this.setState({ selectedImageDeletehash: e.target.value })
+  }
+
+  selectedImageRemove = async () => {
+    const { selectedImageDeletehash } = this.state
+    if (selectedImageDeletehash === '') return toast.error('선택된 객체가 없습니다.')
+    await this.imageRemove(selectedImageDeletehash)
+  }
+
   setTitle = (e) => {
     this.setState({ title: e.target.value })
   }
@@ -147,7 +254,7 @@ class Write extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, title } = this.state
+    const { loading, title, images, selectedImageDeletehash } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -194,7 +301,43 @@ class Write extends React.Component {
             onChange={this.handleEditorChange}
           />
         </FormControl>
-        <button onClick={this.append}>테스트</button>
+        <input
+          type='file'
+          multiple='multiple'
+          id='fileBrowser'
+          label='이곳에 이미지를 올려보세요!'
+          onChange={this.imageUpload}
+        />
+        {images.length > 0 && (
+          <>
+            <Select
+              multiple
+              native
+              value={selectedImageDeletehash}
+              onChange={this.setselectedImageDeletehash}
+            >
+              {images.map(i => {
+                return (
+                  <option key={i.deletehash} value={i.deletehash}>{i.name}</option>
+                )
+              })}
+            </Select>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={this.selectedImageRemove}
+            >
+              선택 이미지 삭제
+            </Button>
+          </>
+        )}
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={this.imageRemoveAll}
+        >
+          이미지 전부 삭제
+        </Button>
         <FormControl fullWidth>
           <Button
             variant='contained'

@@ -28,6 +28,16 @@ module.exports.createTopicCounts = async (topicId) => {
   )
 }
 
+module.exports.createTopicImages = async (topicId, items) => {
+  await pool.query(
+    `INSERT INTO TopicImages (topicId, name, imageUrl, deletehash)
+    VALUES ${items.map(() => `(?, ?, ?, ?)`).join(', ')}`,
+    items
+      .map(item => [topicId, item.name, item.link, item.deletehash])
+      .reduce((acc, current) => [...acc, ...current], [])
+  )
+}
+
 module.exports.createTopicVotes = async (userId, topicId, ip) => {
   await pool.query(
     `INSERT INTO TopicVotes (userId, topicId, ip) VALUES (?, ?, ?)`,

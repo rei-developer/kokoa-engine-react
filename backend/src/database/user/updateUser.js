@@ -2,7 +2,6 @@ import pool from '..'
 import _ from 'lodash'
 
 module.exports = async (columns, userId) => {
-  console.log(columns)
   let keys = []
   let values = []
   _.forIn(columns, (value, key) => {

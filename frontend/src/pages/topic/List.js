@@ -23,6 +23,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import { MoonLoader } from 'react-spinners'
+import ImageIcon from '../../images/Image.svg'
 import StarIcon from '../../images/Star.svg'
 import BurnIcon from '../../images/Burn.svg'
 import AdminIcon from '../../images/Admin.png'
@@ -301,9 +302,8 @@ class List extends React.Component {
           >
             <TableCell className={classes.numeric}>{notice ? (<FontAwesomeIcon icon='flag' />) : i.id}</TableCell>
             <TableCell className={notice ? classes.bold : null} component='th' scope='row'>
-              {i.isBest > 0 && (
-                <img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
-              )}
+              {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
+              {i.isImage > 0 && (<img src={ImageIcon} className={classes.star} />)}
               {i.title}
             </TableCell>
             <TableCell className={classes.author}>

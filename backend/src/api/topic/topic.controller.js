@@ -2,6 +2,7 @@ import moment from 'moment'
 import User from '../../lib/user'
 import createTopic, {
   createTopicCounts,
+  createTopicImages,
   createTopicVotes
 } from '../../database/topic/createTopic'
 import getBoard from '../../database/board/getBoard'
@@ -74,7 +75,8 @@ exports.createTopic = async ctx => {
     category,
     title,
     content,
-    isNotice
+    isNotice,
+    images
   } = ctx.request.body
   if (title === '' || content === '') return
   const isAdminOnly = await getBoard.isAdminOnly(domain)
@@ -86,7 +88,7 @@ exports.createTopic = async ctx => {
   }
   const ip = ctx.ip
   const header = ctx.header['user-agent']
-  const isImage = false
+  const isImage = images.length > 0 ? true : false
   const topicId = await createTopic({
     userId: user.id,
     boardDomain: domain,
@@ -100,6 +102,7 @@ exports.createTopic = async ctx => {
     isNotice
   })
   await createTopicCounts(topicId)
+  if (isImage) await createTopicImages(topicId, images)
   await User.setUpExpAndPoint(user, 10, 10)
   ctx.body = { topicId, status: 'ok' }
 }

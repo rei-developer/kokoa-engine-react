@@ -125,15 +125,16 @@ class Profile extends React.Component {
     formData.append('type', 'file')
     formData.append('image', file)
     toast('이미지 업로드 시도중...')
-    const response = await fetch('https://api.imgur.com/3/upload.json', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
-      },
-      body: formData
-    })
-    const data = await response.json()
+    const response = await axios.post('https://api.imgur.com/3/upload.json',
+      formData,
+      {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
+        }
+      }
+    )
+    const data = await response.data
     if (data.success) {
       this.editByProfileImage(token, data.data.link)
     } else {
@@ -202,11 +203,13 @@ class Profile extends React.Component {
                   primary={
                     <>
                       <img src={user.isAdmin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
-                      <input
-                        placeholder={user.nickname}
-                        className={classes.naked}
-                        onChange={this.setNickname}
-                      />
+                      <Tooltip title='닉네임 변경' placement='right'>
+                        <input
+                          placeholder={user.nickname}
+                          className={classes.naked}
+                          onChange={this.setNickname}
+                        />
+                      </Tooltip>
                     </>
                   }
                   secondary={user.email}
