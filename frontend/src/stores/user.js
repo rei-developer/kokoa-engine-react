@@ -34,7 +34,7 @@ export default class UserStore {
   }
 
   getData = async () => {
-    const token = sessionStorage.token
+    const token = localStorage.token
     if (!token) return
     const response = await axios.get(
       '/api/auth/check',
