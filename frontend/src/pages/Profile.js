@@ -109,15 +109,21 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none')
 })
 
+@inject('option')
 @inject('user')
 @observer
 class Profile extends React.Component {
-  state = {
-    nickname: ''
+  constructor(props) {
+    super(props)
+    this.state = {
+      nickname: ''
+    }
+    const { option } = this.props
+    option.setLogo()
   }
 
   imageUpload = async e => {
-    const token = sessionStorage.token
+    const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const { REACT_APP_CLIENT_ID } = process.env
     const file = e.target.files[0]
@@ -158,7 +164,7 @@ class Profile extends React.Component {
   edit = async () => {
     const { nickname } = this.state
     if (nickname === '') return toast.error('빈 칸을 입력하세요.')
-    const token = sessionStorage.token
+    const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.patch(
       '/api/auth/edit',

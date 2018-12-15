@@ -193,6 +193,7 @@ const init = {
   boardName: ''
 }
 
+@inject('option')
 @inject('user')
 @observer
 class List extends React.Component {
@@ -202,16 +203,20 @@ class List extends React.Component {
   }
 
   componentWillMount() {
+    const { option } = this.props
     const domain = this.props.match.params.domain
+    option.setLogo(domain === 'girl' ? 'GirlLogo' : 'Logo')
     this.getBoardName(domain)
     this.getCategories(domain)
     this.getTopics(domain)
   }
 
   componentWillReceiveProps(nextProps) {
+    const { option } = this.props
     const domain = this.props.match.params.domain
     const nextDomain = nextProps.match.params.domain
     if (domain === nextDomain) return
+    option.setLogo(nextDomain === 'girl' ? 'GirlLogo' : 'Logo')
     this.reset()
     this.getBoardName(nextDomain)
     this.getCategories(nextDomain)

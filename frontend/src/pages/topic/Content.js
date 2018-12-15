@@ -143,7 +143,7 @@ class Content extends React.Component {
   handleVotes = async (flag) => {
     const { id } = this.state
     if (id < 1) return
-    const token = sessionStorage.token
+    const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.post(
       '/api/topic/vote/topic',

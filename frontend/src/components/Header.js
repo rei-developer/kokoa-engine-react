@@ -6,7 +6,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  InputBase,
   Badge,
   Button,
   Fab,
@@ -21,6 +20,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
+import GirlLogo from '../GirlLogo.png'
 
 const theme = createMuiTheme({
   typography: {
@@ -76,10 +76,8 @@ const styles = theme => ({
     cursor: 'pointer'
   },
   title: {
-    display: 'none',
     [theme.breakpoints.down('sm')]: {
-      width: 100,
-      height: 20
+      display: 'none'
     },
     marginTop: 4,
     marginRight: 20,
@@ -153,6 +151,7 @@ const styles = theme => ({
   }
 })
 
+@inject('option')
 @inject('user')
 @observer
 class Header extends React.Component {
@@ -167,7 +166,7 @@ class Header extends React.Component {
 
   handleSignOut = () => {
     const { user } = this.props
-    sessionStorage.removeItem('token')
+    localStorage.removeItem('token')
     user.signOut()
     this.handleMenuClose()
     this.handleMobileMenuClose()
@@ -188,7 +187,7 @@ class Header extends React.Component {
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state
-    const { classes, user } = this.props
+    const { classes, option, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -245,13 +244,14 @@ class Header extends React.Component {
                   </IconButton>
                 </div>
                 <NavLink to='/'>
-                test
-                  <img src={Logo} alt='Logo' className={classes.title} />
+                  <img src={option.logo === 'Logo' ? Logo : GirlLogo} alt='Logo' className={classes.title} />
                 </NavLink>
                 <div className={classes.sectionDesktop}>
-                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><FontAwesomeIcon icon='star' className={classes.leftIcon} />테스트1</Button>
-                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><FontAwesomeIcon icon='comment-dots' className={classes.leftIcon} />테스트2</Button>
+                  <Button component={NavLink} to='/b/all' color='inherit' className={classes.button}><FontAwesomeIcon icon='comment-dots' className={classes.leftIcon} />전체글</Button>
+                  <Button component={NavLink} to='/b/best' color='inherit' className={classes.button}><FontAwesomeIcon icon='star' className={classes.leftIcon} />인기글</Button>
                   <Button component={NavLink} to='/b/talk' color='inherit' className={classes.button}>자유</Button>
+                  <Button component={NavLink} to='/b/girl' color='inherit' className={classes.button}>연예</Button>
+                  <Button component={NavLink} to='/b/anime' color='inherit' className={classes.button}>서브컬쳐</Button>
                 </div>
                 <div className={classes.grow} />
                 <IconButton color='inherit' className={classes.IconButton}>
@@ -280,15 +280,15 @@ class Header extends React.Component {
                     </div>
                   </>
                 ) : (
-                  <Button
-                    component={NavLink}
-                    to='/signin'
-                    color='inherit'
-                  >
-                    <FontAwesomeIcon icon='sign-in-alt' className={classes.leftIcon} />
-                    로그인
+                    <Button
+                      component={NavLink}
+                      to='/signin'
+                      color='inherit'
+                    >
+                      <FontAwesomeIcon icon='sign-in-alt' className={classes.leftIcon} />
+                      로그인
                   </Button>
-                )}
+                  )}
               </Toolbar>
             </Grid>
             <Hidden mdDown>

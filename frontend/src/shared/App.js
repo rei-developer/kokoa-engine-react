@@ -77,14 +77,7 @@ class App extends Component {
             <Grid item xs={2} />
           </Hidden>
           <Grid item xs>
-            <Switch>
-              <Route path='/read/:id' component={TopicContent} />
-              <Route exact path='/' component={Home} />
-            </Switch>
-            <Switch>
-              <Route path='/about/:name' component={About} />
-              <Route path='/about' component={About} />
-            </Switch>
+            <Route exact path='/' component={Home} />
             <Switch>
               <Route path='/b/:domain/write' component={TopicWrite} />
               <Route path='/b/:domain' component={TopicList} />

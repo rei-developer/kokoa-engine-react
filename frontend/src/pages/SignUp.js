@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
@@ -12,14 +13,14 @@ import {
   Hidden
 } from '@material-ui/core'
 import { observer, inject } from 'mobx-react'
+import Logo from '../Logo.png'
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   fullWidth: {
     width: '100%'
+  },
+  container: {
+    marginTop: '10vh'
   },
   mr: {
     marginRight: theme.spacing.unit
@@ -32,6 +33,14 @@ const styles = theme => ({
   },
   pr: {
     paddingRight: theme.spacing.unit / 2
+  },
+  logo: {
+    display: 'block',
+    maxWidth: 250,
+    height: 'auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: theme.spacing.unit * 3
   },
   card: {
     margin: theme.spacing.unit,
@@ -68,15 +77,21 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none')
 })
 
+@inject('option')
 @inject('user')
 @observer
 class SignUp extends React.Component {
-  state = {
-    username: '',
-    nickname: '',
-    email: '',
-    authCode: '',
-    password: ''
+  constructor(props) {
+    super(props)
+    this.state = {
+      username: '',
+      nickname: '',
+      email: '',
+      authCode: '',
+      password: ''
+    }
+    const { option } = this.props
+    option.setLogo()
   }
 
   accept = async () => {
@@ -97,7 +112,7 @@ class SignUp extends React.Component {
   }
 
   signOut = () => {
-    sessionStorage.removeItem('token')
+    localStorage.removeItem('token')
   }
 
   signUp = async () => {
@@ -138,16 +153,19 @@ class SignUp extends React.Component {
     const { username, nickname, email, authCode, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
-        <Grid container>
+        <Grid container className={classes.container}>
           <Hidden mdDown>
             <Grid item xs={4} />
           </Hidden>
           <Grid item xs>
+            <Link to='/'>
+              <img src={Logo} alt='Logo' className={classes.logo} />
+            </Link>
             <Card className={classes.card}>
               <FormControl className={classes.mb} fullWidth>
                 <InputBase
                   value={username}
-                  placeholder='username'
+                  placeholder='아이디'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -158,7 +176,7 @@ class SignUp extends React.Component {
               <FormControl className={classes.mb} fullWidth>
                 <InputBase
                   value={nickname}
-                  placeholder='nickname'
+                  placeholder='닉네임'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -170,7 +188,7 @@ class SignUp extends React.Component {
                 <InputBase
                   type='password'
                   value={password}
-                  placeholder='password'
+                  placeholder='비밀번호'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -183,7 +201,7 @@ class SignUp extends React.Component {
                   <InputBase
                     type='email'
                     value={email}
-                    placeholder='email'
+                    placeholder='이메일'
                     classes={{
                       root: classes.bootstrapRoot,
                       input: classes.bootstrapInput
@@ -206,7 +224,7 @@ class SignUp extends React.Component {
               <FormControl className={classes.mb} fullWidth>
                 <InputBase
                   value={authCode}
-                  placeholder='auth code'
+                  placeholder='인증 코드'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -220,7 +238,7 @@ class SignUp extends React.Component {
                   color='primary'
                   onClick={this.signUp}
                 >
-                  회원가입
+                  계정 생성
                 </Button>
               </FormControl>
             </Card>

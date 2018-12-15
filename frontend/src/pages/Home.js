@@ -16,6 +16,7 @@ import {
   Avatar
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
+import { observer, inject } from 'mobx-react'
 import StarIcon from '../images/Star.svg'
 import BurnIcon from '../images/Burn.svg'
 
@@ -53,6 +54,11 @@ const styles = theme => ({
   rightIcon: {
     marginLeft: theme.spacing.unit
   },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 3
+  },
   category: {
     height: 19,
     lineHeight: 19
@@ -65,10 +71,17 @@ const styles = theme => ({
   },
 })
 
+@inject('option')
+@observer
 class Home extends React.Component {
-  state = {
-    loading: true,
-    topics: []
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+      topics: []
+    }
+    const { option } = this.props
+    option.setLogo()
   }
 
   componentWillMount = async () => {
@@ -94,27 +107,23 @@ class Home extends React.Component {
               button
             >
               <ListItemAvatar>
-                <Avatar src={i.imageUrl}
-                  className={classes.avatar}
-                />
+                <Avatar src={i.imageUrl} className={classes.avatar} />
               </ListItemAvatar>
               <ListItemText
-                secondary={
-                  <>
-                    <Typography component='span' className={classes.inline} color='textPrimary'>
-                      {i.category !== '' && (
-                        <Chip
-                          label={i.category}
-                          color='primary'
-                          className={cn(classes.category, classes.leftIcon)}
-                        />
-                      )}
-                      {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
-                      {i.title}
-                    </Typography>
-                    {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
-                  </>
+                primary={
+                  <Typography component='span' className={classes.inline} color='textPrimary'>
+                    {i.category !== '' && (
+                      <Chip
+                        label={i.category}
+                        color='primary'
+                        className={cn(classes.category, classes.leftIcon)}
+                      />
+                    )}
+                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
+                    {i.title}
+                  </Typography>
                 }
+                secondary={moment(i.created).fromNow()}
               />
             </ListItem>
           </React.Fragment>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
@@ -12,14 +13,14 @@ import {
   Hidden
 } from '@material-ui/core'
 import { observer, inject } from 'mobx-react'
+import Logo from '../Logo.png'
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   fullWidth: {
     width: '100%'
+  },
+  container: {
+    marginTop: '20vh'
   },
   mr: {
     marginRight: theme.spacing.unit
@@ -32,6 +33,14 @@ const styles = theme => ({
   },
   pr: {
     paddingRight: theme.spacing.unit / 2
+  },
+  logo: {
+    display: 'block',
+    maxWidth: 250,
+    height: 'auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: theme.spacing.unit * 3
   },
   card: {
     margin: theme.spacing.unit,
@@ -68,12 +77,18 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none')
 })
 
+@inject('option')
 @inject('user')
 @observer
 class SignIn extends React.Component {
-  state = {
-    username: '',
-    password: ''
+  constructor(props) {
+    super(props)
+    this.state = {
+      username: '',
+      password: ''
+    }
+    const { option } = this.props
+    option.setLogo()
   }
 
   signIn = async () => {
@@ -86,7 +101,7 @@ class SignIn extends React.Component {
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('로그인 성공')
-    sessionStorage.token = data.token
+    localStorage.token = data.token
     const { user } = this.props
     user.signIn()
     this.props.history.push('/')
@@ -109,16 +124,19 @@ class SignIn extends React.Component {
     const { username, password } = this.state
     return (
       <MuiThemeProvider theme={theme}>
-        <Grid container>
+        <Grid container className={classes.container}>
           <Hidden mdDown>
             <Grid item xs={4} />
           </Hidden>
           <Grid item xs>
+            <Link to='/'>
+              <img src={Logo} alt='Logo' className={classes.logo} />
+            </Link>
             <Card className={classes.card}>
               <FormControl className={classes.mb} fullWidth>
                 <InputBase
                   value={username}
-                  placeholder='username'
+                  placeholder='아이디'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -130,7 +148,7 @@ class SignIn extends React.Component {
                 <InputBase
                   type='password'
                   value={password}
-                  placeholder='password'
+                  placeholder='비밀번호'
                   classes={{
                     root: classes.bootstrapRoot,
                     input: classes.bootstrapInput
@@ -156,7 +174,7 @@ class SignIn extends React.Component {
                     className={classes.fullWidth}
                     onClick={this.signUp}
                   >
-                    회원가입
+                    계정 생성
                   </Button>
                 </Grid>
               </Grid>

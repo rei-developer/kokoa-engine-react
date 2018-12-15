@@ -120,7 +120,7 @@ class Write extends React.Component {
     this.setState({
       loading: true
     }, async () => {
-      const token = sessionStorage.token
+      const token = localStorage.token
       if (!token) return toast.error('토큰을 새로 발급하세요.')
       const response = await axios.post(`/api/topic/write`, {
         domain,
@@ -130,8 +130,8 @@ class Write extends React.Component {
         isNotice,
         images
       }, {
-        headers: { 'x-access-token': token }
-      })
+          headers: { 'x-access-token': token }
+        })
       const data = await response.data
       this.setState({
         loading: false
@@ -144,7 +144,7 @@ class Write extends React.Component {
   imageUpload = async e => {
     const { loading } = this.state
     if (loading) return
-    const token = sessionStorage.token
+    const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     this.setState({ loading: true })
     let files = []
