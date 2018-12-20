@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken'
-import getUser from '../database/user/getUser'
-import updateUser from '../database/user/updateUser'
+const jwt = require('jsonwebtoken')
+const getUser = require('../database/user/getUser')
+const updateUser = require('../database/user/updateUser')
 
 const getUpperByExp = (user, exp) => {
   const sumExp = user.exp + exp

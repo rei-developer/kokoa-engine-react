@@ -27,8 +27,7 @@ const theme = createMuiTheme({
   shadows: Array(25).fill('none'),
   palette: {
     primary: {
-      light: '#757ce8',
-      main: '#3f50b5',
+      main: '#3366CF',
       dark: '#002884',
       contrastText: '#fff'
     }
@@ -62,6 +61,15 @@ const styles = theme => ({
   category: {
     height: 19,
     lineHeight: 19
+  },
+  card: {
+    border: '1px solid #ecedef',
+    borderRadius: 0
+  },
+  listItem: {
+    '&:hover': {
+      background: '#EBF1FC'
+    }
   },
   star: {
     width: 18,
@@ -103,7 +111,7 @@ class Home extends React.Component {
             {index > 0 && (<Divider />)}
             <ListItem
               component={Link} to={`/b/${i.boardDomain}/${i.id}`}
-              className={classes.pl}
+              className={cn(classes.pl, classes.listItem)}
               button
             >
               <ListItemAvatar>
@@ -132,7 +140,7 @@ class Home extends React.Component {
     )
     return (
       <MuiThemeProvider theme={theme}>
-        <Card>
+        <Card className={classes.card}>
           {extract}
         </Card>
       </MuiThemeProvider>

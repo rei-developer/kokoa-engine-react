@@ -3,9 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 import { Grid, Hidden } from '@material-ui/core'
 import {
   Home,
-  About,
-  TopicContent,
-  TopicList,
+  TopicLists,
   TopicWrite,
   SignIn,
   SignUp,
@@ -65,7 +63,7 @@ library.add(faImage)
 class App extends Component {
   render() {
     const style = {
-      background: '#FAFAFA',
+      background: '#f9f9f9',
       minHeight: '100vh'
     }
     return (
@@ -80,9 +78,9 @@ class App extends Component {
             <Route exact path='/' component={Home} />
             <Switch>
               <Route path='/b/:domain/write' component={TopicWrite} />
-              <Route path='/b/:domain' component={TopicList} />
-              <Route path='/b/best' component={TopicList} />
-              <Route path='/b/all' component={TopicList} />
+              <Route path='/b/:domain' component={TopicLists} />
+              <Route path='/b/best' component={TopicLists} />
+              <Route path='/b/all' component={TopicLists} />
             </Switch>
             <Route path='/signin' component={SignIn} />
             <Route path='/signup' component={SignUp} />

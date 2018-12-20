@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
+import { PostLists } from 'pages'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
@@ -57,8 +58,8 @@ const styles = theme => ({
     }
   },
   card: {
-    borderRadius: 0,
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+    border: '1px solid #ecedef',
+    borderRadius: 0
   },
   item: {
     paddingLeft: '10px'
@@ -146,7 +147,7 @@ class Content extends React.Component {
     const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
     const response = await axios.post(
-      '/api/topic/vote/topic',
+      '/api/topic/vote',
       { id, likes: flag },
       { headers: { 'x-access-token': token } }
     )
@@ -162,7 +163,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, category, author, title, content, created, isBest, isNotice, hits, likes, hates, profile, admin } = this.state
+    const { loading, id, category, author, title, content, created, isBest, isNotice, hits, likes, hates, profile, admin } = this.state
     const override = {
       position: 'absolute',
       width: '78px',
@@ -185,7 +186,7 @@ class Content extends React.Component {
         </div>
         {!loading && (
           <>
-            <Card className={classes.card}>
+            <Card className={cn(classes.card, classes.mb)}>
               <ListItem className={classes.item}>
                 <ListItemAvatar>
                   <Avatar src={profile}
@@ -244,7 +245,9 @@ class Content extends React.Component {
                 />
               </Grid>
             </Card>
-            <div className={classes.mb} />
+            <Card className={cn(classes.card, classes.mb)}>
+              <PostLists id={id} />
+            </Card>
           </>
         )}
       </MuiThemeProvider>

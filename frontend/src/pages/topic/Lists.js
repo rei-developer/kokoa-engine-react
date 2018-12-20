@@ -18,7 +18,14 @@ import {
   IconButton,
   Card,
   Button,
-  Chip
+  Chip,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Avatar,
+  Typography,
+  Divider
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
@@ -108,7 +115,14 @@ const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   },
-  shadows: Array(25).fill('none')
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
 })
 
 const styles = theme => ({
@@ -121,8 +135,8 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit * 2
   },
   card: {
-    borderRadius: '.25rem',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+    border: '1px solid #ecedef',
+    borderRadius: 0
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -177,6 +191,16 @@ const styles = theme => ({
   },
   pointer: {
     cursor: 'pointer'
+  },
+  sectionDesktop: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
+  },
+  sectionMobile: {
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
   }
 })
 
@@ -196,7 +220,7 @@ const init = {
 @inject('option')
 @inject('user')
 @observer
-class List extends React.Component {
+class Lists extends React.Component {
   constructor(props) {
     super(props)
     this.state = init
@@ -299,7 +323,7 @@ class List extends React.Component {
     const { classes, user } = this.props
     const { loading, notices, topics, rowsPerPage, count, page, boardName } = this.state
     const domain = this.props.match.params.domain
-    const extract = (item, notice = false) => (
+    const desktopExtract = (item, notice = false) => (
       item.map(i => {
         return (
           <TableRow
@@ -330,6 +354,49 @@ class List extends React.Component {
             <TableCell className={classes.numeric}>{i.hits}</TableCell>
             <TableCell className={classes.numeric}>{i.likes}</TableCell>
           </TableRow>
+        )
+      })
+    )
+    const mobileExtract = (item, notice = false) => (
+      item.map((i, index) => {
+        return (
+          <React.Fragment key={i.id}>
+            {index > 0 && (<Divider />)}
+            <ListItem
+              onClick={e => this.handleClick(e, i.id)}
+              className={cn(classes.pl, classes.listItem)}
+              button
+            >
+              <ListItemAvatar>
+                <Avatar src={i.imageUrl} className={classes.avatar} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <Typography component='span' className={classes.inline} color='textPrimary'>
+                    {i.category !== '' && (
+                      <Chip
+                        label={i.category}
+                        color='primary'
+                        className={cn(classes.category, classes.leftIcon)}
+                      />
+                    )}
+                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
+                    {i.title}
+                  </Typography>
+                }
+                secondary={
+                  <>
+                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                    <strong>{i.author}</strong>
+                    {' | '}
+                    {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
+                    {' | '}
+                    {i.hits}
+                  </>
+                }
+              />
+            </ListItem>
+          </React.Fragment>
         )
       })
     )
@@ -375,7 +442,7 @@ class List extends React.Component {
           </div>
         )}
         <Card className={cn(classes.card, classes.mb)}>
-          <div className={classes.tableWrapper}>
+          <div className={cn(classes.sectionDesktop, classes.tableWrapper)}>
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
@@ -388,8 +455,8 @@ class List extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody className={classes.pointer}>
-                {extract(notices, true)}
-                {extract(topics)}
+                {desktopExtract(notices, true)}
+                {desktopExtract(topics)}
               </TableBody>
               <TableFooter>
                 <TableRow>
@@ -406,6 +473,10 @@ class List extends React.Component {
               </TableFooter>
             </Table>
           </div>
+          <div className={classes.sectionMobile}>
+            {mobileExtract(notices, true)}
+            {mobileExtract(topics)}
+          </div>
         </Card>
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
@@ -420,8 +491,8 @@ class List extends React.Component {
   }
 }
 
-List.propTypes = {
+Lists.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(List)
+export default withStyles(styles)(Lists)

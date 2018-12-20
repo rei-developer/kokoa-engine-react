@@ -1,5 +1,5 @@
-import crypto from 'crypto'
-import dotenv from 'dotenv'
+const crypto = require('crypto')
+const dotenv = require('dotenv')
 
 dotenv.config()
 

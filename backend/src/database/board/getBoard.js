@@ -1,4 +1,4 @@
-import pool from '..'
+const pool = require('..')
 
 module.exports.name = async (domain) => {
   const result = await pool.query(

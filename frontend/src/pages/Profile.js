@@ -23,6 +23,20 @@ import { observer, inject } from 'mobx-react'
 import AdminIcon from '../images/Admin.png'
 import UserIcon from '../images/User.png'
 
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
+})
+
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -100,13 +114,6 @@ const styles = theme => ({
     opacity: 0,
     zIndex: 5
   }
-})
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true
-  },
-  shadows: Array(25).fill('none')
 })
 
 @inject('option')

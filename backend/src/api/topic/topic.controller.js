@@ -1,26 +1,23 @@
-import moment from 'moment'
-import User from '../../lib/user'
-import createTopic, {
-  createTopicCounts,
-  createTopicImages,
-  createTopicVotes
-} from '../../database/topic/createTopic'
-import getBoard from '../../database/board/getBoard'
-import getTopic from '../../database/topic/getTopic'
-import getUser from '../../database/user/getUser'
-import {
-  updateTopicByIsBest,
-  updateTopicByIsAllowed,
-  updateTopicCountsByHits,
-  updateTopicCountsByLikes,
-  updateTopicCountsByHates
-} from '../../database/topic/updateTopic'
+const moment = require('moment')
+const User = require('../../lib/user')
+const createTopic = require('../../database/topic/createTopic')
+const createPost = require('../../database/topic/createPost')
+const getBoard = require('../../database/board/getBoard')
+const getTopic = require('../../database/topic/getTopic')
+const getPost = require('../../database/topic/getPost')
+const getUser = require('../../database/user/getUser')
+const updateTopic = require('../../database/topic/updateTopic')
 
 const BURN_LIMIT = 3
 const BEST_LIMIT = 7
 const DELETE_LIMIT = 10
 
-exports.getList = async ctx => {
+exports.getListToWidget = async ctx => {
+  const topics = await getTopic.topicsToWidget(20)
+  ctx.body = topics
+}
+
+exports.getTopics = async ctx => {
   const { ...body } = ctx.request.body
   const domain = body.domain || 'all'
   const category = body.category || ''
@@ -39,9 +36,16 @@ exports.getList = async ctx => {
   ctx.body = { count, notices, topics }
 }
 
-exports.getListToWidget = async ctx => {
-  const topics = await getTopic.topicsToWidget(20)
-  ctx.body = topics
+exports.getPosts = async ctx => {
+  const { ...body } = ctx.request.body
+  const topicId = body.id || 0
+  const page = body.page || 0
+  const limit = body.limit || 20
+  if (topicId < 0 || page < 0) return
+  if (limit < 10 || limit > 50) return
+  const count = await getPost.count(topicId)
+  const posts = await getPost.posts(topicId, page, limit)
+  ctx.body = { count, posts }
 }
 
 exports.getBoardName = async ctx => {
@@ -101,10 +105,37 @@ exports.createTopic = async ctx => {
     isImage,
     isNotice
   })
-  await createTopicCounts(topicId)
-  if (isImage) await createTopicImages(topicId, images)
+  await createTopic.createTopicCounts(topicId)
+  if (isImage) await createTopic.createTopicImages(topicId, images)
   await User.setUpExpAndPoint(user, 10, 10)
   ctx.body = { topicId, status: 'ok' }
+}
+
+exports.createPost = async ctx => {
+  const user = await User.getUser(ctx.get('x-access-token'))
+  if (!user) return
+  let {
+    topicId,
+    postRootId,
+    postParentId,
+    content
+  } = ctx.request.body
+  if (content === '') return
+  const ip = ctx.ip
+  const header = ctx.header['user-agent']
+  const postId = await createPost({
+    userId: user.id,
+    topicId,
+    postRootId,
+    postParentId,
+    author: user.nickname,
+    content,
+    ip,
+    header
+  })
+  await createPost.createPostCounts(postId)
+  await User.setUpExpAndPoint(user, 5, 5)
+  ctx.body = { postId, status: 'ok' }
 }
 
 exports.createTopicVotes = async ctx => {
@@ -117,6 +148,7 @@ exports.createTopicVotes = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
+  const targetUser = await getUser(topic.userId)
   const ip = ctx.ip
   if (targetUser === user.id || topic.ip === ip) return ctx.body = { message: '본인에게 투표할 수 없습니다.', status: 'fail' }
   const duration = moment.duration(moment().diff(topic.created))
@@ -127,40 +159,39 @@ exports.createTopicVotes = async ctx => {
     const created = moment(date).format('YYYY/MM/DD HH:mm:ss')
     return ctx.body = { message: `이미 투표한 게시물입니다. (${created})`, status: 'fail' }
   }
-  const targetUser = await getUser(topic.userId)
   let move = ''
   if (likes) {
     if (topic.isBest === 0 && topic.likes - topic.hates >= BURN_LIMIT) {
       move = 'BURN'
-      await updateTopicByIsBest(id, 1)
+      await updateTopic.updateTopicByIsBest(id, 1)
       await User.setUpExpAndPoint(targetUser, 20, 20)
     } else if (topic.isBest === 1 && topic.likes - topic.hates >= BEST_LIMIT) {
       move = 'BEST'
-      await updateTopicByIsBest(id, 2)
+      await updateTopic.updateTopicByIsBest(id, 2)
       await User.setUpExpAndPoint(targetUser, 100, 100)
     } else {
       await User.setUpExpAndPoint(targetUser, 5, 5)
     }
-    await updateTopicCountsByLikes(id)
+    await updateTopic.updateTopicCountsByLikes(id)
   } else {
     if (topic.isBest === 2 && topic.hates - topic.likes >= BEST_LIMIT) {
       move = 'BURN'
-      await updateTopicByIsBest(id, 1)
+      await updateTopic.updateTopicByIsBest(id, 1)
       await User.setUpExpAndPoint(targetUser, -100, -100)
     } else if (topic.isBest === 1 && topic.hates - topic.likes >= BURN_LIMIT) {
       move = 'DEFAULT'
-      await updateTopicByIsBest(id)
+      await updateTopic.updateTopicByIsBest(id)
       await User.setUpExpAndPoint(targetUser, -20, -20)
     } else if (topic.hates - topic.likes >= DELETE_LIMIT) {
       move = 'DELETE'
-      await updateTopicByIsAllowed(id)
+      await updateTopic.updateTopicByIsAllowed(id)
       await User.setUpExpAndPoint(targetUser, -10, -10)
     } else {
       await User.setUpExpAndPoint(targetUser, -5, -5)
     }
-    await updateTopicCountsByHates(id)
+    await updateTopic.updateTopicCountsByHates(id)
   }
-  await createTopicVotes(user.id, id, ip)
+  await createTopic.createTopicVotes(user.id, id, ip)
   ctx.body = { move, status: 'ok' }
 }
 

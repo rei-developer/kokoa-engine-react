@@ -1,6 +1,6 @@
-import mysql from 'mysql'
-import util from 'util'
-import dotenv from 'dotenv'
+const mysql = require('mysql')
+const util = require('util')
+const dotenv = require('dotenv')
 
 dotenv.config()
 

@@ -1,6 +1,6 @@
-import Router from 'koa-router'
-import authCtrl from './auth.controller'
-import { isAuthenticated } from '../../lib/user'
+const Router = require('koa-router')
+const authCtrl = require('./auth.controller')
+const { isAuthenticated } = require('../../lib/user')
 
 const app = new Router()
 

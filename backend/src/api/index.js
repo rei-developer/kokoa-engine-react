@@ -1,6 +1,6 @@
-import Router from 'koa-router'
-import auth from './auth'
-import topic from './topic'
+const Router = require('koa-router')
+const auth = require('./auth')
+const topic = require('./topic')
 
 const app = new Router()
 

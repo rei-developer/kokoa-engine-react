@@ -1,7 +1,7 @@
-import util from 'util'
-import nodemailer from 'nodemailer'
-import smtpTransport from 'nodemailer-smtp-transport'
-import dotenv from 'dotenv'
+const util = require('util')
+const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport')
+const dotenv = require('dotenv')
 
 dotenv.config()
 

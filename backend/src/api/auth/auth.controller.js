@@ -1,11 +1,11 @@
-import jwt from 'jsonwebtoken'
-import bkfd2Password from 'pbkdf2-password'
-import User from '../../lib/user'
-import Crypto from '../../lib/crypto'
-import SendMail from '../../lib/email'
-import getUser from '../../database/user/getUser'
-import createUser from '../../database/user/createUser'
-import updateUser from '../../database/user/updateUser'
+const jwt = require('jsonwebtoken')
+const bkfd2Password = require('pbkdf2-password')
+const User = require('../../lib/user')
+const Crypto = require('../../lib/crypto')
+const SendMail = require('../../lib/email')
+const getUser = require('../../database/user/getUser')
+const createUser = require('../../database/user/createUser')
+const updateUser = require('../../database/user/updateUser')
 
 const hasher = bkfd2Password()
 

@@ -15,6 +15,20 @@ import {
 import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
+})
+
 const styles = theme => ({
   fullWidth: {
     width: '100%'
@@ -68,13 +82,6 @@ const styles = theme => ({
   bootstrapFormLabel: {
     fontSize: 18,
   }
-})
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true
-  },
-  shadows: Array(25).fill('none')
 })
 
 @inject('option')

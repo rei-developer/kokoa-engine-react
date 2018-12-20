@@ -1,10 +1,10 @@
-import Koa from 'koa'
-import Logger from 'koa-logger'
-import bodyParser from 'koa-bodyparser'
-import Router from 'koa-router'
-import helmet from 'koa-helmet'
-import dotenv from 'dotenv'
-import api from './api'
+const Koa = require('koa')
+const Logger = require('koa-logger')
+const bodyParser = require('koa-bodyparser')
+const Router = require('koa-router')
+const helmet = require('koa-helmet')
+const dotenv = require('dotenv')
+const api = require('./api')
 
 dotenv.config()
 

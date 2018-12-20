@@ -13,7 +13,13 @@ import {
   Menu,
   Grid,
   Hidden,
-  Avatar
+  Avatar,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Drawer
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
@@ -21,6 +27,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
+
+
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
 
 const theme = createMuiTheme({
   typography: {
@@ -31,11 +41,11 @@ const theme = createMuiTheme({
     primary: {
       main: '#fff',
       dark: '#fff',
-      contrastText: '#3f50b5'
+      contrastText: '#3366CF'
     },
     secondary: {
       light: '#757ce8',
-      main: '#3f50b5',
+      main: '#3366CF',
       dark: '#002884',
       contrastText: '#fff'
     }
@@ -60,7 +70,7 @@ const styles = theme => ({
     borderRadius: '0',
     '&:hover': {
       backgroundColor: 'transparent',
-      borderBottom: '2px solid ' + theme.palette.primary.main
+      borderBottom: '2px solid #3366CF'
     }
   },
   IconButton: {
@@ -148,7 +158,13 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none'
     }
-  }
+  },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: 'auto',
+  },
 })
 
 @inject('option')
@@ -158,6 +174,7 @@ class Header extends React.Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
+    left: false,
   }
 
   handleProfileMenuOpen = event => {
@@ -185,11 +202,54 @@ class Header extends React.Component {
     this.setState({ mobileMoreAnchorEl: null })
   }
 
+  toggleDrawer = (side, open) => () => {
+    this.setState({
+      [side]: open,
+    });
+  };
+
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state
     const { classes, option, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+
+    const sideList = (
+      <div className={classes.list}>
+        <List>
+          {[{
+            name: '전체글',
+            path: '/b/all',
+            icon: 'comment-dots'
+          }, {
+            name: '인기글',
+            path: '/b/best',
+            icon: 'star'
+          }, {
+            name: '자유',
+            path: '/b/talk'
+          }, {
+            name: '연예',
+            path: '/b/girl'
+          }, {
+            name: '서브컬쳐',
+            path: '/b/anime'
+          }].map(node => (
+            <>
+              <ListItem button key={node.name} component={NavLink} to={node.path}>
+                {node.icon && (
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={node.icon} />
+                  </ListItemIcon>
+                )}
+                <ListItemText primary={node.name} />
+              </ListItem>
+              <Divider />
+            </>
+          ))}
+        </List>
+      </div>
+    )
 
     const renderMenu = (
       <Menu
@@ -214,7 +274,7 @@ class Header extends React.Component {
       >
         <MenuItem>
           <IconButton color='inherit' className={classes.IconButton}>
-            <Badge badgeContent={11} color='secondary'>
+            <Badge badgeContent={0} color='secondary'>
               <FontAwesomeIcon icon='bell' />
             </Badge>
           </IconButton>
@@ -231,6 +291,16 @@ class Header extends React.Component {
 
     return (
       <MuiThemeProvider theme={theme}>
+        <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={this.toggleDrawer('left', false)}
+            onKeyDown={this.toggleDrawer('left', false)}
+          >
+            {sideList}
+          </div>
+        </Drawer>
         <AppBar position='static' className={classes.root}>
           <Grid container>
             <Hidden mdDown>
@@ -239,7 +309,7 @@ class Header extends React.Component {
             <Grid item xs>
               <Toolbar className={classes.toolbar}>
                 <div className={classes.sectionMobile}>
-                  <IconButton className={cn(classes.IconButton, classes.menuButton)} color='inherit' aria-label='Open drawer'>
+                  <IconButton className={cn(classes.IconButton, classes.menuButton)} color='inherit' aria-label='Open drawer' onClick={this.toggleDrawer('left', true)}>
                     <FontAwesomeIcon icon='bars' />
                   </IconButton>
                 </div>
@@ -261,7 +331,7 @@ class Header extends React.Component {
                   <>
                     <div className={classes.sectionDesktop}>
                       <IconButton color='inherit' className={classes.IconButton}>
-                        <Badge badgeContent={17} color='secondary'>
+                        <Badge badgeContent={0} color='secondary'>
                           <FontAwesomeIcon icon='bell' />
                         </Badge>
                       </IconButton>
@@ -287,7 +357,7 @@ class Header extends React.Component {
                     >
                       <FontAwesomeIcon icon='sign-in-alt' className={classes.leftIcon} />
                       로그인
-                  </Button>
+                    </Button>
                   )}
               </Toolbar>
             </Grid>
@@ -298,7 +368,7 @@ class Header extends React.Component {
         </AppBar>
         {renderMenu}
         {renderMobileMenu}
-        <Fab color='secondary' aria-label='Add' className={classes.fab}>
+        <Fab color='secondary' aria-label='Add' className={classes.fab} onClick={this.toggleDrawer('left', true)}>
           <FontAwesomeIcon icon='bars' />
         </Fab>
       </MuiThemeProvider>

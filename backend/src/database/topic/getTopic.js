@@ -1,5 +1,5 @@
-import pool from '..'
-import _ from 'lodash'
+const pool = require('..')
+const _ = require('lodash')
 
 module.exports = async (id) => {
   const result = await pool.query(

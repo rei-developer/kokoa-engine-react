@@ -1,4 +1,4 @@
-import pool from '..'
+const pool = require('..')
 
 module.exports.updateTopicByIsBest = async (topicId, isBest = 0) => {
   await pool.query(
