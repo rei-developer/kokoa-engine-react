@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon --watch src/ src/index.js"
+    "start": "nodemon --watch src/ src/index.js",
+    "start:prod": "pm2 start src -i 0"
   },
   "dependencies": {
     "cors": "^2.8.5",
