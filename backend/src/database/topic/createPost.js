@@ -1,7 +1,7 @@
 const pool = require('..')
 const _ = require('lodash')
 
-module.exports = async (columns) => {
+module.exports = async columns => {
   let keys = []
   let values = []
   _.forIn(columns, (value, key) => {
@@ -21,7 +21,7 @@ module.exports = async (columns) => {
   }
 }
 
-module.exports.createPostCounts = async (postId) => {
+module.exports.createPostCounts = async postId => {
   await pool.query(
     `INSERT INTO PostCounts (postId) VALUES (?)`,
     [postId]

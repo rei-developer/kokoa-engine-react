@@ -1,7 +1,7 @@
 const pool = require('..')
 const _ = require('lodash')
 
-module.exports = async (columns) => {
+module.exports = async columns => {
   let keys = []
   let values = []
   _.forIn(columns, (value, key) => {

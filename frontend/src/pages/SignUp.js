@@ -155,6 +155,10 @@ class SignUp extends React.Component {
     this.setState({ password: e.target.value })
   }
 
+  entered = (e) => {
+    if (e.which === 13) this.signUp()
+  }
+
   render() {
     const { classes, user } = this.props
     const { username, nickname, email, authCode, password } = this.state
@@ -178,17 +182,7 @@ class SignUp extends React.Component {
                     input: classes.bootstrapInput
                   }}
                   onChange={this.setUsername}
-                />
-              </FormControl>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={nickname}
-                  placeholder='닉네임'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setNickname}
+                  onKeyPress={this.entered}
                 />
               </FormControl>
               <FormControl className={classes.mb} fullWidth>
@@ -201,6 +195,19 @@ class SignUp extends React.Component {
                     input: classes.bootstrapInput
                   }}
                   onChange={this.setPassword}
+                  onKeyPress={this.entered}
+                />
+              </FormControl>
+              <FormControl className={classes.mb} fullWidth>
+                <InputBase
+                  value={nickname}
+                  placeholder='닉네임'
+                  classes={{
+                    root: classes.bootstrapRoot,
+                    input: classes.bootstrapInput
+                  }}
+                  onChange={this.setNickname}
+                  onKeyPress={this.entered}
                 />
               </FormControl>
               <Grid className={classes.mb} container>
@@ -215,6 +222,7 @@ class SignUp extends React.Component {
                     }}
                     className={classes.fullWidth}
                     onChange={this.setEmail}
+                    onKeyPress={this.entered}
                   />
                 </Grid>
                 <Grid item xs={3} className={classes.pl}>
@@ -237,6 +245,7 @@ class SignUp extends React.Component {
                     input: classes.bootstrapInput
                   }}
                   onChange={this.setAuthCode}
+                  onKeyPress={this.entered}
                 />
               </FormControl>
               <FormControl fullWidth>

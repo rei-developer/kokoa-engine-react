@@ -126,6 +126,10 @@ class SignIn extends React.Component {
     this.setState({ password: e.target.value })
   }
 
+  entered = (e) => {
+    if (e.which === 13) this.signIn()
+  }
+
   render() {
     const { classes } = this.props
     const { username, password } = this.state
@@ -149,6 +153,7 @@ class SignIn extends React.Component {
                     input: classes.bootstrapInput
                   }}
                   onChange={this.setUsername}
+                  onKeyPress={this.entered}
                 />
               </FormControl>
               <FormControl className={classes.mb} fullWidth>
@@ -161,6 +166,7 @@ class SignIn extends React.Component {
                     input: classes.bootstrapInput
                   }}
                   onChange={this.setPassword}
+                  onKeyPress={this.entered}
                 />
               </FormControl>
               <Grid container>

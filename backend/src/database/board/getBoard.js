@@ -1,6 +1,6 @@
 const pool = require('..')
 
-module.exports.name = async (domain) => {
+module.exports.name = async domain => {
   const result = await pool.query(
     `SELECT name FROM Boards WHERE domain = ?`,
     [domain]
@@ -9,7 +9,7 @@ module.exports.name = async (domain) => {
   return result[0].name
 }
 
-module.exports.isAdminOnly = async (domain) => {
+module.exports.isAdminOnly = async domain => {
   const result = await pool.query(
     `SELECT isAdminOnly FROM Boards WHERE domain = ?`,
     [domain]
@@ -18,7 +18,7 @@ module.exports.isAdminOnly = async (domain) => {
   return result[0].isAdminOnly
 }
 
-module.exports.categories = async (boardDomain) => {
+module.exports.categories = async boardDomain => {
   const result = await pool.query(
     `SELECT name FROM Categories WHERE boardDomain = ?`,
     [boardDomain]

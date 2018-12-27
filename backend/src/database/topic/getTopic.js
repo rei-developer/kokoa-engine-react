@@ -1,7 +1,7 @@
 const pool = require('..')
 const _ = require('lodash')
 
-module.exports = async (id) => {
+module.exports = async id => {
   const result = await pool.query(
     `SELECT userId, boardDomain, originBoardDomain, category, author, title, content, ip, header, created, updated, isImage, isBest, isNotice, isAllowed,
     (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
@@ -17,7 +17,7 @@ module.exports = async (id) => {
   return result[0]
 }
 
-module.exports.count = async (columns) => {
+module.exports.count = async columns => {
   let keys = []
   let values = []
   _.forIn(columns, (value, key) => {
@@ -38,7 +38,7 @@ module.exports.count = async (columns) => {
   }
 }
 
-module.exports.notices = async (domain) => {
+module.exports.notices = async domain => {
   const result = await pool.query(
     `SELECT id, userId, originBoardDomain, category, author, title, created,
     (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
@@ -80,7 +80,7 @@ module.exports.topics = async (columns, page, limit) => {
   }
 }
 
-module.exports.topicsToWidget = async (limit) => {
+module.exports.topicsToWidget = async limit => {
   const result = await pool.query(
     `SELECT id, boardDomain, category, title, created, isBest,
     (SELECT name FROM Boards WHERE domain = A.boardDomain) boardName,
@@ -95,7 +95,7 @@ module.exports.topicsToWidget = async (limit) => {
   return result
 }
 
-module.exports.topicImages = async (topicId) => {
+module.exports.topicImages = async topicId => {
   const result = await pool.query(
     `SELECT name, imageUrl FROM TopicImages WHERE topicId = ?`,
     [topicId]

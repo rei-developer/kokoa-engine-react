@@ -1,6 +1,6 @@
 const pool = require('..')
 
-module.exports = async (id) => {
+module.exports = async id => {
   const result = await pool.query(
     `SELECT id, username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM Users WHERE id = ?`,
     [id]
@@ -9,7 +9,7 @@ module.exports = async (id) => {
   return result[0]
 }
 
-module.exports.auth = async (username) => {
+module.exports.auth = async username => {
   const result = await pool.query(
     `SELECT id, password, salt FROM Users WHERE username = ?`,
     [username]
@@ -18,7 +18,7 @@ module.exports.auth = async (username) => {
   return result[0]
 }
 
-module.exports.username = async (username) => {
+module.exports.username = async username => {
   const result = await pool.query(
     `SELECT id FROM Users WHERE username = ?`,
     [username]
@@ -27,7 +27,7 @@ module.exports.username = async (username) => {
   return result[0]
 }
 
-module.exports.nickname = async (nickname) => {
+module.exports.nickname = async nickname => {
   const result = await pool.query(
     `SELECT id FROM Users WHERE nickname = ?`,
     [nickname]
@@ -36,7 +36,7 @@ module.exports.nickname = async (nickname) => {
   return result[0]
 }
 
-module.exports.email = async (email) => {
+module.exports.email = async email => {
   const result = await pool.query(
     `SELECT id FROM Users WHERE email = ?`,
     [email]

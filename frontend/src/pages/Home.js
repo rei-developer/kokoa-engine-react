@@ -106,6 +106,8 @@ class Home extends React.Component {
     const { loading, topics } = this.state
     const extract = (
       topics.map((i, index) => {
+        const thumb = i.imageUrl ? i.imageUrl.match(/[0-9a-zA-Z]{7,}/g) : ''
+        const ext = i.imageUrl ? i.imageUrl.match(/(\.bmp|\.png|\.jpg|\.jpeg|\.gif)/g) : ''
         return (
           <React.Fragment key={i.id}>
             {index > 0 && (<Divider />)}
@@ -115,7 +117,10 @@ class Home extends React.Component {
               button
             >
               <ListItemAvatar>
-                <Avatar src={i.imageUrl} className={classes.avatar} />
+                <Avatar
+                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : ''}
+                  className={classes.avatar}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={

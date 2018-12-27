@@ -295,8 +295,11 @@ class Write extends React.Component {
               setup: editor => {
                 this.setState({ editor })
               },
-              plugins: 'link image code',
-              toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+              language: 'ko_KR',
+              menubar: false,
+              height: 360,
+              plugins: 'code link media image table textcolor',
+              toolbar: 'undo redo | styleselect | fontsizeselect forecolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table link media custom_image code'
             }}
             onChange={this.handleEditorChange}
           />

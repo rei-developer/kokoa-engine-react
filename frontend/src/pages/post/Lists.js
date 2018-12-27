@@ -171,7 +171,7 @@ class Lists extends React.Component {
               className={cn(classes.pl, classes.listItem)}
             >
               <ListItemAvatar>
-                <Avatar src={i.imageUrl} className={classes.avatar} />
+                <Avatar src={i.profile} className={classes.avatar} />
               </ListItemAvatar>
               <ListItemText
                 primary={

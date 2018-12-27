@@ -13,10 +13,11 @@ module.exports.posts = async (topicId, page, limit) => {
     `SELECT id, userId, author, content, created,
     (SELECT likes FROM PostCounts WHERE postId = A.id) likes,
     (SELECT hates FROM PostCounts WHERE postId = A.id) hates,
+    (SELECT profileImageUrl FROM Users WHERE id = A.userId) profile,
     (SELECT isAdmin FROM Users WHERE id = A.userId) admin
     FROM Posts A
     WHERE topicId = ?
-    ORDER BY id DESC
+    ORDER BY id
     LIMIT ?, ?`,
     [topicId, page * limit, limit]
   )
