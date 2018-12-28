@@ -134,6 +134,7 @@ class Home extends React.Component {
                     )}
                     {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
                     {i.title}
+                    {i.postsCount > 0 ? ` | 댓글 ${i.postsCount}` : ''}
                   </Typography>
                 }
                 secondary={moment(i.created).fromNow()}

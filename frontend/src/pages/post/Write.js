@@ -98,7 +98,8 @@ class Write extends React.Component {
       )
       const data = await response.data
       this.setState({
-        loading: false
+        loading: false,
+        content: ''
       })
       if (data.status === 'fail') return toast.error(data.message)
       this.props.onCreate(data.postsCount, data.posts)
@@ -138,6 +139,7 @@ class Write extends React.Component {
               root: classes.bootstrapRoot,
               input: classes.bootstrapInput
             }}
+            placeholder='이곳에 댓글을 입력해주세요.'
             onChange={this.setContent}
             rows={3}
             multiline
