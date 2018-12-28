@@ -134,9 +134,17 @@ const styles = theme => ({
   mb: {
     marginBottom: theme.spacing.unit * 2
   },
+  pl: {
+    paddingLeft: theme.spacing.unit
+  },
   card: {
     border: '1px solid #ecedef',
     borderRadius: 0
+  },
+  listItem: {
+    '&:hover': {
+      background: '#EBF1FC'
+    }
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -168,6 +176,11 @@ const styles = theme => ({
   },
   bold: {
     fontWeight: 'bold'
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 3
   },
   category: {
     height: 19,
@@ -288,7 +301,7 @@ class Lists extends React.Component {
     })
   }
 
-  getTopics = (domain) => {
+  getTopics = (domain, more = false) => {
     const { category, page, rowsPerPage } = this.state
     this.setState({
       loading: true,
@@ -303,16 +316,29 @@ class Lists extends React.Component {
       const data = await response.data
       this.setState({
         loading: false,
-        notices: data.notices ? [...data.notices] : [],
-        topics: data.topics ? [...data.topics] : [],
+        notices: more ? (data.notices ? [...this.state.notices, ...data.notices] : [...this.state.notices]) : (data.notices ? [...data.notices] : []),
+        topics: more ? (data.topics ? [...this.state.topics, ...data.topics] : [...this.state.topics]) : (data.topics ? [...data.topics] : []),
         count: data.count
       })
     })
   }
 
+  loadMore = () => {
+    const domain = this.props.match.params.domain
+    this.setState({
+      page: this.state.page + 1
+    }, () => {
+      this.getTopics(domain, true)
+    })
+  }
+
   replay = () => {
     const { domain } = this.state
-    this.getTopics(domain)
+    this.setState({
+      page: 0
+    }, () => {
+      this.getTopics(domain)
+    })
   }
 
   reset = () => {
@@ -345,6 +371,7 @@ class Lists extends React.Component {
               {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
               {i.isImage > 0 && (<img src={ImageIcon} className={classes.star} />)}
               {i.title}
+              {i.postsCount > 0 ? ` [${i.postsCount}]` : ''}
             </TableCell>
             <TableCell className={classes.author}>
               <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
@@ -359,6 +386,8 @@ class Lists extends React.Component {
     )
     const mobileExtract = (item, notice = false) => (
       item.map((i, index) => {
+        const thumb = i.imageUrl ? i.imageUrl.match(/[0-9a-zA-Z]{7,}/g) : ''
+        const ext = i.imageUrl ? i.imageUrl.match(/(\.bmp|\.png|\.jpg|\.jpeg|\.gif)/g) : ''
         return (
           <React.Fragment key={i.id}>
             {index > 0 && (<Divider />)}
@@ -368,7 +397,10 @@ class Lists extends React.Component {
               button
             >
               <ListItemAvatar>
-                <Avatar src={i.imageUrl} className={classes.avatar} />
+                <Avatar
+                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : ''}
+                  className={classes.avatar}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={
@@ -390,8 +422,9 @@ class Lists extends React.Component {
                     <strong>{i.author}</strong>
                     {' | '}
                     {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
-                    {' | '}
+                    {' | 조회 '}
                     {i.hits}
+                    {i.postsCount > 0 ? ` | 댓글 ${i.postsCount}` : ''}
                   </>
                 }
               />
@@ -401,7 +434,7 @@ class Lists extends React.Component {
       })
     )
     const override = {
-      position: 'absolute',
+      position: 'fixed',
       width: '78px',
       height: '78px',
       margin: '-39px 0 0 -39px',
@@ -425,8 +458,7 @@ class Lists extends React.Component {
             <Chip
               color='primary'
               label={`${boardName} (${count})`}
-              onDelete={this.replay}
-              deleteIcon={<FontAwesomeIcon icon='sync' />}
+              onClick={this.replay}
               className={classes.boardChip}
               clickable
             />
@@ -476,8 +508,22 @@ class Lists extends React.Component {
           <div className={classes.sectionMobile}>
             {mobileExtract(notices, true)}
             {mobileExtract(topics)}
+            <Button onClick={this.loadMore} variant='contained' color='primary' fullWidth>
+              게시물 더 불러오기
+            </Button>
           </div>
         </Card>
+        {boardName !== '' && (
+          <div className={classes.boardTitle}>
+            <Chip
+              color='primary'
+              label={`${boardName} (${count})`}
+              onClick={this.replay}
+              className={classes.boardChip}
+              clickable
+            />
+          </div>
+        )}
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>

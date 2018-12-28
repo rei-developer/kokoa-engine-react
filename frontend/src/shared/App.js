@@ -7,6 +7,7 @@ import {
   TopicWrite,
   SignIn,
   SignUp,
+  Accept,
   Profile
 } from 'pages'
 import Header from 'components/Header'
@@ -84,6 +85,7 @@ class App extends Component {
             </Switch>
             <Route path='/signin' component={SignIn} />
             <Route path='/signup' component={SignUp} />
+            <Route path='/accept/:username' component={Accept} />
             <Route path='/profile' component={Profile} />
           </Grid>
           <Hidden mdDown>

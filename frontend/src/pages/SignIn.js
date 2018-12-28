@@ -106,6 +106,7 @@ class SignIn extends React.Component {
       { username, password }
     )
     const data = response.data
+    if (data.redirect === 'accept') this.props.history.push(`/accept/${username}`)
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('로그인 성공')
     localStorage.token = data.token
@@ -154,6 +155,7 @@ class SignIn extends React.Component {
                   }}
                   onChange={this.setUsername}
                   onKeyPress={this.entered}
+                  autoFocus
                 />
               </FormControl>
               <FormControl className={classes.mb} fullWidth>

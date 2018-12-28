@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
+import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
@@ -139,7 +140,6 @@ class Lists extends React.Component {
 
   getPosts = id => {
     const { page } = this.state
-    console.log(id)
     this.setState({
       loading: true
     }, async () => {
@@ -150,8 +150,6 @@ class Lists extends React.Component {
         posts: data.posts ? [...data.posts] : [],
         count: data.count
       })
-      console.log(data.posts)
-      console.log(data.count)
     })
   }
 
@@ -160,7 +158,7 @@ class Lists extends React.Component {
   }
 
   render() {
-    const { classes, user } = this.props
+    const { id, classes, user } = this.props
     const { loading, posts, count, page } = this.state
     const extract = item => (
       item.map((i, index) => {
@@ -213,7 +211,10 @@ class Lists extends React.Component {
             loading={loading}
           />
         </div>
-        {extract(posts)}
+        <Card className={cn(classes.card, classes.mb)}>
+          {extract(posts)}
+        </Card>
+        {user.isLogged ? (<PostWrite id={id} />) : ''}
       </MuiThemeProvider>
     )
   }

@@ -2,7 +2,7 @@ const pool = require('..')
 
 module.exports = async id => {
   const result = await pool.query(
-    `SELECT id, username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin, isVerified FROM Users WHERE id = ?`,
+    `SELECT id, username, nickname, email, profileImageUrl, registerDate, blockDate, level, exp, point, isAdmin FROM Users WHERE id = ?`,
     [id]
   )
   if (result.length < 1) return false
@@ -11,7 +11,7 @@ module.exports = async id => {
 
 module.exports.auth = async username => {
   const result = await pool.query(
-    `SELECT id, password, salt FROM Users WHERE username = ?`,
+    `SELECT id, password, salt, isVerified FROM Users WHERE username = ?`,
     [username]
   )
   if (result.length < 1) return false

@@ -19,7 +19,7 @@ exports.getAuth = async ctx => {
       hasher({ password, salt: user.salt }, (err, pass, salt, hash) => {
         if (err) return reject({ message: err, status: 'fail' })
         if (user.password !== hash) return reject({ message: '비밀번호가 올바르지 않습니다.', status: 'fail' })
-        if (user.isVerified < 1) return reject({ message: '이메일을 인증하지 않았습니다.', status: 'fail' })
+        if (user.isVerified < 1) return reject({ redirect: 'accept', message: '이메일을 인증하지 않았습니다.', status: 'fail' })
         const token = jwt.sign(
           { jti: user.id },
           process.env.JWT_SECRET,
@@ -85,7 +85,24 @@ exports.getUser = async ctx => {
   ctx.body = { user, status: 'ok' }
 }
 
-exports.updateUserbyProfileImage = async ctx => {
+exports.updateUserByIsVerified = async ctx => {
+  const { username, email, authCode } = ctx.request.body
+  if (username === '' || email === '' || authCode === '') return
+  const getEmail = await getUser.email(email)
+  if (getEmail) return ctx.body = { message: '이미 존재하는 이메일입니다.', status: 'fail' }
+  const user = await getUser.auth(username)
+  if (!user) return ctx.body = { message: '존재하지 않는 계정입니다.', status: 'fail' }
+  if (user.isVerified > 0) return ctx.body = { message: '이미 이메일이 인증된 계정입니다.', status: 'fail' }
+  try {
+    if (email !== Crypto.decrypt(authCode)) return ctx.body = { message: '인증코드가 올바르지 않습니다.', status: 'fail' }
+  } catch (e) {
+    return ctx.body = { message: '인증코드가 올바르지 않습니다.', status: 'fail' }
+  }
+  await updateUser({ email, isVerified: 1 }, user.id)
+  ctx.body = { status: 'ok' }
+}
+
+exports.updateUserByProfileImage = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   const { url } = ctx.request.body

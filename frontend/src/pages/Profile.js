@@ -221,6 +221,7 @@ class Profile extends React.Component {
                           placeholder={user.nickname}
                           className={classes.naked}
                           onChange={this.setNickname}
+                          autoFocus
                         />
                       </Tooltip>
                     </>

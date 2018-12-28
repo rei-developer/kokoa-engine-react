@@ -68,6 +68,10 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
+
+  // 임시
+  await updateTopic.updateTopicCountsByHits(id)
+
   ctx.body = { topic }
 }
 

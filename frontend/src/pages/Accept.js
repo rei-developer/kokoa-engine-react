@@ -87,15 +87,12 @@ const styles = theme => ({
 @inject('option')
 @inject('user')
 @observer
-class SignUp extends React.Component {
+class Accept extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: '',
-      nickname: '',
       email: '',
-      authCode: '',
-      password: ''
+      authCode: ''
     }
     const { option } = this.props
     option.setLogo()
@@ -114,33 +111,18 @@ class SignUp extends React.Component {
     toast.success('이메일에 인증코드를 전송했습니다.')
   }
 
-  signIn = () => {
-    this.props.history.push('/signin')
-  }
-
-  signOut = () => {
-    localStorage.removeItem('token')
-  }
-
-  signUp = async () => {
-    const { username, nickname, email, authCode, password } = this.state
-    if (username === '' || nickname === '' || email === '' || authCode === '' || password === '') return toast.error('빈 칸을 입력하세요.')
-    const response = await axios.post(
-      '/api/auth/signup',
-      { username, nickname, email, authCode, password }
+  verify = async () => {
+    const { email, authCode } = this.state
+    if (email === '' || authCode === '') return toast.error('빈 칸을 입력하세요.')
+    const username = this.props.match.params.username
+    const response = await axios.patch(
+      '/api/auth/edit/verify',
+      { username, email, authCode }
     )
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
     this.props.history.push('/signin')
-    toast.success('회원가입 성공')
-  }
-
-  setUsername = (e) => {
-    this.setState({ username: e.target.value })
-  }
-
-  setNickname = (e) => {
-    this.setState({ nickname: e.target.value })
+    toast.success('이메일 인증 성공')
   }
 
   setEmail = (e) => {
@@ -151,17 +133,13 @@ class SignUp extends React.Component {
     this.setState({ authCode: e.target.value })
   }
 
-  setPassword = (e) => {
-    this.setState({ password: e.target.value })
-  }
-
   entered = (e) => {
-    if (e.which === 13) this.signUp()
+    if (e.which === 13) this.verify()
   }
 
   render() {
     const { classes, user } = this.props
-    const { username, nickname, email, authCode, password } = this.state
+    const { email, authCode } = this.state
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container className={classes.container}>
@@ -173,44 +151,6 @@ class SignUp extends React.Component {
               <img src={Logo} alt='Logo' className={classes.logo} />
             </Link>
             <Card className={classes.card}>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={username}
-                  placeholder='아이디'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setUsername}
-                  onKeyPress={this.entered}
-                  autoFocus
-                />
-              </FormControl>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  type='password'
-                  value={password}
-                  placeholder='비밀번호'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setPassword}
-                  onKeyPress={this.entered}
-                />
-              </FormControl>
-              <FormControl className={classes.mb} fullWidth>
-                <InputBase
-                  value={nickname}
-                  placeholder='닉네임'
-                  classes={{
-                    root: classes.bootstrapRoot,
-                    input: classes.bootstrapInput
-                  }}
-                  onChange={this.setNickname}
-                  onKeyPress={this.entered}
-                />
-              </FormControl>
               <Grid className={classes.mb} container>
                 <Grid item xs={9} className={classes.pr}>
                   <InputBase
@@ -224,6 +164,7 @@ class SignUp extends React.Component {
                     className={classes.fullWidth}
                     onChange={this.setEmail}
                     onKeyPress={this.entered}
+                    autoFocus
                   />
                 </Grid>
                 <Grid item xs={3} className={classes.pl}>
@@ -253,23 +194,13 @@ class SignUp extends React.Component {
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={this.signUp}
+                  onClick={this.verify}
                 >
-                  계정 생성
+                  이메일 인증
                 </Button>
               </FormControl>
             </Card>
             {user.email}
-            <Card className={classes.card}>
-              <FormControl fullWidth>
-                <Button
-                  color='primary'
-                  onClick={this.signIn}
-                >
-                  계정이 있으시다면 로그인하세요
-                </Button>
-              </FormControl>
-            </Card>
           </Grid>
           <Hidden mdDown>
             <Grid item xs={4} />
@@ -280,8 +211,8 @@ class SignUp extends React.Component {
   }
 }
 
-SignUp.propTypes = {
+Accept.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(SignUp)
+export default withStyles(styles)(Accept)

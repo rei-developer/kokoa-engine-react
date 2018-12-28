@@ -284,6 +284,7 @@ class Write extends React.Component {
               input: classes.bootstrapInput
             }}
             onChange={this.setTitle}
+            autoFocus
           />
         </FormControl>
         <FormControl className={classes.mb} fullWidth>
@@ -295,7 +296,7 @@ class Write extends React.Component {
               setup: editor => {
                 this.setState({ editor })
               },
-              language: 'ko_KR',
+              //language: 'ko_KR',
               menubar: false,
               height: 360,
               plugins: 'code link media image table textcolor',
@@ -304,43 +305,45 @@ class Write extends React.Component {
             onChange={this.handleEditorChange}
           />
         </FormControl>
-        <input
-          type='file'
-          multiple='multiple'
-          id='fileBrowser'
-          label='이곳에 이미지를 올려보세요!'
-          onChange={this.imageUpload}
-        />
-        {images.length > 0 && (
-          <>
-            <Select
-              multiple
-              native
-              value={selectedImageDeletehash}
-              onChange={this.setselectedImageDeletehash}
-            >
-              {images.map(i => {
-                return (
-                  <option key={i.deletehash} value={i.deletehash}>{i.name}</option>
-                )
-              })}
-            </Select>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={this.selectedImageRemove}
-            >
-              선택 이미지 삭제
-            </Button>
-          </>
-        )}
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={this.imageRemoveAll}
-        >
-          이미지 전부 삭제
-        </Button>
+        <div style={{ margin: '1rem 0' }}>
+          <input
+            type='file'
+            multiple='multiple'
+            id='fileBrowser'
+            label='이곳에 이미지를 올려보세요!'
+            onChange={this.imageUpload}
+          />
+          {images.length > 0 && (
+            <>
+              <Select
+                multiple
+                native
+                value={selectedImageDeletehash}
+                onChange={this.setselectedImageDeletehash}
+              >
+                {images.map(i => {
+                  return (
+                    <option key={i.deletehash} value={i.deletehash}>{i.name}</option>
+                  )
+                })}
+              </Select>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={this.selectedImageRemove}
+              >
+                선택 이미지 삭제
+              </Button>
+            </>
+          )}
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={this.imageRemoveAll}
+          >
+            이미지 전부 삭제
+          </Button>
+        </div>
         <FormControl fullWidth>
           <Button
             variant='contained'

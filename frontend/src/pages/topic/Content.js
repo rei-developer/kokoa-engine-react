@@ -245,9 +245,7 @@ class Content extends React.Component {
                 />
               </Grid>
             </Card>
-            <Card className={cn(classes.card, classes.mb)}>
-              <PostLists id={id} />
-            </Card>
+            <PostLists id={id} />
           </>
         )}
       </MuiThemeProvider>

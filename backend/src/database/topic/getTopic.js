@@ -65,7 +65,9 @@ module.exports.topics = async (columns, page, limit) => {
       `SELECT id, userId, originBoardDomain, category, author, title, created, isImage, isBest, isNotice,
       (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
       (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes,
-      (SELECT isAdmin FROM Users WHERE id = A.userId) admin
+      (SELECT isAdmin FROM Users WHERE id = A.userId) admin,
+      (SELECT imageUrl FROM TopicImages WHERE topicId = A.id LIMIT 1) imageUrl,
+      (SELECT COUNT(*) FROM Posts WHERE topicId = A.id) postsCount
       FROM Topics A
       WHERE ${keys.map(key => `${key} = ?`).join(' AND ')}
       ORDER BY id DESC

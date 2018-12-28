@@ -153,7 +153,7 @@ const styles = theme => ({
   fab: {
     position: 'fixed',
     bottom: theme.spacing.unit * 3,
-    left: theme.spacing.unit * 3,
+    right: theme.spacing.unit * 3,
     zIndex: 200,
     [theme.breakpoints.up('md')]: {
       display: 'none'
@@ -218,13 +218,14 @@ class Header extends React.Component {
       <div className={classes.list}>
         <List>
           {[{
+            name: '메인 페이지',
+            path: '/',
+          }, {
             name: '전체글',
             path: '/b/all',
-            icon: 'comment-dots'
           }, {
             name: '인기글',
             path: '/b/best',
-            icon: 'star'
           }, {
             name: '자유',
             path: '/b/talk'
@@ -260,7 +261,7 @@ class Header extends React.Component {
         onClose={this.handleMenuClose}
       >
         <MenuItem component={NavLink} to='/profile' onClick={this.handleMenuClose}>프로필 편집</MenuItem>
-        <MenuItem onClick={this.handleSignOut}>로그아웃</MenuItem>
+        <MenuItem component={NavLink} to='/' onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
 
