@@ -101,7 +101,7 @@ class Write extends React.Component {
         loading: false
       })
       if (data.status === 'fail') return toast.error(data.message)
-      alert('성공')
+      this.props.onCreate(data.postsCount, data.posts)
     })
   }
 

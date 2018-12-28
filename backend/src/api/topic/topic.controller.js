@@ -137,9 +137,12 @@ exports.createPost = async ctx => {
     ip,
     header
   })
+  //임시
+  const postsCount = await getPost.count(topicId)
+  const posts = await getPost.posts(topicId, 0, 100)
   await createPost.createPostCounts(postId)
   await User.setUpExpAndPoint(user, 5, 5)
-  ctx.body = { postId, status: 'ok' }
+  ctx.body = { postId, postsCount, posts, status: 'ok' }
 }
 
 exports.createTopicVotes = async ctx => {

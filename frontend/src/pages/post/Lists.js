@@ -153,6 +153,18 @@ class Lists extends React.Component {
     })
   }
 
+  handleCreate = (postsCount, posts) => {
+    this.setState({
+      loading: true
+    }, async () => {
+      this.setState({
+        loading: false,
+        posts: posts,
+        count: postsCount
+      })
+    })
+  }
+
   reset = () => {
     this.setState(init)
   }
@@ -214,7 +226,7 @@ class Lists extends React.Component {
         <Card className={cn(classes.card, classes.mb)}>
           {extract(posts)}
         </Card>
-        {user.isLogged ? (<PostWrite id={id} />) : ''}
+        {user.isLogged ? (<PostWrite id={id} onCreate={this.handleCreate} />) : ''}
       </MuiThemeProvider>
     )
   }
