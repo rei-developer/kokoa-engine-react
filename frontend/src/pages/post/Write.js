@@ -102,6 +102,7 @@ class Write extends React.Component {
         content: ''
       })
       if (data.status === 'fail') return toast.error(data.message)
+      toast.success('댓글 작성 성공!')
       this.props.onCreate(data.postsCount, data.posts)
     })
   }
@@ -139,6 +140,7 @@ class Write extends React.Component {
               root: classes.bootstrapRoot,
               input: classes.bootstrapInput
             }}
+            value={this.state.content}
             placeholder='이곳에 댓글을 입력해주세요.'
             onChange={this.setContent}
             rows={3}

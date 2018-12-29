@@ -137,6 +137,7 @@ class Write extends React.Component {
         loading: false
       })
       if (data.status === 'fail') return toast.error(data.message)
+      toast.success('글 작성 성공!')
       this.props.history.push(`/b/${domain}/${data.topicId}`)
     })
   }
