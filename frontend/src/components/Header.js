@@ -304,7 +304,7 @@ class Header extends React.Component {
         </Drawer>
         <AppBar position='static' className={classes.root}>
           <Grid container>
-            <Hidden mdDown>
+            <Hidden lgDown>
               <Grid item xs={2} />
             </Hidden>
             <Grid item xs>
@@ -362,7 +362,7 @@ class Header extends React.Component {
                   )}
               </Toolbar>
             </Grid>
-            <Hidden mdDown>
+            <Hidden lgDown>
               <Grid item xs={2} />
             </Hidden>
           </Grid>

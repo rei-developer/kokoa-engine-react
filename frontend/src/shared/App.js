@@ -82,10 +82,10 @@ class App extends Component {
           responsive='true'
         />
         <Grid container>
-          <Hidden mdDown>
-            <Grid item xs={2} />
+          <Hidden lgDown>
+            <Grid item sm={2} />
           </Hidden>
-          <Grid item xs>
+          <Grid item sm>
             <Route exact path='/' component={Home} />
             <Switch>
               <Route path='/b/:domain/write' component={TopicWrite} />
@@ -98,8 +98,8 @@ class App extends Component {
             <Route path='/accept/:username' component={Accept} />
             <Route path='/profile' component={Profile} />
           </Grid>
-          <Hidden mdDown>
-            <Grid item xs={2} />
+          <Hidden lgDown>
+            <Grid item sm={2} />
           </Hidden>
         </Grid>
       </div>
