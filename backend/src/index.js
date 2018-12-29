@@ -16,7 +16,9 @@ router.use(helmet())
 router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())
-router.get('/', async ctx => ctx.body = 'HAWAWA')
+router.get('/', async ctx => {
+    ctx.body = ctx.socket.remoteAddress
+})
 
 app.use(router.routes()).use(router.allowedMethods())
 
