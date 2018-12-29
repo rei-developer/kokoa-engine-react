@@ -11,6 +11,7 @@ dotenv.config()
 const app = new Koa()
 const router = new Router()
 
+app.proxy = true
 router.use(helmet())
 router.use(Logger())
 router.use(bodyParser())
