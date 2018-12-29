@@ -94,7 +94,7 @@ exports.createTopic = async ctx => {
     //TODO: 관리자 전용 커스텀
     if (isNotice > 0) isNotice = 0
   }
-  const ip = ctx.req.headers['X-Real-IP']
+  const ip = ctx.get('x-real-ip')
   const header = ctx.header['user-agent']
   const isImage = images.length > 0 ? true : false
   const topicId = await createTopic({
@@ -125,7 +125,7 @@ exports.createPost = async ctx => {
     content
   } = ctx.request.body
   if (content === '') return
-  const ip = ctx.req.headers['X-Real-IP']
+  const ip = ctx.get('x-real-ip')
   const header = ctx.header['user-agent']
   const postId = await createPost({
     userId: user.id,
@@ -156,7 +156,7 @@ exports.createTopicVotes = async ctx => {
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
   const targetUser = await getUser(topic.userId)
-  const ip = ctx.req.headers['X-Real-IP']
+  const ip = ctx.get('x-real-ip')
   if (targetUser === user.id || topic.ip === ip) return ctx.body = { message: '본인에게 투표할 수 없습니다.', status: 'fail' }
   const duration = moment.duration(moment().diff(topic.created))
   const hours = duration.asHours()
