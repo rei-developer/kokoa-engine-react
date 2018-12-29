@@ -20,17 +20,25 @@ import {
   Chip
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MoonLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners'
 import StarIcon from '../../images/Star.svg'
 import BurnIcon from '../../images/Burn.svg'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
+import DefaultImage from '../../images/Default.png'
 
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   },
-  shadows: Array(25).fill('none')
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
 })
 
 const styles = theme => ({
@@ -66,7 +74,14 @@ const styles = theme => ({
   },
   avatar: {
     width: 64,
-    height: 64
+    height: 64,
+    padding: 2,
+    background: '#FFF',
+    border: '1px solid #DDD',
+    borderRadius: 500,
+    '& img': {
+      borderRadius: 500
+    }
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -176,11 +191,11 @@ class Content extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <MoonLoader
+          <HashLoader
             sizeUnit='px'
-            size={60}
+            size={80}
             margin='2px'
-            color='#36D7B7'
+            color='#4A4A4A'
             loading={loading}
           />
         </div>
@@ -189,7 +204,7 @@ class Content extends React.Component {
             <Card className={cn(classes.card, classes.mb)}>
               <ListItem className={classes.item}>
                 <ListItemAvatar>
-                  <Avatar src={profile}
+                  <Avatar src={profile ? profile : DefaultImage}
                     className={classes.avatar}
                   />
                 </ListItemAvatar>

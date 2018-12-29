@@ -12,7 +12,7 @@ import {
   Select
 } from '@material-ui/core'
 import { Editor } from '@tinymce/tinymce-react'
-import { MoonLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners'
 
 const styles = theme => ({
   container: {
@@ -268,11 +268,11 @@ class Write extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <MoonLoader
+          <HashLoader
             sizeUnit='px'
-            size={60}
+            size={80}
             margin='2px'
-            color='#36D7B7'
+            color='#4A4A4A'
             loading={loading}
           />
         </div>

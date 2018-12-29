@@ -81,8 +81,15 @@ const styles = theme => ({
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
   },
   avatar: {
-    width: 48,
-    height: 48
+    width: 50,
+    height: 50,
+    padding: 2,
+    background: '#FFF',
+    border: '1px solid #DDD',
+    borderRadius: 500,
+    '& img': {
+      borderRadius: 500
+    }
   },
   bootstrapRoot: {
     'label + &': {

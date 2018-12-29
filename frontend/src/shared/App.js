@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
+import AdSense from 'react-adsense'
 import { Grid, Hidden } from '@material-ui/core'
 import {
   Home,
@@ -35,7 +36,8 @@ import {
   faThumbsUp,
   faThumbsDown,
   faFlag,
-  faImage
+  faImage,
+  faCamera
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUser)
@@ -60,6 +62,7 @@ library.add(faThumbsUp)
 library.add(faThumbsDown)
 library.add(faFlag)
 library.add(faImage)
+library.add(faCamera)
 
 class App extends Component {
   render() {
@@ -71,6 +74,13 @@ class App extends Component {
       <div style={style}>
         <ToastContainer autoClose={2000} />
         <Header />
+        <AdSense.Google
+          client='ca-pub-5633529273423665'
+          slot='1882412178'
+          style={{ display: 'block', maxWidth: 970, margin: '0 auto 1rem auto' }}
+          format='auto'
+          responsive='true'
+        />
         <Grid container>
           <Hidden mdDown>
             <Grid item xs={2} />

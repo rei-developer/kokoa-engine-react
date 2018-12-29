@@ -8,7 +8,21 @@ import {
   FormControl,
   Button
 } from '@material-ui/core'
-import { MoonLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners'
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none'),
+  palette: {
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
+})
 
 const styles = theme => ({
   container: {
@@ -39,7 +53,7 @@ const styles = theme => ({
   bootstrapRoot: {
     'label + &': {
       marginTop: theme.spacing.unit * 3,
-    },
+    }
   },
   bootstrapInput: {
     borderRadius: 4,
@@ -51,18 +65,11 @@ const styles = theme => ({
     '&:focus': {
       borderColor: '#80bdff',
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
-    },
+    }
   },
   bootstrapFormLabel: {
-    fontSize: 18,
+    fontSize: 18
   }
-})
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true
-  },
-  shadows: Array(25).fill('none')
 })
 
 class Write extends React.Component {
@@ -126,11 +133,11 @@ class Write extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <MoonLoader
+          <HashLoader
             sizeUnit='px'
-            size={60}
+            size={80}
             margin='2px'
-            color='#36D7B7'
+            color='#4A4A4A'
             loading={loading}
           />
         </div>

@@ -19,7 +19,6 @@ import {
   Card,
   Button,
   Chip,
-  List,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -29,12 +28,13 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
-import { MoonLoader } from 'react-spinners'
-import ImageIcon from '../../images/Image.svg'
+import { HashLoader } from 'react-spinners'
+import PictureIcon from '../../images/Picture.svg'
 import StarIcon from '../../images/Star.svg'
 import BurnIcon from '../../images/Burn.svg'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
+import DefaultImage from '../../images/Default.png'
 
 const actionsStyles = theme => ({
   root: {
@@ -180,7 +180,13 @@ const styles = theme => ({
   avatar: {
     width: 50,
     height: 50,
-    borderRadius: 3
+    padding: 2,
+    background: '#FFF',
+    border: '1px solid #DDD',
+    borderRadius: 5,
+    '& img': {
+      borderRadius: 3
+    }
   },
   category: {
     height: 19,
@@ -201,6 +207,17 @@ const styles = theme => ({
     height: 18,
     marginRight: theme.spacing.unit / 2,
     verticalAlign: 'middle'
+  },
+  count: {
+    marginLeft: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    background: '#f6f6f6',
+    borderRadius: 5,
+    color: '#b1b1b1',
+    fontSize: 12,
+    userSelect: 'none',
+    whiteSpace: 'nowrap'
   },
   pointer: {
     cursor: 'pointer'
@@ -369,9 +386,9 @@ class Lists extends React.Component {
                 />
               )}
               {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
-              {i.isImage > 0 && (<img src={ImageIcon} className={classes.star} />)}
+              {i.isImage > 0 && (<img src={PictureIcon} className={classes.star} />)}
               {i.title}
-              {i.postsCount > 0 ? ` [${i.postsCount}]` : ''}
+              {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
             </TableCell>
             <TableCell className={classes.author}>
               <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
@@ -398,7 +415,7 @@ class Lists extends React.Component {
             >
               <ListItemAvatar>
                 <Avatar
-                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : ''}
+                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : DefaultImage}
                   className={classes.avatar}
                 />
               </ListItemAvatar>
@@ -414,6 +431,7 @@ class Lists extends React.Component {
                     )}
                     {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
                     {i.title}
+                    {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
                   </Typography>
                 }
                 secondary={
@@ -424,7 +442,6 @@ class Lists extends React.Component {
                     {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
                     {' | 조회 '}
                     {i.hits}
-                    {i.postsCount > 0 ? ` | 댓글 ${i.postsCount}` : ''}
                   </>
                 }
               />
@@ -445,11 +462,11 @@ class Lists extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <MoonLoader
+          <HashLoader
             sizeUnit='px'
-            size={60}
+            size={80}
             margin='2px'
-            color='#36D7B7'
+            color='#4A4A4A'
             loading={loading}
           />
         </div>

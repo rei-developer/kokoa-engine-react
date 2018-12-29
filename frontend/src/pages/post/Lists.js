@@ -20,9 +20,10 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
-import { MoonLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
+import DefaultImage from '../../images/Default.png'
 
 const theme = createMuiTheme({
   typography: {
@@ -46,6 +47,20 @@ const styles = theme => ({
   },
   mb: {
     marginBottom: theme.spacing.unit * 2
+  },
+  pl: {
+    paddingLeft: theme.spacing.unit
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    padding: 2,
+    background: '#FFF',
+    border: '1px solid #DDD',
+    borderRadius: 500,
+    '& img': {
+      borderRadius: 500
+    }
   },
   card: {
     border: '1px solid #ecedef',
@@ -181,7 +196,7 @@ class Lists extends React.Component {
               className={cn(classes.pl, classes.listItem)}
             >
               <ListItemAvatar>
-                <Avatar src={i.profile} className={classes.avatar} />
+                <Avatar src={i.profile ? i.profile : DefaultImage} className={classes.avatar} />
               </ListItemAvatar>
               <ListItemText
                 primary={
@@ -215,11 +230,11 @@ class Lists extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <MoonLoader
+          <HashLoader
             sizeUnit='px'
-            size={60}
+            size={80}
             margin='2px'
-            color='#36D7B7'
+            color='#4A4A4A'
             loading={loading}
           />
         </div>

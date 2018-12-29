@@ -17,8 +17,10 @@ import {
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { observer, inject } from 'mobx-react'
+import { HashLoader } from 'react-spinners'
 import StarIcon from '../images/Star.svg'
 import BurnIcon from '../images/Burn.svg'
+import DefaultImage from '../images/Default.png'
 
 const theme = createMuiTheme({
   typography: {
@@ -35,6 +37,9 @@ const theme = createMuiTheme({
 })
 
 const styles = theme => ({
+  mb: {
+    marginBottom: theme.spacing.unit * 2
+  },
   pl: {
     paddingLeft: theme.spacing.unit
   },
@@ -56,7 +61,13 @@ const styles = theme => ({
   avatar: {
     width: 50,
     height: 50,
-    borderRadius: 3
+    padding: 2,
+    background: '#FFF',
+    border: '1px solid #DDD',
+    borderRadius: 5,
+    '& img': {
+      borderRadius: 3
+    }
   },
   category: {
     height: 19,
@@ -77,6 +88,17 @@ const styles = theme => ({
     marginRight: theme.spacing.unit / 2,
     verticalAlign: 'middle'
   },
+  count: {
+    marginLeft: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    background: '#f6f6f6',
+    borderRadius: 5,
+    color: '#b1b1b1',
+    fontSize: 12,
+    userSelect: 'none',
+    whiteSpace: 'nowrap'
+  }
 })
 
 @inject('option')
@@ -104,6 +126,15 @@ class Home extends React.Component {
   render() {
     const { classes } = this.props
     const { loading, topics } = this.state
+    const override = {
+      position: 'fixed',
+      width: '80px',
+      height: '80px',
+      margin: '-40px 0 0 -40px',
+      top: '50%',
+      left: '50%',
+      zIndex: 50000
+    }
     const extract = (
       topics.map((i, index) => {
         const thumb = i.imageUrl ? i.imageUrl.match(/[0-9a-zA-Z]{7,}/g) : ''
@@ -118,23 +149,23 @@ class Home extends React.Component {
             >
               <ListItemAvatar>
                 <Avatar
-                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : ''}
+                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : DefaultImage}
                   className={classes.avatar}
                 />
               </ListItemAvatar>
               <ListItemText
                 primary={
                   <Typography component='span' className={classes.inline} color='textPrimary'>
-                    {i.category !== '' && (
+                    {i.boardName !== '' && (
                       <Chip
-                        label={i.category}
+                        label={i.boardName}
                         color='primary'
                         className={cn(classes.category, classes.leftIcon)}
                       />
                     )}
                     {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
                     {i.title}
-                    {i.postsCount > 0 ? ` | 댓글 ${i.postsCount}` : ''}
+                    {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
                   </Typography>
                 }
                 secondary={moment(i.created).fromNow()}
@@ -146,7 +177,16 @@ class Home extends React.Component {
     )
     return (
       <MuiThemeProvider theme={theme}>
-        <Card className={classes.card}>
+        <div className='sweet-loading' style={override}>
+          <HashLoader
+            sizeUnit='px'
+            size={80}
+            margin='2px'
+            color='#4A4A4A'
+            loading={loading}
+          />
+        </div>
+        <Card className={cn(classes.mb, classes.card)}>
           {extract}
         </Card>
       </MuiThemeProvider>
