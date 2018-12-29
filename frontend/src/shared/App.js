@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import AdSense from 'react-adsense'
 import { Grid, Hidden } from '@material-ui/core'
 import {
   Home,
@@ -74,13 +73,6 @@ class App extends Component {
       <div style={style}>
         <ToastContainer autoClose={2000} />
         <Header />
-        <AdSense.Google
-          client='ca-pub-5633529273423665'
-          slot='1882412178'
-          style={{ display: 'block', maxWidth: 970, margin: '0 auto 1rem auto' }}
-          format='auto'
-          responsive='true'
-        />
         <Grid container>
           <Hidden lgDown>
             <Grid item sm={2} />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, Route } from 'react-router-dom'
+import AdSense from 'react-adsense'
 import { toast } from 'react-toastify'
 import cn from 'classnames'
 import axios from 'axios'
@@ -481,6 +482,13 @@ class Lists extends React.Component {
           </div>
         )}
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
+        <AdSense.Google
+          client='ca-pub-5633529273423665'
+          slot='1882412178'
+          style={{ display: 'block', maxWidth: 970, margin: '.5rem auto 1rem auto' }}
+          format='auto'
+          responsive='true'
+        />
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>

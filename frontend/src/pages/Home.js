@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import AdSense from 'react-adsense'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
@@ -186,6 +187,13 @@ class Home extends React.Component {
             loading={loading}
           />
         </div>
+        <AdSense.Google
+          client='ca-pub-5633529273423665'
+          slot='1882412178'
+          style={{ display: 'block', maxWidth: 970, margin: '0 auto 1rem auto' }}
+          format='auto'
+          responsive='true'
+        />
         <Card className={cn(classes.mb, classes.card)}>
           {extract}
         </Card>
