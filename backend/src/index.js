@@ -17,7 +17,12 @@ router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())
 router.get('/', async ctx => {
-    ctx.body = ctx.socket.remoteAddress
+    try {
+        console.log(ctx.req.headers)
+        ctx.body = ctx.req.headers['X-Real-IP']
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 app.use(router.routes()).use(router.allowedMethods())
