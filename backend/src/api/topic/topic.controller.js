@@ -9,7 +9,7 @@ const getUser = require('../../database/user/getUser')
 const updateTopic = require('../../database/topic/updateTopic')
 
 const BURN_LIMIT = 3
-const BEST_LIMIT = 7
+const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
 
 exports.getListToWidget = async ctx => {
