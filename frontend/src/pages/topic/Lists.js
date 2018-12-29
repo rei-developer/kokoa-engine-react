@@ -116,6 +116,7 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
       main: '#3366CF',
       dark: '#002884',
@@ -137,13 +138,16 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit
   },
   card: {
-    border: '1px solid #ecedef',
+    border: '1px solid #' + (localStorage.mode === 'dark' ? '333' : 'ecedef'),
     borderRadius: 0
   },
   listItem: {
     '&:hover': {
-      background: '#EBF1FC'
+      background: '#' + (localStorage.mode === 'dark' ? '363636' : 'EBF1FC')
     }
+  },
+  noticeListItem: {
+    background: localStorage.mode === 'dark' ? '#363636' : theme.palette.background.default
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -171,7 +175,7 @@ const styles = theme => ({
     textAlign: 'center'
   },
   row: {
-    backgroundColor: theme.palette.background.default
+    backgroundColor: localStorage.mode === 'dark' ? '#363636' : theme.palette.background.default
   },
   bold: {
     fontWeight: 'bold'
@@ -222,12 +226,12 @@ const styles = theme => ({
     cursor: 'pointer'
   },
   sectionDesktop: {
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       display: 'none'
     }
   },
   sectionMobile: {
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       display: 'none'
     }
   }
@@ -353,6 +357,7 @@ class Lists extends React.Component {
       page: 0
     }, () => {
       this.getTopics(domain)
+      this.props.history.push(`/b/${domain}`)
     })
   }
 
@@ -365,10 +370,10 @@ class Lists extends React.Component {
     const { loading, notices, topics, rowsPerPage, count, page, boardName } = this.state
     const domain = this.props.match.params.domain
     const desktopExtract = (item, notice = false) => (
-      item.map(i => {
+      item.map((i, index) => {
         return (
           <TableRow
-            key={i.id}
+            key={index}
             selected={false}
             onClick={e => this.handleClick(e, i.id)}
             className={notice ? classes.row : null}
@@ -383,13 +388,13 @@ class Lists extends React.Component {
                   className={cn(classes.category, classes.leftIcon)}
                 />
               )}
-              {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
-              {i.isImage > 0 && (<img src={PictureIcon} className={classes.star} />)}
+              {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} alt='IsBest' />)}
+              {i.isImage > 0 && (<img src={PictureIcon} className={classes.star} alt='IsImage' />)}
               {i.title}
               {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
             </TableCell>
             <TableCell className={classes.author}>
-              <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+              <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
               <strong>{i.author}</strong>
             </TableCell>
             <TableCell className={classes.regdate}>{moment(i.created).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
@@ -404,11 +409,10 @@ class Lists extends React.Component {
         const thumb = i.imageUrl ? i.imageUrl.match(/[0-9a-zA-Z]{7,}/g) : ''
         const ext = i.imageUrl ? i.imageUrl.match(/(\.bmp|\.png|\.jpg|\.jpeg|\.gif)/g) : ''
         return (
-          <React.Fragment key={i.id}>
-            {index > 0 && (<Divider />)}
+          <React.Fragment key={index}>
             <ListItem
               onClick={e => this.handleClick(e, i.id)}
-              className={cn(classes.pl, classes.listItem)}
+              className={cn(classes.pl, classes.listItem, notice ? classes.noticeListItem : null)}
               button
             >
               <ListItemAvatar>
@@ -427,14 +431,14 @@ class Lists extends React.Component {
                         className={cn(classes.category, classes.leftIcon)}
                       />
                     )}
-                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
-                    {i.title}
+                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} alt='IsBest' />)}
+                    <span className={notice ? classes.bold : null}>{i.title}</span>
                     {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
                   </Typography>
                 }
                 secondary={
                   <>
-                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
                     <strong>{i.author}</strong>
                     {' | '}
                     {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
@@ -444,6 +448,7 @@ class Lists extends React.Component {
                 }
               />
             </ListItem>
+            <Divider />
           </React.Fragment>
         )
       })

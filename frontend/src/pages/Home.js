@@ -5,7 +5,6 @@ import axios from 'axios'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import {
-  Grid,
   Typography,
   Divider,
   ListItem,
@@ -28,10 +27,9 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
-      main: '#3366CF',
-      dark: '#002884',
-      contrastText: '#fff'
+      main: '#3366CF'
     }
   }
 })
@@ -74,12 +72,12 @@ const styles = theme => ({
     lineHeight: 19
   },
   card: {
-    border: '1px solid #ecedef',
+    border: '1px solid #' + (localStorage.mode === 'dark' ? '333' : 'ecedef'),
     borderRadius: 0
   },
   listItem: {
     '&:hover': {
-      background: '#EBF1FC'
+      background: '#' + (localStorage.mode === 'dark' ? '363636' : 'EBF1FC')
     }
   },
   star: {
@@ -163,7 +161,7 @@ class Home extends React.Component {
                         className={cn(classes.category, classes.leftIcon)}
                       />
                     )}
-                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />)}
+                    {i.isBest > 0 && (<img src={i.isBest > 1 ? StarIcon : BurnIcon} className={classes.star} alt='IsBest' />)}
                     {i.title}
                     {i.postsCount > 0 && (<span className={classes.count}>{i.postsCount}</span>)}
                   </Typography>

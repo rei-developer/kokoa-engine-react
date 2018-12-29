@@ -1,3 +1,8 @@
+import 'babel-polyfill'
+import 'raf/polyfill'
+import 'core-js/es6/map'
+import 'core-js/es6/set'
+import 'react-app-polyfill/ie9'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'mobx-react'

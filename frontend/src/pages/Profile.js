@@ -29,6 +29,7 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
       main: '#3366CF',
       dark: '#002884',
@@ -222,7 +223,7 @@ class Profile extends React.Component {
                 <ListItemText
                   primary={
                     <>
-                      <img src={user.isAdmin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                      <img src={user.isAdmin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
                       <Tooltip title='닉네임 변경' placement='right'>
                         <input
                           placeholder={user.nickname}

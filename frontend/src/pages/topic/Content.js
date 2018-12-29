@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
@@ -10,7 +9,6 @@ import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/
 import {
   Grid,
   Card,
-  Button,
   ListItem,
   ListItemText,
   ListItemAvatar,
@@ -33,6 +31,7 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
       main: '#3366CF',
       dark: '#002884',
@@ -105,8 +104,6 @@ const styles = theme => ({
 })
 
 const init = {
-  loading: true,
-  id: 0,
   userId: 0,
   boardDomain: '',
   originBoardDomain: '',
@@ -136,29 +133,41 @@ class Content extends React.Component {
 
   componentWillMount() {
     const id = this.props.match.params.id
-    this.getTopic(id)
+    this.setState({
+      loading: true,
+      id
+    }, () => {
+      this.reset()
+      this.getTopic(id)
+    })
   }
 
   componentWillReceiveProps(nextProps) {
-    const id = nextProps.match.params.id
-    this.reset()
-    this.getTopic(id)
+    if (!this.state.loading && this.props.match.params.id !== nextProps.match.params.id) {
+      const id = nextProps.match.params.id
+      this.setState({
+        loading: true,
+        id
+      }, () => {
+        this.reset()
+        this.getTopic(id)
+      })
+    }
   }
 
-  getTopic = async (id) => {
+  getTopic = async id => {
     const response = await axios.get(`/api/topic/read/${id}`)
     const data = await response.data
     if (data.status === 'fail') return toast.error(data.message)
     this.setState({
       loading: false,
-      id,
       ...data.topic
     }, () => {
       window.scrollTo(0, 0)
     })
   }
 
-  handleVotes = async (flag) => {
+  handleVotes = async flag => {
     const { id } = this.state
     if (id < 1) return
     const token = localStorage.token
@@ -180,7 +189,7 @@ class Content extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { loading, id, category, author, title, content, created, isBest, isNotice, hits, likes, hates, profile, admin } = this.state
+    const { loading, category, author, title, content, created, isBest, hits, likes, hates, profile, admin } = this.state
     const override = {
       position: 'fixed',
       width: '80px',
@@ -214,7 +223,7 @@ class Content extends React.Component {
                   primary={
                     <>
                       {isBest > 0 && (
-                        <img src={isBest > 1 ? StarIcon : BurnIcon} className={classes.star} />
+                        <img src={isBest > 1 ? StarIcon : BurnIcon} className={classes.star} alt='IsBest' />
                       )}
                       {category !== '' && (
                         <Chip
@@ -229,10 +238,12 @@ class Content extends React.Component {
                   secondary={
                     <>
                       <Typography component='span' className={classes.inline} color='textPrimary'>
-                        <img src={admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                        <img src={admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
                         <strong>{author}</strong>
                       </Typography>
                       {moment(created).fromNow()}
+                      {' | '}
+                      {`조회 ${hits}`}
                     </>
                   }
                 />
@@ -262,7 +273,7 @@ class Content extends React.Component {
                 />
               </Grid>
             </Card>
-            <PostLists id={id} />
+            <PostLists id={this.state.id} />
           </>
         )}
       </MuiThemeProvider>

@@ -28,25 +28,19 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
-      main: '#fff',
-      dark: '#fff',
+      main: localStorage.mode === 'dark' ? '#424242' : '#fff',
       contrastText: '#3366CF'
     },
     secondary: {
-      light: '#757ce8',
       main: '#3366CF',
-      dark: '#002884',
       contrastText: '#fff'
     }
   }
@@ -202,11 +196,16 @@ class Header extends React.Component {
     this.setState({ mobileMoreAnchorEl: null })
   }
 
+  changeMode = () => {
+    localStorage.mode = localStorage.mode === 'dark' ? 'light' : 'dark'
+    window.location.reload()
+  }
+
   toggleDrawer = (side, open) => () => {
     this.setState({
       [side]: open,
-    });
-  };
+    })
+  }
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state
@@ -248,6 +247,9 @@ class Header extends React.Component {
               <Divider />
             </>
           ))}
+          <ListItem button onClick={this.changeMode}>
+            <ListItemText primary='색상 모드 변경' />
+          </ListItem>
         </List>
       </div>
     )
@@ -261,6 +263,7 @@ class Header extends React.Component {
         onClose={this.handleMenuClose}
       >
         <MenuItem component={NavLink} to='/profile' onClick={this.handleMenuClose}>프로필 편집</MenuItem>
+        <MenuItem onClick={this.changeMode}>색상 모드 변경</MenuItem>
         <MenuItem component={NavLink} to='/' onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
@@ -279,13 +282,13 @@ class Header extends React.Component {
               <FontAwesomeIcon icon='bell' />
             </Badge>
           </IconButton>
-          <p>Notifications</p>
+          <p>알림</p>
         </MenuItem>
         <MenuItem onClick={this.handleProfileMenuOpen}>
           <IconButton color='inherit' className={classes.IconButton}>
             <FontAwesomeIcon icon='user' />
           </IconButton>
-          <p>Profile</p>
+          <p>프로필 편집</p>
         </MenuItem>
       </Menu>
     )

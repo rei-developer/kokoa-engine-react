@@ -1,5 +1,4 @@
 import React from 'react'
-import { toast } from 'react-toastify'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
@@ -7,10 +6,7 @@ import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
-  IconButton,
   Card,
-  Button,
-  Chip,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -18,7 +14,6 @@ import {
   Typography,
   Divider
 } from '@material-ui/core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import { HashLoader } from 'react-spinners'
 import AdminIcon from '../../images/Admin.png'
@@ -31,6 +26,7 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
+    type: localStorage.mode || 'light',
     primary: {
       main: '#3366CF',
       dark: '#002884',
@@ -186,11 +182,11 @@ class Lists extends React.Component {
 
   render() {
     const { id, classes, user } = this.props
-    const { loading, posts, count, page } = this.state
+    const { loading, posts } = this.state
     const extract = item => (
       item.map((i, index) => {
         return (
-          <React.Fragment key={i.id}>
+          <React.Fragment key={index}>
             {index > 0 && (<Divider />)}
             <ListItem
               className={cn(classes.pl, classes.listItem)}
@@ -206,7 +202,7 @@ class Lists extends React.Component {
                 }
                 secondary={
                   <>
-                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} />
+                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
                     <strong>{i.author}</strong>
                     {' | '}
                     {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}

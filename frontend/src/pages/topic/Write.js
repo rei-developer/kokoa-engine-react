@@ -8,11 +8,25 @@ import {
   InputLabel,
   FormControl,
   Button,
-  Card,
   Select
 } from '@material-ui/core'
 import { Editor } from '@tinymce/tinymce-react'
 import { HashLoader } from 'react-spinners'
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  shadows: Array(25).fill('none'),
+  palette: {
+    type: localStorage.mode || 'light',
+    primary: {
+      main: '#3366CF',
+      dark: '#002884',
+      contrastText: '#fff'
+    }
+  }
+})
 
 const styles = theme => ({
   container: {
@@ -60,13 +74,6 @@ const styles = theme => ({
   bootstrapFormLabel: {
     fontSize: 18,
   }
-})
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true
-  },
-  shadows: Array(25).fill('none')
 })
 
 class Write extends React.Component {
