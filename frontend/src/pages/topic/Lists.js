@@ -278,7 +278,6 @@ class Lists extends React.Component {
   }
 
   handleClick = (e, id) => {
-    window.scrollTo(0, 0)
     this.props.history.push(`${this.props.match.url}/${id}`)
   }
 
@@ -452,9 +451,9 @@ class Lists extends React.Component {
     )
     const override = {
       position: 'fixed',
-      width: '78px',
-      height: '78px',
-      margin: '-39px 0 0 -39px',
+      width: '80px',
+      height: '80px',
+      margin: '-40px 0 0 -40px',
       top: '50%',
       left: '50%',
       zIndex: 50000

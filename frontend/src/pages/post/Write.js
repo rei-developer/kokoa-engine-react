@@ -122,10 +122,10 @@ class Write extends React.Component {
     const { classes } = this.props
     const { loading } = this.state
     const override = {
-      position: 'absolute',
-      width: '78px',
-      height: '78px',
-      margin: '-39px 0 0 -39px',
+      position: 'fixed',
+      width: '80px',
+      height: '80px',
+      margin: '-40px 0 0 -40px',
       top: '50%',
       left: '50%',
       zIndex: 50000
