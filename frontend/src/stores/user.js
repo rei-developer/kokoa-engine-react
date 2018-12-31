@@ -3,6 +3,7 @@ import { observable, action } from 'mobx'
 
 export default class UserStore {
   @observable isLogged = false
+  @observable id = 0
   @observable username = ''
   @observable nickname = ''
   @observable email = ''
@@ -21,6 +22,7 @@ export default class UserStore {
 
   init = () => {
     this.isLogged = false
+    this.id = 0
     this.username = ''
     this.nickname = ''
     this.email = ''
@@ -43,6 +45,7 @@ export default class UserStore {
     const data = await response.data
     if (data.status === 'fail') return
     this.isLogged = true
+    this.id = data.user.id
     this.username = data.user.username
     this.nickname = data.user.nickname
     this.email = data.user.email

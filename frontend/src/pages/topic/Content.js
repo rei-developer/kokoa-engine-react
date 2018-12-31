@@ -9,6 +9,7 @@ import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/
 import {
   Grid,
   Card,
+  Button,
   ListItem,
   ListItemText,
   ListItemAvatar,
@@ -18,6 +19,7 @@ import {
   Chip
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { observer, inject } from 'mobx-react'
 import { HashLoader } from 'react-spinners'
 import StarIcon from '../../images/Star.svg'
 import BurnIcon from '../../images/Burn.svg'
@@ -125,6 +127,8 @@ const init = {
   admin: 0
 }
 
+@inject('user')
+@observer
 class Content extends React.Component {
   constructor(props) {
     super(props)
@@ -183,13 +187,30 @@ class Content extends React.Component {
     if (data.move === 'BEST') toast('베스트로 보냈습니다.')
   }
 
+  handleDelete = async () => {
+    const { id } = this.state
+    if (id < 1) return
+    const token = localStorage.token
+    if (!token) return toast.error('토큰을 새로 발급하세요.')
+    const response = await axios.delete(
+      '/api/topic/delete',
+      {
+        data: { id },
+        headers: { 'x-access-token': token }
+      }
+    )
+    const data = response.data
+    if (data.status === 'fail') return toast.error(data.message)
+    toast.success('삭제했습니다.')
+  }
+
   reset() {
     this.setState(init)
   }
 
   render() {
-    const { classes } = this.props
-    const { loading, category, author, title, content, created, isBest, hits, likes, hates, profile, admin } = this.state
+    const { classes, user } = this.props
+    const { loading, userId, category, author, title, content, created, isBest, hits, likes, hates, profile, admin } = this.state
     const override = {
       position: 'fixed',
       width: '80px',
@@ -273,6 +294,13 @@ class Content extends React.Component {
                 />
               </Grid>
             </Card>
+            {/*user.isLogged && user.id === userId && (
+              <div className={classes.mb}>
+                <Button onClick={this.handleDelete} variant='contained' color='primary'>
+                  삭제
+                </Button>
+              </div>
+            )*/}
             <PostLists id={this.state.id} />
           </>
         )}

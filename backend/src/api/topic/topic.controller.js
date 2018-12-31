@@ -1,3 +1,4 @@
+const fs = require('fs')
 const moment = require('moment')
 const User = require('../../lib/user')
 const createTopic = require('../../database/topic/createTopic')
@@ -204,4 +205,18 @@ exports.createTopicVotes = async ctx => {
 
 exports.createPostVotes = async ctx => {
 
+}
+
+exports.deleteTopic = async ctx => {
+  const user = await User.getUser(ctx.get('x-access-token'))
+  if (!user) return
+  const { id } = ctx.request.body
+  if (id < 1) return ctx.body = { status: 'fail' }
+  const userId = await getTopic.userId(id)
+  if (!userId) return ctx.body = { status: 'fail' }
+  if (userId !== user.id) return
+
+  console.log(user)
+
+  ctx.body = { status: 'ok' }
 }

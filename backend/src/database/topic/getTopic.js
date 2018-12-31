@@ -17,6 +17,15 @@ module.exports = async id => {
   return result[0]
 }
 
+module.exports.userId = async id => {
+  const result = await pool.query(
+    `SELECT userId FROM Topics WHERE id = ?`,
+    [id]
+  )
+  if (result.length < 1) return false
+  return result[0].userId
+}
+
 module.exports.count = async columns => {
   let keys = []
   let values = []
