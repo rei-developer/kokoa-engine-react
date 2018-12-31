@@ -31,9 +31,9 @@ module.exports.createTopicCounts = async topicId => {
 module.exports.createTopicImages = async (topicId, items) => {
   await pool.query(
     `INSERT INTO TopicImages (topicId, name, imageUrl)
-    VALUES ${items.filter(item => item.filename !== null).map(() => `(?, ?, ?)`).join(', ')}`,
+    VALUES ${items.filter(item => item.filename).map(() => `(?, ?, ?)`).join(', ')}`,
     items
-      .filter(item => item.filename !== null)
+      .filter(item => item.filename)
       .map(item => [topicId, item.name, item.filename])
       .reduce((acc, current) => [...acc, ...current], [])
   )
