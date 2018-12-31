@@ -166,35 +166,40 @@ class Write extends React.Component {
     const formData = new FormData()
     formData.append('type', 'file')
     formData.append('image', files[index], files[index].name)
-    const response = await axios.post(
-      '/api/cloud/topic',
-      formData,
-      {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      }
-    )
-    const data = await response.data
-    if (data.status === 'ok') {
-      const name = files[index].name
-      const filename = `https://hawawa.r.worldssl.net/img/${data.filename}`
-      toast.success(`${index + 1}번째 이미지 (${name}) 업로드 성공!`)
-      this.setState({
-        images: [
-          ...this.state.images,
-          {
-            name,
-            filename: data.filename,
-            link: filename
+
+    const LIMITS = 10485760
+    if (files[index].size > LIMITS) toast.error(`${index + 1}번째 이미지 업로드 실패... (10MB 이하만 업로드 가능)`)
+    else {
+      const response = await axios.post(
+        '/api/cloud/topic',
+        formData,
+        {
+          headers: {
+            'content-type': 'multipart/form-data'
           }
-        ],
-        selectedImage: filename
-      }, () => {
-        this.append(`<p><img src='${filename}'></p><p></p>`)
-      })
-    } else {
-      toast.error(`${index + 1}번째 이미지 업로드 실패...`)
+        }
+      )
+      const data = await response.data
+      if (data.status === 'ok') {
+        const name = files[index].name
+        const filename = `https://hawawa.r.worldssl.net/img/${data.filename}`
+        toast.success(`${index + 1}번째 이미지 (${name}) 업로드 성공!`)
+        this.setState({
+          images: [
+            ...this.state.images,
+            {
+              name,
+              filename: data.filename,
+              link: filename
+            }
+          ],
+          selectedImage: filename
+        }, () => {
+          this.append(`<p><img src='${filename}'></p><p></p>`)
+        })
+      } else {
+        toast.error(`${index + 1}번째 이미지 업로드 실패...`)
+      }
     }
     if (index === files.length - 1) return this.setState({ loading: false })
     await this.imageUploadToServer(files, index + 1)
