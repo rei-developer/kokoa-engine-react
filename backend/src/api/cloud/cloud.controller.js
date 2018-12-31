@@ -6,7 +6,7 @@ exports.createImage = async ctx => {
     const filename = ctx.req.file.filename
     try {
         fs.readFile(`./img/${filename}`, (err, data) => {
-            if (err) throw new Error({ status: 'fail' })
+            if (err) return ctx.body = { message: '이상한 오류', status: 'ok' }
             if (ext === '.png' || ext === '.jpg' || ext === '.jpeg') {
                 const image = sharp(data)
                 image.metadata()
@@ -15,16 +15,16 @@ exports.createImage = async ctx => {
                         .toBuffer()
                     )
                     .then(result => fs.writeFile(`./img/${filename}`, result, () => { }))
+                const thumbnail = sharp(data)
+                thumbnail.metadata()
+                    .then(() => thumbnail.resize(100, 100)
+                        .toBuffer()
+                    )
+                    .then(result => fs.writeFile(`./img/thumb/${filename}`, result, () => { }))
             }
-            const thumbnail = sharp(data)
-            thumbnail.metadata()
-                .then(() => thumbnail.resize(100, 100)
-                    .toBuffer()
-                )
-                .then(result => fs.writeFile(`./img/thumb/${filename}`, result, () => { }))
         })
         ctx.body = { filename, status: 'ok' }
     } catch (e) {
-        ctx.body = e
+        ctx.body = { message: e.message, status: 'fail' }
     }
 }
