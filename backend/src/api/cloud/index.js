@@ -10,9 +10,9 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const MY_NAMESPACE = '7d849d8b-7294-46ab-87a0-8851fb3c9256'
-        const ext = file.originalname.split('.')[1]
-        const name = uuidv5(`${Date.now()}-${file.originalname}`, MY_NAMESPACE)
-        cb(null, `${name}.${ext}`)
+        const ext = file.originalname.substr(file.originalname.lastIndexOf('.'), file.originalname.length).toLowerCase()
+        const filename = uuidv5(`${Date.now()}-${file.originalname}`, MY_NAMESPACE)
+        cb(null, `${filename}${ext}`)
     }
 })
 

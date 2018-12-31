@@ -30,10 +30,10 @@ module.exports.createTopicCounts = async topicId => {
 
 module.exports.createTopicImages = async (topicId, items) => {
   await pool.query(
-    `INSERT INTO TopicImages (topicId, name, imageUrl, deletehash)
-    VALUES ${items.map(() => `(?, ?, ?, ?)`).join(', ')}`,
+    `INSERT INTO TopicImages (topicId, name, imageUrl)
+    VALUES ${items.map(() => `(?, ?, ?)`).join(', ')}`,
     items
-      .map(item => [topicId, item.name, item.link, item.deletehash])
+      .map(item => [topicId, item.name, item.filename])
       .reduce((acc, current) => [...acc, ...current], [])
   )
 }

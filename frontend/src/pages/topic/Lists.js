@@ -406,8 +406,6 @@ class Lists extends React.Component {
     )
     const mobileExtract = (item, notice = false) => (
       item.map((i, index) => {
-        const thumb = i.imageUrl ? i.imageUrl.match(/[0-9a-zA-Z]{7,}/g) : ''
-        const ext = i.imageUrl ? i.imageUrl.match(/(\.bmp|\.png|\.jpg|\.jpeg|\.gif)/g) : ''
         return (
           <React.Fragment key={index}>
             <ListItem
@@ -417,7 +415,7 @@ class Lists extends React.Component {
             >
               <ListItemAvatar>
                 <Avatar
-                  src={i.imageUrl ? `https://i.imgur.com/${thumb}s${ext}` : DefaultImage}
+                  src={i.imageUrl ? `https://hawawa.r.worldssl.net/img/thumb/${i.imageUrl}` : DefaultImage}
                   className={classes.avatar}
                 />
               </ListItemAvatar>

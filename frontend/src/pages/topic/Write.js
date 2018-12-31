@@ -185,6 +185,7 @@ class Write extends React.Component {
           ...this.state.images,
           {
             name,
+            filename: data.filename,
             link: filename
           }
         ],
