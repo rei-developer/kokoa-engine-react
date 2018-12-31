@@ -15,8 +15,8 @@ router.use(helmet())
 router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())
-router.get('/', async ctx => {
-    ctx.body = ctx.req.headers['X-Real-IP']
+router.get(['/version', '/'], ctx => {
+    ctx.body = 1
 })
 
 app.use(router.routes()).use(router.allowedMethods())

@@ -159,6 +159,11 @@ const styles = theme => ({
   fullList: {
     width: 'auto',
   },
+  message: {
+    borderBottom: '1px solid #CCC',
+    background: 'yellow',
+    color: 'red'
+  }
 })
 
 @inject('option')
@@ -305,6 +310,7 @@ class Header extends React.Component {
             {sideList}
           </div>
         </Drawer>
+        {!option.isNewest && (<div className={classes.message}>하와와가 최신 버전이 아닙니다. 브라우저를 껐다 다시 켜주세요.</div>)}
         <AppBar position='static' className={classes.root}>
           <Grid container>
             <Hidden lgDown>

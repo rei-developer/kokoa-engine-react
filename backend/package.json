@@ -12,12 +12,14 @@
     "koa-bodyparser": "^4.2.1",
     "koa-helmet": "^4.0.0",
     "koa-logger": "^3.2.0",
+    "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mysql": "^2.16.0",
     "nodemailer": "^4.7.0",
     "nodemailer-smtp-transport": "^2.7.4",
-    "pbkdf2-password": "^1.2.1"
+    "pbkdf2-password": "^1.2.1",
+    "uuid": "^3.3.2"
   }
 }
