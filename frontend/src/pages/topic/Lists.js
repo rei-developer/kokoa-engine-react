@@ -4,6 +4,7 @@ import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import { TopicContent } from 'pages'
+import Adsense from '../../components/Adsense'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
@@ -461,7 +462,7 @@ class Lists extends React.Component {
       zIndex: 50000
     }
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme} className={classes.root}>
         <div className='sweet-loading' style={override}>
           <HashLoader
             sizeUnit='px'
@@ -483,6 +484,7 @@ class Lists extends React.Component {
           </div>
         )}
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
+        <Adsense />
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
