@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
-import Adsense from '../components/Adsense'
 import PropTypes from 'prop-types'
 import {
   Typography,
@@ -196,7 +195,6 @@ class Home extends React.Component {
             loading={loading}
           />
         </div>
-        <Adsense />
         <Card className={cn(classes.mb, classes.card)}>
           {extract}
         </Card>
