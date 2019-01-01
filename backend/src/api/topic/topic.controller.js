@@ -87,12 +87,12 @@ exports.getContent = async ctx => {
   if (!topic) return ctx.body = { status: 'fail' }
   const item = hits.filter(item => item.id === Number(id))[0]
   if (item) {
-    item.hits++
+    item.hits += 1
     topic.hits += item.hits
   }
   else {
     hits.push({ id: Number(id), hits: 1 })
-    topic.hits++
+    topic.hits += 1
   }
   ctx.body = { topic }
 }
