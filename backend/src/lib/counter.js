@@ -12,6 +12,10 @@ class Counter {
   }
 
   getHits(id) {
+    return this.hits.has(id) ? this.hits.get(id) : 0
+  }
+
+  setHits(id) {
     if (this.hits.has(id)) {
       this.hits.set(id, this.hits.get(id) + 1)
       return this.hits.get(id)

@@ -77,7 +77,7 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  topic.hits += Counter.getHits(id)
+  topic.hits += Counter.setHits(id)
   ctx.body = { topic }
 }
 
