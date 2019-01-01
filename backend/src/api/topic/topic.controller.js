@@ -16,11 +16,11 @@ const DELETE_LIMIT = 10
 
 global.hits = []
 
-schedule.scheduleJob('00 00 05 * * *', async () => {
+/*schedule.scheduleJob('00 00 05 * * *', async () => {
   if (hits.length < 1) return
   await updateTopic.updateTopicCountsByHits(hits)
   hits = []
-})
+})*/
 
 exports.getListToWidget = async ctx => {
   const topics = await getTopic.topicsToWidget(20)
@@ -86,9 +86,7 @@ exports.getContent = async ctx => {
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
 
-  if (id == 56140) {
-    console.log(hits)
-  }
+  console.log(hits)
 
   const item = await hits.filter(item => item.id === Number(id))[0]
   if (item) {
