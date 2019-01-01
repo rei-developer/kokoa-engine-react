@@ -163,12 +163,12 @@ class Write extends React.Component {
   }
 
   imageUploadToServer = async (files, index = 0) => {
+    const LIMITS = 10485760
     const formData = new FormData()
     formData.append('type', 'file')
     formData.append('image', files[index], files[index].name)
-
-    const LIMITS = 10485760
-    if (files[index].size > LIMITS) toast.error(`${index + 1}번째 이미지 업로드 실패... (10MB 이하만 업로드 가능)`)
+    if (!/(.gif|.png|.jpg|.jpeg|.webp)/i.test(files[index].name)) toast.error(`${index + 1}번째 이미지 업로드 실패... (gif, png, jpg, jpeg, webp만 가능)`)
+    else if (files[index].size > LIMITS) toast.error(`${index + 1}번째 이미지 업로드 실패... (10MB 이하만 업로드 가능)`)
     else {
       const response = await axios.post(
         '/api/cloud/topic',
