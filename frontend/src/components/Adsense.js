@@ -9,7 +9,7 @@ export default class Adsense extends React.Component {
     return (
       <ins
         className='adsbygoogle'
-        style={{ display: 'block', width: 970, margin: '0 auto .5rem auto' }}
+        style={{ display: 'block', maxWidth: 970, margin: '0 auto .5rem auto' }}
         data-ad-client='ca-pub-5633529273423665'
         data-ad-slot='1882412178'
         data-ad-format='auto'
