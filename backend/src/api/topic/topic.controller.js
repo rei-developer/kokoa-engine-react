@@ -1,3 +1,4 @@
+const schedule = require('node-schedule')
 const fs = require('fs')
 const moment = require('moment')
 const User = require('../../lib/user')
@@ -12,6 +13,14 @@ const updateTopic = require('../../database/topic/updateTopic')
 const BURN_LIMIT = 3
 const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
+
+let hits = []
+
+schedule.scheduleJob('00 00 05 * * *', async () => {
+  if (hits.length < 1) return
+  await updateTopic.updateTopicCountsByHits(hits)
+  hits = []
+})
 
 exports.getListToWidget = async ctx => {
   const topics = await getTopic.topicsToWidget(20)
@@ -34,6 +43,13 @@ exports.getTopics = async ctx => {
   const count = await getTopic.count(obj)
   const notices = await getTopic.notices(domain)
   const topics = await getTopic.topics(obj, page, limit)
+  if (topics.length > 0) {
+    topics.map(topic => {
+      const item = hits.filter(item => item.id === topic.id)[0]
+      if (item) topic.hits = topic.hits + item.hits
+      return topic
+    })
+  }
   ctx.body = { count, notices, topics }
 }
 
@@ -69,10 +85,15 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-
-  // 임시
-  await updateTopic.updateTopicCountsByHits(id)
-
+  const item = hits.filter(item => item.id === Number(id))[0]
+  if (item) {
+    item.hits++
+    topic.hits += item.hits
+  }
+  else {
+    hits.push({ id: Number(id), hits: 1 })
+    topic.hits++
+  }
   ctx.body = { topic }
 }
 

@@ -14,10 +14,12 @@ module.exports.updateTopicByIsAllowed = async (topicId, isAllowed = 0) => {
   )
 }
 
-module.exports.updateTopicCountsByHits = async (topicId, hits = 1) => {
+module.exports.updateTopicCountsByHits = async (items) => {
   await pool.query(
     `UPDATE TopicCounts SET hits = hits + ? WHERE topicId = ?`,
-    [hits, topicId]
+    items
+      .map(item => [item.hits, item.id])
+      .reduce((acc, current) => [...acc, ...current], [])
   )
 }
 
