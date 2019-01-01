@@ -1,6 +1,6 @@
-const schedule = require('node-schedule')
 const fs = require('fs')
 const moment = require('moment')
+const Counter = require('../../lib/counter')
 const User = require('../../lib/user')
 const createTopic = require('../../database/topic/createTopic')
 const createPost = require('../../database/topic/createPost')
@@ -13,14 +13,6 @@ const updateTopic = require('../../database/topic/updateTopic')
 const BURN_LIMIT = 3
 const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
-
-global.topicHits = new Map()
-
-schedule.scheduleJob('00 00 05 * * *', async () => {
-  if (topicHits.size < 1) return
-  await updateTopic.updateTopicCountsByHits(topicHits)
-  topicHits.clear()
-})
 
 exports.getListToWidget = async ctx => {
   const topics = await getTopic.topicsToWidget(20)
@@ -45,7 +37,7 @@ exports.getTopics = async ctx => {
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
     topics.map(topic => {
-      if (topicHits.has(topic.id)) topic.hits += topicHits.get(topic.id)
+      topic.hits += Counter.getHits(topic.id)
       return topic
     })
   }
@@ -85,13 +77,7 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  if (topicHits.has(id)) {
-    topicHits.set(id, topicHits.get(id) + 1)
-    topic.hits += topicHits.get(id)
-  } else {
-    topicHits.set(id, 1)
-    topic.hits += 1
-  }
+  topic.hits += Counter.getHits(id)
   ctx.body = { topic }
 }
 
