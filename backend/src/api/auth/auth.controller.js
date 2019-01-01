@@ -24,7 +24,7 @@ exports.getAuth = async ctx => {
         const token = jwt.sign(
           { jti: user.id },
           process.env.JWT_SECRET,
-          { expiresIn: '1d' }
+          { expiresIn: '30d' }
         )
         resolve({ token, status: 'ok' })
       })
