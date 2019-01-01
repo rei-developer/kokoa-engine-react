@@ -85,16 +85,19 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  let item = hits.filter(item => item.id === Number(id))[0]
-  if (item) {
-    item.hits += 1
-    topic.hits += item.hits
-  }
-  else {
-    hits.push({ id: Number(id), hits: 1 })
-    topic.hits += 1
-  }
-  ctx.body = { topic }
+  const result = await new Promise((resolve, reject) => {
+    let item = hits.filter(item => item.id === Number(id))[0]
+    if (item) {
+      item.hits += 1
+      topic.hits += item.hits
+    }
+    else {
+      hits.push({ id: Number(id), hits: 1 })
+      topic.hits += 1
+    }
+    resolve({ topic })
+  })
+  ctx.body = result
 }
 
 exports.createTopic = async ctx => {
