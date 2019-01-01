@@ -1,3 +1,4 @@
+const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const bkfd2Password = require('pbkdf2-password')
 const User = require('../../lib/user')
@@ -109,7 +110,7 @@ exports.updateUserByProfileImage = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   const getProfileImageUrl = await getUser.profileImageUrl(user.id)
-  if (getProfileImageUrl && getProfileImageUrl !== '') fs.unlink(`./img/${getProfileImageUrl}`, err => console.log(err))
+  if (getProfileImageUrl && getProfileImageUrl !== '') fs.unlink(`./img/${getProfileImageUrl}`, () => { })
   await updateUser({ profileImageUrl: url }, user.id)
   ctx.body = { status: 'ok' }
 }

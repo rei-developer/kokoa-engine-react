@@ -236,7 +236,7 @@ class Content extends React.Component {
             <Card className={cn(classes.card, classes.mb)}>
               <ListItem className={classes.item}>
                 <ListItemAvatar>
-                  <Avatar src={profile ? profile : DefaultImage}
+                  <Avatar src={profile ? `https://hawawa.r.worldssl.net/img/${profile}` : DefaultImage}
                     className={classes.avatar}
                   />
                 </ListItemAvatar>

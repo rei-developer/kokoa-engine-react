@@ -192,7 +192,7 @@ class Lists extends React.Component {
               className={cn(classes.pl, classes.listItem)}
             >
               <ListItemAvatar>
-                <Avatar src={i.profile ? i.profile : DefaultImage} className={classes.avatar} />
+                <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
               </ListItemAvatar>
               <ListItemText
                 primary={
