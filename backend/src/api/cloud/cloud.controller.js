@@ -14,10 +14,7 @@ exports.createImage = async ctx => {
                 if (checkerByGIF) {
                     console.log('test')
                     execFile(giflossy, ['-O3', '--lossy=30', '-o', `./img/${filename}`, `./img/${filename}`], err => {
-                        if (err) {
-                            console.log(err)
-                            return ctx.body = { message: err, status: 'fail' }
-                        }
+                        if (err) return ctx.body = { message: err, status: 'fail' }
                     })
                 } else {
                     const image = sharp(data)
