@@ -3,6 +3,7 @@ import { Link, Route } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
+import Adsense from '../../components/Adsense'
 import { TopicContent } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
@@ -483,6 +484,7 @@ class Lists extends React.Component {
           </div>
         )}
         <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
+        <Adsense />
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>

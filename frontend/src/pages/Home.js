@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
+import Adsense from '../components/Adsense'
 import PropTypes from 'prop-types'
 import {
   Typography,
@@ -20,6 +21,7 @@ import { HashLoader } from 'react-spinners'
 import StarIcon from '../images/Star.svg'
 import BurnIcon from '../images/Burn.svg'
 import DefaultImage from '../images/Default.png'
+import { toast } from 'react-toastify'
 
 const theme = createMuiTheme({
   typography: {
@@ -112,13 +114,25 @@ class Home extends React.Component {
     option.setLogo()
   }
 
-  componentWillMount = async () => {
+  componentWillMount = () => {
+    this.getTopics()
+    this.updateTopics()
+  }
+
+  getTopics = async () => {
     const response = await axios.get('/api/topic/list/widget')
     const data = await response.data
     this.setState({
       loading: false,
       topics: data ? [...data] : []
     })
+  }
+
+  updateTopics = () => {
+    setTimeout(async () => {
+      this.getTopics()
+      this.updateTopics()
+    }, 60000)
   }
 
   render() {
@@ -182,6 +196,7 @@ class Home extends React.Component {
             loading={loading}
           />
         </div>
+        <Adsense />
         <Card className={cn(classes.mb, classes.card)}>
           {extract}
         </Card>
