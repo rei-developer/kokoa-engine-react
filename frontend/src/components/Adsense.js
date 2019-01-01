@@ -7,9 +7,7 @@ export default class Adsense extends React.Component {
 
   render() {
     const container = {
-      display: 'block',
-      maxWidth: 970,
-      margin: '0 auto .5rem auto'
+      display: 'block'
     }
     return (
       <div style={container}>
