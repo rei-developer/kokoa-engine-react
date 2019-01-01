@@ -13,14 +13,14 @@ exports.createImage = async ctx => {
                 if (err) return ctx.body = { message: err, status: 'fail' }
                 if (checkerByGIF) {
                     console.log('test')
-                    execFile(giflossy, ['-O3', '--lossy=30', '-o', `./img/${filename}`, `./img/${filename}`], err => {
+                    execFile(giflossy, ['-O3', '--lossy=75', '-o', `./img/${filename}`, `./img/${filename}`], err => {
                         if (err) return ctx.body = { message: err, status: 'fail' }
                     })
                 } else {
                     const image = sharp(data)
                     image.metadata()
                         .then((metadata) => image.resize(Math.min(metadata.width, 960))
-                            .jpeg(80)
+                            .jpeg(75)
                             .toBuffer()
                         )
                         .then(result => fs.writeFile(`./img/${filename}`, result, () => { }))
