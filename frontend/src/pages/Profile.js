@@ -140,26 +140,25 @@ class Profile extends React.Component {
   imageUpload = async e => {
     const token = localStorage.token
     if (!token) return toast.error('토큰을 새로 발급하세요.')
-    const { REACT_APP_CLIENT_ID } = process.env
+    const LIMITS = 10485760
     const file = e.target.files[0]
     const formData = new FormData()
     formData.append('type', 'file')
-    formData.append('image', file)
-    toast('이미지 업로드 시도중...')
-    const response = await axios.post('https://api.imgur.com/3/upload.json',
-      formData,
-      {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Client-ID ${REACT_APP_CLIENT_ID}`
-        }
+    formData.append('image', file, file.name)
+    if (!/(.gif|.png|.jpg|.jpeg|.webp)/i.test(file.name)) toast.error('이미지 업로드 실패... (gif, png, jpg, jpeg, webp만 가능)')
+    else if (file.size > LIMITS) toast.error('이미지 업로드 실패... (10MB 이하만 업로드 가능)')
+    else {
+      const response = await axios.post(
+        '/api/cloud/profile',
+        formData,
+        { headers: { 'content-type': 'multipart/form-data' } }
+      )
+      const data = await response.data
+      if (data.status === 'ok') {
+        this.editByProfileImage(token, data.filename)
+      } else {
+        toast.error('이미지 업로드 실패...')
       }
-    )
-    const data = await response.data
-    if (data.success) {
-      this.editByProfileImage(token, data.data.link)
-    } else {
-      toast.error('이미지 업로드 실패...')
     }
   }
 

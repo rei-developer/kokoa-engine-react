@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage, limits: { fileSize: 10485760 } })
 
-app.post('/topic', upload.single('image'), cloudCtrl.createImage)
+app.post('/profile', upload.single('image'), cloudCtrl.createImage())
+app.post('/topic', upload.single('image'), cloudCtrl.createImage('topic'))
 
 module.exports = app

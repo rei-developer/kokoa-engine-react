@@ -2,7 +2,7 @@ import axios from 'axios'
 import { observable, action } from 'mobx'
 
 export default class UserStore {
-  @observable version = 1
+  @observable version = 2
   @observable isNewest = true
   @observable logo = 'Logo'
 

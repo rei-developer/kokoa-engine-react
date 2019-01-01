@@ -173,11 +173,7 @@ class Write extends React.Component {
       const response = await axios.post(
         '/api/cloud/topic',
         formData,
-        {
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        }
+        { headers: { 'content-type': 'multipart/form-data' } }
       )
       const data = await response.data
       if (data.status === 'ok') {
