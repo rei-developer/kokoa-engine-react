@@ -85,7 +85,7 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  const item = hits.filter(item => item.id === Number(id))[0]
+  const item = await hits.filter(item => item.id === Number(id))[0]
   if (item) {
     console.log(item)
     item.hits += 1
