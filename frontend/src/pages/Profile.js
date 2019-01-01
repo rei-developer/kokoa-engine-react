@@ -172,7 +172,7 @@ class Profile extends React.Component {
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('프로필 사진 편집 성공')
     const { user } = this.props
-    user.setProfileImage(`https://hawawa.r.worldssl.net/img/${url}`)
+    user.setProfileImage(url)
   }
 
   edit = async () => {
