@@ -45,8 +45,8 @@ exports.getTopics = async ctx => {
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
     topics.map(topic => {
-      const item = hits.filter(item => item.id === topic.id)[0]
-      if (item) topic.hits = topic.hits + item.hits
+      let item = hits.filter(item => item.id === topic.id)[0]
+      if (item) topic.hits += item.hits
       return topic
     })
   }
@@ -85,7 +85,7 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  const item = hits.filter(item => item.id === Number(id))[0]
+  let item = hits.filter(item => item.id === Number(id))[0]
   if (item) {
     item.hits += 1
     topic.hits += item.hits
