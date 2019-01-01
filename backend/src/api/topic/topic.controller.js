@@ -14,7 +14,7 @@ const BURN_LIMIT = 3
 const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
 
-let hits = []
+global.hits = []
 
 schedule.scheduleJob('00 00 05 * * *', async () => {
   if (hits.length < 1) return
@@ -45,7 +45,7 @@ exports.getTopics = async ctx => {
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
     topics.map(topic => {
-      let item = hits.filter(item => item.id === topic.id)[0]
+      const item = hits.filter(item => item.id === topic.id)[0]
       if (item) topic.hits += item.hits
       return topic
     })
@@ -85,19 +85,16 @@ exports.getContent = async ctx => {
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  const result = await new Promise((resolve, reject) => {
-    let item = hits.filter(item => item.id === Number(id))[0]
-    if (item) {
-      item.hits += 1
-      topic.hits += item.hits
-    }
-    else {
-      hits.push({ id: Number(id), hits: 1 })
-      topic.hits += 1
-    }
-    resolve({ topic })
-  })
-  ctx.body = result
+  const item = hits.filter(item => item.id === Number(id))[0]
+  if (item) {
+    item.hits += 1
+    topic.hits += item.hits
+  }
+  else {
+    hits.push({ id: Number(id), hits: 1 })
+    topic.hits += 1
+  }
+  ctx.body = { topic }
 }
 
 exports.createTopic = async ctx => {
