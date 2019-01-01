@@ -14,13 +14,13 @@ const BURN_LIMIT = 3
 const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
 
-global.hits = []
+global.topicHits = new Map()
 
-/*schedule.scheduleJob('00 00 05 * * *', async () => {
-  if (hits.length < 1) return
-  await updateTopic.updateTopicCountsByHits(hits)
-  hits = []
-})*/
+schedule.scheduleJob('00 00 05 * * *', async () => {
+  if (topicHits.size < 1) return
+  await updateTopic.updateTopicCountsByHits(topicHits)
+  topicHits.clear()
+})
 
 exports.getListToWidget = async ctx => {
   const topics = await getTopic.topicsToWidget(20)
@@ -45,8 +45,7 @@ exports.getTopics = async ctx => {
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
     topics.map(topic => {
-      const item = hits.filter(item => item.id === topic.id)[0]
-      if (item) topic.hits += item.hits
+      if (topicHits.has(topic.id)) topic.hits += topicHits.get(topic.id)
       return topic
     })
   }
@@ -81,20 +80,16 @@ exports.getCategories = async ctx => {
 }
 
 exports.getContent = async ctx => {
-  const { id } = ctx.params
+  let { id } = ctx.params
+  id = Number(id)
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-
-  console.log(hits)
-
-  const item = await hits.filter(item => item.id === Number(id))[0]
-  if (item) {
-    item.hits += 1
-    topic.hits += item.hits
-  }
-  else {
-    hits.push({ id: Number(id), hits: 1 })
+  if (topicHits.has(id)) {
+    topicHits.set(id, topicHits.get(id) + 1)
+    topic.hits += topicHits.get(id)
+  } else {
+    topicHits.set(id, 1)
     topic.hits += 1
   }
   ctx.body = { topic }
