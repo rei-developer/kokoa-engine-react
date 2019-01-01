@@ -3,6 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import cn from 'classnames'
 import { toast } from 'react-toastify'
+import Adsense from '../components/Adsense'
 import PropTypes from 'prop-types'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
@@ -200,6 +201,7 @@ class Profile extends React.Component {
     const { classes, user } = this.props
     return (
       <MuiThemeProvider theme={theme}>
+        <Adsense />
         <Grid container>
           <Hidden mdDown>
             <Grid item xs={4} />
