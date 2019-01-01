@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { observable, action } from 'mobx'
 
+const version = 3
+
 export default class UserStore {
-  @observable version = 2
   @observable isNewest = true
   @observable logo = 'Logo'
 
@@ -14,7 +15,7 @@ export default class UserStore {
   getData = async () => {
     const response = await axios.get('/version')
     const data = await response.data
-    if (!data || data > this.version) this.isNewest = false
+    if (!data || data > version) this.isNewest = false
   }
 
   @action setLogo = (logo = 'Logo') => {

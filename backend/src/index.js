@@ -16,7 +16,7 @@ router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())
 router.get(['/version', '/'], ctx => {
-    ctx.body = 2
+    ctx.body = 3
 })
 
 app.use(router.routes()).use(router.allowedMethods())
