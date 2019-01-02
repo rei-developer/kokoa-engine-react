@@ -34,7 +34,7 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
-    type: localStorage.mode || 'main',
+    type: localStorage.mode || 'light',
     primary: {
       main: '#FFF',
       dark: '#202A37',
