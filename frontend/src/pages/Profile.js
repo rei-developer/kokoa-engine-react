@@ -197,8 +197,19 @@ class Profile extends React.Component {
 
   render() {
     const { classes, option, user } = this.props
+
+    const test = `
+    <script type="text/javascript">
+      imobile_pid = "63114"; 
+      imobile_asid = "1619629"; 
+      imobile_width = 728; 
+      imobile_height = 90;
+    </script>
+    `
+
     return (
       <MuiThemeProvider theme={theme}>
+        <div dangerouslySetInnerHTML={{ __html: test }} />
         <Grid container>
           <Hidden mdDown>
             <Grid item xs={4} />
