@@ -14,19 +14,6 @@ module.exports.updateTopicByIsAllowed = async (topicId, isAllowed = 0) => {
   )
 }
 
-module.exports.updateTopicCountsByHits = async maps => {
-  let items = []
-  for (let [id, hits] of maps) {
-    items.push({ id, hits })
-  }
-  await pool.query(
-    `UPDATE TopicCounts SET hits = hits + ? WHERE topicId = ?`,
-    items
-      .map(item => [item.hits, item.id])
-      .reduce((acc, current) => [...acc, ...current], [])
-  )
-}
-
 module.exports.updateTopicCountsByLikes = async (topicId, likes = 1) => {
   await pool.query(
     `UPDATE TopicCounts SET likes = likes + ? WHERE topicId = ?`,

@@ -1,6 +1,6 @@
 const fs = require('fs')
+const redis = require('redis')
 const moment = require('moment')
-const Counter = require('../../lib/counter')
 const Filter = require('../../lib/filter')
 const User = require('../../lib/user')
 const createTopic = require('../../database/topic/createTopic')
@@ -10,6 +10,8 @@ const getTopic = require('../../database/topic/getTopic')
 const getPost = require('../../database/topic/getPost')
 const getUser = require('../../database/user/getUser')
 const updateTopic = require('../../database/topic/updateTopic')
+
+const client = redis.createClient()
 
 const BURN_LIMIT = 3
 const BEST_LIMIT = 5
@@ -37,10 +39,15 @@ exports.getTopics = async ctx => {
   const notices = await getTopic.notices(domain)
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
-    topics.map(topic => {
-      topic.hits += Counter.getHits(topic.id)
-      return topic
-    })
+    const jobs = topics.map(topic => new Promise(resolve => {
+      client.get(topic.id, (err, value) => {
+        if (err) return resolve(true)
+        const hits = Number(value) || 0
+        topic.hits += hits
+        resolve(true)
+      })
+    }))
+    await Promise.all(jobs)
   }
   ctx.body = { count, notices, topics }
 }
@@ -73,12 +80,24 @@ exports.getCategories = async ctx => {
 }
 
 exports.getContent = async ctx => {
-  let { id } = ctx.params
-  id = Number(id)
+  const { id } = ctx.params
   if (id < 1) return
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
-  topic.hits += Counter.setHits(id)
+  if (client.exists(id)) {
+    const hits = await new Promise(resolve => {
+      client.get(id, (err, value) => {
+        if (err) return resolve(1)
+        const hit = Number(value) + 1
+        client.set(id, hit)
+        resolve(hit)
+      })
+    })
+    topic.hits += hits
+  } else {
+    client.set(id, 1)
+    topic.hits += 1
+  }
   ctx.body = { topic }
 }
 
