@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios'
 import cn from 'classnames'
 import PropTypes from 'prop-types'
 import {
@@ -27,6 +28,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
+
+const VERSION = 4
 
 const theme = createMuiTheme({
   typography: {
@@ -175,6 +178,15 @@ class Header extends React.Component {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     left: false,
+    version: 0
+  }
+
+  componentWillMount = async () => {
+    const response = await axios.get('/version')
+    const data = await response.data
+    if (data) this.setState({
+      version: data
+    })
   }
 
   handleProfileMenuOpen = event => {
@@ -209,12 +221,12 @@ class Header extends React.Component {
 
   toggleDrawer = (side, open) => () => {
     this.setState({
-      [side]: open,
+      [side]: open
     })
   }
 
   render() {
-    const { anchorEl, mobileMoreAnchorEl } = this.state
+    const { anchorEl, mobileMoreAnchorEl, version } = this.state
     const { classes, option, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -311,7 +323,7 @@ class Header extends React.Component {
             {sideList}
           </div>
         </Drawer>
-        {!option.isNewest && (<div className={classes.message}>하와와가 최신 버전이 아닙니다. 브라우저를 껐다 다시 켜주세요.</div>)}
+        {VERSION < version && (<div className={classes.message}>하와와가 최신 버전이 아닙니다. 캐시를 비우고 다시 접속해주세요.</div>)}
         <AppBar position='static' className={classes.root}>
           <Grid container>
             <Hidden lgDown>

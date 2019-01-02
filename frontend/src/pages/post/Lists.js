@@ -6,14 +6,21 @@ import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
+  IconButton,
   Card,
+  List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  ListItemSecondaryAction,
   Avatar,
   Typography,
-  Divider
+  Divider,
+  Menu,
+  MenuItem
 } from '@material-ui/core'
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state/index'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import { HashLoader } from 'react-spinners'
 import AdminIcon from '../../images/Admin.png'
@@ -60,6 +67,14 @@ const styles = theme => ({
   card: {
     border: '1px solid #ecedef',
     borderRadius: 0
+  },
+  listItem: {
+    margin: 0,
+    padding: 0
+  },
+  IconButton: {
+    width: 48,
+    height: 48
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -134,6 +149,8 @@ const init = {
   page: 0
 }
 
+const timeRender = date => moment(date).format(moment(date).format('YYYYMMDD') === moment().format('YYYYMMDD') ? 'HH:mm:ss' : 'YYYY.MM.DD')
+
 @inject('option')
 @inject('user')
 @observer
@@ -163,6 +180,14 @@ class Lists extends React.Component {
     })
   }
 
+  reply = async item => {
+    alert('미안하다 게이들아... 1월 3일 안으론 만들게 시간이 없다')
+  }
+
+  delete = async item => {
+    alert('미안하다 게이들아... 1월 3일 안으론 만들게 시간이 없다')
+  }
+
   handleCreate = (postsCount, posts) => {
     this.setState({
       loading: true
@@ -186,29 +211,58 @@ class Lists extends React.Component {
       item.map((i, index) => {
         return (
           <React.Fragment key={index}>
-            {index > 0 && (<Divider />)}
-            <ListItem
-              className={cn(classes.pl, classes.listItem)}
-            >
-              <ListItemAvatar>
-                <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  <Typography component='span' className={classes.inline} color='textPrimary'>
-                    {i.content}
-                  </Typography>
-                }
-                secondary={
-                  <>
-                    <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
-                    <strong>{i.author}</strong>
-                    {' | '}
-                    {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
-                  </>
-                }
-              />
-            </ListItem>
+            <List className={classes.listItem}>
+              {index > 0 && (<Divider />)}
+              <ListItem className={classes.pl}>
+                <ListItemAvatar>
+                  <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography component='span' className={classes.inline} color='textPrimary'>
+                      <div dangerouslySetInnerHTML={{ __html: i.content }} />
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
+                      <strong>{i.author}</strong>
+                      {' | '}
+                      {timeRender(i.created)}
+                    </>
+                  }
+                />
+                {user.isLogged && (
+                  <ListItemSecondaryAction>
+                    <PopupState variant="popover" popupId="demo-popup-menu">
+                      {popupState => (
+                        <React.Fragment>
+                          <IconButton className={classes.IconButton} {...bindTrigger(popupState)}>
+                            <FontAwesomeIcon icon='ellipsis-v' />
+                          </IconButton>
+                          <Menu {...bindMenu(popupState)}>
+                            <MenuItem onClick={() => {
+                              this.reply(i)
+                              popupState.close()
+                            }}>
+                              댓글
+                            </MenuItem>
+                            {user.id === i.userId && (
+                              <MenuItem onClick={() => {
+                                this.delete(i)
+                                popupState.close()
+                              }}>
+                                삭제
+                              </MenuItem>
+                            )}
+                          </Menu>
+                        </React.Fragment>
+                      )}
+                    </PopupState>
+                  </ListItemSecondaryAction>
+                )}
+              </ListItem>
+            </List>
           </React.Fragment>
         )
       })

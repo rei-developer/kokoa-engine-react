@@ -15,9 +15,8 @@ router.use(helmet())
 router.use(Logger())
 router.use(bodyParser())
 router.use('/api', api.routes())
-router.get(['/version', '/'], ctx => {
-    ctx.body = 4
-})
+router.get('/version', ctx => ctx.body = 4)
+router.get('/', ctx => ctx.body = 'Hello, World!')
 
 app.use(router.routes()).use(router.allowedMethods())
 

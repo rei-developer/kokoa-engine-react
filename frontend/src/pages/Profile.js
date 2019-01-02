@@ -285,7 +285,7 @@ class Profile extends React.Component {
                     <FontAwesomeIcon icon='flag' />
                   </Grid>
                   <Grid item>
-                    Version {option.version}
+                    ver {option.version} / {option.newest}
                   </Grid>
                 </Grid>
               </div>

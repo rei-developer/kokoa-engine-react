@@ -56,8 +56,7 @@ const styles = theme => ({
       height: 'auto'
     },
     '& iframe': {
-      maxWidth: '100%',
-      height: 'auto',
+      maxWidth: 'calc(100vw - 1rem)',
       border: 0
     },
     [theme.breakpoints.up('sm')]: {

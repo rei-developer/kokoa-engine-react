@@ -197,9 +197,6 @@ const styles = theme => ({
   author: {
     width: 140
   },
-  regdate: {
-    width: 120
-  },
   numeric: {
     width: 40,
     textAlign: 'center'
@@ -248,6 +245,8 @@ const init = {
   domain: '',
   boardName: ''
 }
+
+const timeRender = date => moment(date).format(moment(date).format('YYYYMMDD') === moment().format('YYYYMMDD') ? 'HH:mm:ss' : 'YYYY.MM.DD')
 
 @inject('option')
 @inject('user')
@@ -396,7 +395,7 @@ class Lists extends React.Component {
               <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
               <strong>{i.author}</strong>
             </TableCell>
-            <TableCell className={classes.regdate}>{moment(i.created).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
+            <TableCell className={classes.numeric}>{timeRender(i.created)}</TableCell>
             <TableCell className={classes.numeric}>{i.hits}</TableCell>
             <TableCell className={classes.numeric}>{i.likes}</TableCell>
           </TableRow>
@@ -438,7 +437,7 @@ class Lists extends React.Component {
                     <img src={i.admin > 0 ? AdminIcon : UserIcon} className={classes.leftMiniIcon} alt='User' />
                     <strong>{i.author}</strong>
                     {' | '}
-                    {moment(i.created).format('YYYY/MM/DD HH:mm:ss')}
+                    {timeRender(i.created)}
                     {' | 조회 '}
                     {i.hits}
                   </>

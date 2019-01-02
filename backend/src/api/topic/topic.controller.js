@@ -1,6 +1,7 @@
 const fs = require('fs')
 const moment = require('moment')
 const Counter = require('../../lib/counter')
+const Filter = require('../../lib/filter')
 const User = require('../../lib/user')
 const createTopic = require('../../database/topic/createTopic')
 const createPost = require('../../database/topic/createPost')
@@ -93,6 +94,8 @@ exports.createTopic = async ctx => {
     images
   } = ctx.request.body
   if (title === '' || content === '') return
+  title = Filter.disable(title)
+  content = Filter.topic(content)
   const isAdminOnly = await getBoard.isAdminOnly(domain)
   if (isAdminOnly < 0) return
   if (user.isAdmin < isAdminOnly) return ctx.body = { message: '권한이 없습니다.', status: 'fail' }
@@ -131,6 +134,7 @@ exports.createPost = async ctx => {
     content
   } = ctx.request.body
   if (content === '') return
+  content = Filter.post(content)
   const ip = ctx.get('x-real-ip')
   const header = ctx.header['user-agent']
   const postId = await createPost({
