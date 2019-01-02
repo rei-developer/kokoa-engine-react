@@ -21,9 +21,8 @@ const theme = createMuiTheme({
   palette: {
     type: localStorage.mode || 'light',
     primary: {
-      main: '#3366CF',
-      dark: '#002884',
-      contrastText: '#fff'
+      main: '#01CEA2',
+      contrastText: '#FFF'
     }
   }
 })
@@ -51,12 +50,6 @@ const styles = theme => ({
   pr: {
     paddingRight: theme.spacing.unit / 2
   },
-  card: {
-    margin: theme.spacing.unit,
-    padding: theme.spacing.unit,
-    borderRadius: '.25rem',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
-  },
   bootstrapRoot: {
     'label + &': {
       marginTop: theme.spacing.unit * 3,
@@ -70,9 +63,9 @@ const styles = theme => ({
     padding: '8px 10px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
-    },
+      borderColor: '#01CEA2',
+      boxShadow: '0 0 0 .2rem rgba(1, 206, 162,.25)'
+    }
   },
   bootstrapFormLabel: {
     fontSize: 18,
@@ -90,7 +83,8 @@ class Write extends React.Component {
       content: '',
       isNotice: false,
       images: [],
-      selectedImage: null
+      selectedImage: null,
+      editor: null
     }
   }
 
@@ -101,18 +95,8 @@ class Write extends React.Component {
     })
   }
 
-  handleEditorChange = (e) => {
-    this.setState({
-      content: e.target.getContent()
-    })
-  }
-
-  append = (text) => {
-    this.setState({
-      content: this.state.content + text
-    }, () => {
-      this.state.editor.setContent(this.state.content)
-    })
+  append = text => {
+    this.state.editor.setContent(`${this.state.editor.getContent()}${text}`)
   }
 
   send = async () => {
@@ -121,12 +105,11 @@ class Write extends React.Component {
       domain,
       category,
       title,
-      content,
       isNotice,
       images
     } = this.state
     if (loading) return
-    if (title === '' || content === '') return toast.error('빈 칸을 입력하세요.')
+    if (title === '' || this.state.editor.getContent() === '') return toast.error('빈 칸을 입력하세요.')
     this.setState({
       loading: true
     }, async () => {
@@ -136,7 +119,7 @@ class Write extends React.Component {
         domain,
         category,
         title,
-        content,
+        content: this.state.editor.getContent(),
         isNotice,
         images
       }, {
@@ -214,10 +197,6 @@ class Write extends React.Component {
     this.setState({ title: e.target.value })
   }
 
-  setContent = (e) => {
-    this.setState({ content: e.target.value })
-  }
-
   render() {
     const { classes } = this.props
     const { loading, title, images, selectedImage } = this.state
@@ -268,7 +247,6 @@ class Write extends React.Component {
               plugins: 'code link media image table textcolor',
               toolbar: 'undo redo | styleselect | fontsizeselect forecolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table link media custom_image code'
             }}
-            onChange={this.handleEditorChange}
           />
         </FormControl>
         <div style={{ margin: '1rem 0' }}>

@@ -31,9 +31,8 @@ const theme = createMuiTheme({
   palette: {
     type: localStorage.mode || 'light',
     primary: {
-      main: '#3366CF',
-      dark: '#002884',
-      contrastText: '#fff'
+      main: '#01CEA2',
+      contrastText: '#FFF'
     }
   }
 })
@@ -101,13 +100,13 @@ const styles = theme => ({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
-    fontSize: 14,
-    padding: '4px 6px',
+    fontSize: 16,
+    padding: '8px 10px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
-    },
+      borderColor: '#01CEA2',
+      boxShadow: '0 0 0 .2rem rgba(1, 206, 162,.25)'
+    }
   },
   bootstrapFormLabel: {
     fontSize: 18,
@@ -197,7 +196,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { classes, user } = this.props
+    const { classes, option, user } = this.props
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container>
@@ -277,6 +276,16 @@ class Profile extends React.Component {
                   </Grid>
                   <Grid item>
                     {user.point} P
+                  </Grid>
+                </Grid>
+              </div>
+              <div className={cn(classes.mt, classes.mb)}>
+                <Grid container spacing={8} alignItems='flex-end'>
+                  <Grid item xs={1}>
+                    <FontAwesomeIcon icon='flag' />
+                  </Grid>
+                  <Grid item>
+                    Version {option.version}
                   </Grid>
                 </Grid>
               </div>

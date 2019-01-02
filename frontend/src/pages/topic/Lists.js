@@ -119,9 +119,8 @@ const theme = createMuiTheme({
   palette: {
     type: localStorage.mode || 'light',
     primary: {
-      main: '#3366CF',
-      dark: '#002884',
-      contrastText: '#fff'
+      main: '#01CEA2',
+      contrastText: '#FFF'
     }
   }
 })
@@ -139,12 +138,11 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit
   },
   card: {
-    border: '1px solid #' + (localStorage.mode === 'dark' ? '333' : 'ecedef'),
-    borderRadius: 0
+    borderRadius: 4
   },
   listItem: {
     '&:hover': {
-      background: '#' + (localStorage.mode === 'dark' ? '363636' : 'EBF1FC')
+      background: '#' + (localStorage.mode === 'dark' ? '363636' : 'F5F5F5')
     }
   },
   noticeListItem: {

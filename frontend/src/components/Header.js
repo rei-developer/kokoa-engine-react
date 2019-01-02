@@ -34,14 +34,15 @@ const theme = createMuiTheme({
   },
   shadows: Array(25).fill('none'),
   palette: {
-    type: localStorage.mode || 'light',
+    type: localStorage.mode || 'main',
     primary: {
-      main: localStorage.mode === 'dark' ? '#424242' : '#fff',
-      contrastText: '#3366CF'
+      main: '#FFF',
+      dark: '#202A37',
+      contrastText: '#01CEA2'
     },
     secondary: {
-      main: '#3366CF',
-      contrastText: '#fff'
+      main: '#01CEA2',
+      contrastText: '#FFF'
     }
   }
 })
@@ -50,7 +51,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     marginBottom: '1rem',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .03)'
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .01)'
   },
   grow: {
     flexGrow: 1
@@ -60,16 +61,16 @@ const styles = theme => ({
     paddingRight: 0
   },
   button: {
-    borderBottom: '2px solid transparent',
-    borderRadius: '0',
     '&:hover': {
-      backgroundColor: 'transparent',
-      borderBottom: '2px solid #3366CF'
+      background: '#F5F5F5'
     }
   },
   IconButton: {
     width: 48,
-    height: 48
+    height: 48,
+    '&:hover': {
+      background: '#F5F5F5'
+    }
   },
   menuButton: {
     marginRight: 20
@@ -364,6 +365,7 @@ class Header extends React.Component {
                       component={NavLink}
                       to='/signin'
                       color='inherit'
+                      className={classes.button}
                     >
                       <FontAwesomeIcon icon='sign-in-alt' className={classes.leftIcon} />
                       로그인

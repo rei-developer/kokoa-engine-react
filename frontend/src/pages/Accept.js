@@ -23,9 +23,8 @@ const theme = createMuiTheme({
   palette: {
     type: localStorage.mode || 'light',
     primary: {
-      main: '#3366CF',
-      dark: '#002884',
-      contrastText: '#fff'
+      main: '#01CEA2',
+      contrastText: '#FFF'
     }
   }
 })
@@ -76,9 +75,9 @@ const styles = theme => ({
     padding: '8px 10px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
-    },
+      borderColor: '#01CEA2',
+      boxShadow: '0 0 0 .2rem rgba(1, 206, 162,.25)'
+    }
   },
   bootstrapFormLabel: {
     fontSize: 18,

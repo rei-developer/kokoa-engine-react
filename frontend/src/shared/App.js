@@ -66,7 +66,7 @@ library.add(faCamera)
 class App extends Component {
   render() {
     const style = {
-      background: localStorage.mode === 'dark' ? '#424242' : '#f9f9f9',
+      background: localStorage.mode === 'dark' ? '#424242' : '#E5E9F0',
       minHeight: '100vh'
     }
     return (
