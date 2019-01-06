@@ -261,6 +261,7 @@ class Header extends React.Component {
   }
 
   reload = () => {
+    let self = this
     self.opener = self
     window.close()
     window.open('https://hawawa.co')
