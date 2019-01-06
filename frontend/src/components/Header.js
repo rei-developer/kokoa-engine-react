@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 8
+const VERSION = 9
 
 const theme = createMuiTheme({
   typography: {
