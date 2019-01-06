@@ -162,7 +162,6 @@ class Write extends React.Component {
             onChange={this.setContent}
             rows={3}
             multiline
-            autoFocus
           />
         </FormControl>
         <FormControl className={classes.mb} fullWidth>
