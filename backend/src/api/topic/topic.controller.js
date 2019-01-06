@@ -13,6 +13,8 @@ const getPost = require('../../database/topic/getPost')
 const getUser = require('../../database/user/getUser')
 const updateNotice = require('../../database/notice/updateNotice')
 const updateTopic = require('../../database/topic/updateTopic')
+const deleteNotice = require('../../database/notice/deleteNotice')
+const deletePost = require('../../database/topic/deletePost')
 
 const client = redis.createClient()
 
@@ -267,5 +269,18 @@ module.exports.deleteTopic = async ctx => {
 
   console.log(user)
 
+  ctx.body = { status: 'ok' }
+}
+
+module.exports.deletePost = async ctx => {
+  const user = await User.getUser(ctx.get('x-access-token'))
+  if (!user) return
+  const { id } = ctx.request.body
+  if (id < 1) return ctx.body = { status: 'fail' }
+  const userId = await getPost.userId(id)
+  if (!userId) return ctx.body = { status: 'fail' }
+  if (userId !== user.id) return
+  await deleteNotice.postId(id)
+  await deletePost(id)
   ctx.body = { status: 'ok' }
 }

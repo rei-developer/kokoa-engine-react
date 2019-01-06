@@ -5,6 +5,7 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
+  Button,
   IconButton,
   Chip,
   Card,
@@ -27,6 +28,7 @@ import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
 import DefaultImage from '../../images/Default.png'
 import ReplyIcon from '../../images/Reply.png'
+import { toast } from 'react-toastify';
 
 const theme = createMuiTheme({
   typography: {
@@ -37,6 +39,10 @@ const theme = createMuiTheme({
     type: localStorage.mode || 'light',
     primary: {
       main: '#01CEA2',
+      contrastText: '#FFF'
+    },
+    secondary: {
+      main: '#ED1C24',
       contrastText: '#FFF'
     }
   }
@@ -191,14 +197,59 @@ class Lists extends React.Component {
     })
   }
 
+  clear = () => {
+    const token = localStorage.token
+    if (!token) return
+    const { user } = this.props
+    this.setState({
+      loading: true
+    }, async () => {
+      const response = await axios.delete(
+        '/api/notice/clear',
+        { headers: { 'x-access-token': token } }
+      )
+      const data = await response.data
+      if (data.status === 'fail') return toast.error(data.message)
+      this.setState({
+        loading: false,
+        notices: []
+      }, () => {
+        user.setNoticeCount(0)
+      })
+    })
+  }
+
+  readed = () => {
+    const token = localStorage.token
+    if (!token) return
+    const { user } = this.props
+    this.setState({
+      loading: true
+    }, async () => {
+      const response = await axios.put(
+        '/api/notice/readed',
+        { success: true },
+        { headers: { 'x-access-token': token } }
+      )
+      const data = await response.data
+      if (data.status === 'fail') return toast.error(data.message)
+      const notices = this.state.notices.map(item => {
+        item.confirm = 1
+        return item
+      })
+      this.setState({
+        loading: false,
+        notices
+      }, () => {
+        user.setNoticeCount(0)
+      })
+    })
+  }
+
   view = async item => {
     this.props.history.push(`/b/${item.boardDomain}/${item.topicId}/${item.postId}`)
   }
-
-  delete = async item => {
-    alert('미안하다 게이들아... 1월 3일 안으론 만들게 시간이 없다')
-  }
-
+  
   reset = () => {
     this.setState(init)
   }
@@ -267,10 +318,25 @@ class Lists extends React.Component {
             loading={loading}
           />
         </div>
-        <Card className={cn(classes.card, classes.mb)}>
-          현재 댓글 알림이나 대댓글 기능이 업데이트되었으나, 일부 오류가 있을 수 있습니다. 오류 발견시 지체 없이 바로 신고해주십시오.<br />
-          또한, 나머지 실시간 알림화나 삭제 기능 등은 조만간 지원할 것입니다. 기다려주십시오.
-        </Card>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={this.clear}
+          className={cn(classes.leftIcon, classes.mb)}
+          color='secondary'
+        >
+          <FontAwesomeIcon icon='trash' className={classes.leftIcon} />
+          비우기
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={this.readed}
+          className={classes.mb}
+        >
+          <FontAwesomeIcon icon='eye' className={classes.leftIcon} />
+          전부 읽음
+        </Button>
         <Card className={cn(classes.card, classes.mb)}>
           {notices.length > 0 ? extract(notices) : '받은 댓글 알림이 없습니다.'}
         </Card>

@@ -477,7 +477,12 @@ class Lists extends React.Component {
           <div className={classes.boardTitle}>
             <Chip
               color='primary'
-              label={`${boardName} (${count})`}
+              label={
+                <>
+                  <FontAwesomeIcon icon='sync-alt' className={classes.leftIcon} />
+                  {`${boardName} (${count})`}
+                </>
+              }
               onClick={this.replay}
               className={classes.boardChip}
               clickable
@@ -490,6 +495,22 @@ class Lists extends React.Component {
           ))}
         </Switch>
         <Adsense />
+        {boardName !== '' && (
+          <div className={classes.boardTitle}>
+            <Chip
+              color='primary'
+              label={
+                <>
+                  <FontAwesomeIcon icon='sync-alt' className={classes.leftIcon} />
+                  {`${boardName} (${count})`}
+                </>
+              }
+              onClick={this.replay}
+              className={classes.boardChip}
+              clickable
+            />
+          </div>
+        )}
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>
             <Button component={Link} to={`${this.props.match.url}/write`} variant='contained' color='primary'>
@@ -542,7 +563,12 @@ class Lists extends React.Component {
           <div className={classes.boardTitle}>
             <Chip
               color='primary'
-              label={`${boardName} (${count})`}
+              label={
+                <>
+                  <FontAwesomeIcon icon='sync-alt' className={classes.leftIcon} />
+                  {`${boardName} (${count})`}
+                </>
+              }
               onClick={this.replay}
               className={classes.boardChip}
               clickable

@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 6
+const VERSION = 7
 
 const theme = createMuiTheme({
   typography: {
@@ -115,6 +115,12 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  notice: {
+    '& span': {
+      backgroundColor: '#ED1C24',
+      color: '#FFF'
+    }
   },
   inputRoot: {
     color: 'inherit',
@@ -322,7 +328,7 @@ class Header extends React.Component {
       >
         <MenuItem component={NavLink} to='/notices'>
           <IconButton color='inherit' className={classes.IconButton}>
-            <Badge badgeContent={user.noticeCount} color='secondary'>
+            <Badge badgeContent={user.noticeCount} color='secondary' className={user.noticeCount > 0 ? classes.notice : null}>
               <FontAwesomeIcon icon='bell' />
             </Badge>
           </IconButton>
@@ -341,7 +347,7 @@ class Header extends React.Component {
         <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
           <div
             tabIndex={0}
-            role="button"
+            role='button'
             onClick={this.toggleDrawer('left', false)}
             onKeyDown={this.toggleDrawer('left', false)}
           >
@@ -379,7 +385,7 @@ class Header extends React.Component {
                   <>
                     <div className={classes.sectionDesktop}>
                       <IconButton component={NavLink} to='/notices' color='inherit' className={classes.IconButton}>
-                        <Badge badgeContent={user.noticeCount} color='secondary'>
+                        <Badge badgeContent={user.noticeCount} color='secondary' className={user.noticeCount > 0 ? classes.notice : null}>
                           <FontAwesomeIcon icon='bell' />
                         </Badge>
                       </IconButton>

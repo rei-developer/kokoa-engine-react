@@ -7,9 +7,13 @@ import {
   InputBase,
   InputLabel,
   FormControl,
+  FormControlLabel,
   Button,
-  Select
+  Select,
+  Switch
 } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { observer, inject } from 'mobx-react'
 import { Editor } from '@tinymce/tinymce-react'
 import { HashLoader } from 'react-spinners'
 
@@ -72,6 +76,9 @@ const styles = theme => ({
   }
 })
 
+@inject('option')
+@inject('user')
+@observer
 class Write extends React.Component {
   constructor(props) {
     super(props)
@@ -193,12 +200,16 @@ class Write extends React.Component {
     this.setState({ selectedImage: e.target.value })
   }
 
-  setTitle = (e) => {
+  setIsNotice = e => {
+    this.setState({ isNotice: e.target.checked })
+  }
+
+  setTitle = e => {
     this.setState({ title: e.target.value })
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, user } = this.props
     const { loading, title, images, selectedImage } = this.state
     const override = {
       position: 'fixed',
@@ -220,6 +231,20 @@ class Write extends React.Component {
             loading={loading}
           />
         </div>
+        {user.isAdmin && (
+          <FormControl className={classes.mb} fullWidth>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.isNotice}
+                  onChange={this.setIsNotice}
+                  color='primary'
+                />
+              }
+              label='공지사항'
+            />
+          </FormControl>
+        )}
         <FormControl className={classes.mb} fullWidth>
           <InputLabel shrink htmlFor='bootstrap-input' className={classes.bootstrapFormLabel}>제목</InputLabel>
           <InputBase

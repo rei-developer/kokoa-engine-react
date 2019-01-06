@@ -36,3 +36,12 @@ module.exports.posts = async (topicId, page, limit) => {
   if (result.length < 1) return false
   return result
 }
+
+module.exports.userId = async id => {
+  const result = await pool.query(
+    `SELECT userId FROM Posts WHERE id = ?`,
+    [id]
+  )
+  if (result.length < 1) return false
+  return result[0].userId
+}

@@ -28,7 +28,7 @@ import {
   faFire,
   faStar,
   faCommentDots,
-  faSync,
+  faSyncAlt,
   faAngleLeft,
   faAngleRight,
   faAngleDoubleLeft,
@@ -37,7 +37,9 @@ import {
   faThumbsDown,
   faFlag,
   faImage,
-  faCamera
+  faCamera,
+  faEye,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUser)
@@ -53,7 +55,7 @@ library.add(faSignInAlt)
 library.add(faFire)
 library.add(faStar)
 library.add(faCommentDots)
-library.add(faSync)
+library.add(faSyncAlt)
 library.add(faAngleLeft)
 library.add(faAngleRight)
 library.add(faAngleDoubleLeft)
@@ -63,6 +65,8 @@ library.add(faThumbsDown)
 library.add(faFlag)
 library.add(faImage)
 library.add(faCamera)
+library.add(faEye)
+library.add(faTrash)
 
 class App extends Component {
   render() {

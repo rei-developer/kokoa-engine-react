@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
+import { toast } from 'react-toastify'
 import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
@@ -204,7 +205,28 @@ class Lists extends React.Component {
   }
 
   delete = async item => {
-    alert('미안하다 게이들아... 1월 3일 안으론 만들게 시간이 없다')
+    const token = localStorage.token
+    if (!token) return
+    const { page } = this.state
+    this.setState({
+      loading: true
+    }, async () => {
+      const response = await axios.delete(
+        '/api/topic/delete/post',
+        {
+          data: { id: item.id, page },
+          headers: { 'x-access-token': token }
+        }
+      )
+      const data = await response.data
+      if (data.status === 'fail') return toast.error(data.message)
+      toast.success('댓글 삭제 성공!')
+      const posts = this.state.posts.filter(post => post.id !== item.id)
+      this.setState({
+        loading: false,
+        posts
+      })
+    })
   }
 
   handleCreate = (postsCount, posts) => {
