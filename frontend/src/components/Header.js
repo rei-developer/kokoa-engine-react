@@ -189,12 +189,12 @@ class Header extends React.Component {
   }
 
   getVersion = async () => {
-    const response = await axios.get('/version')
+    const response = await axios.get('/api/version')
     const data = await response.data
     if (data) this.setState({
-      version: data
+      version: data.version
     }, () => {
-      console.log(`backend ver: ${data}`)
+      console.log(`backend ver: ${data.version}`)
       console.log(`frontend ver: ${VERSION}`)
     })
   }
