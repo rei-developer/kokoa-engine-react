@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 13
+const VERSION = 14
 
 const theme = createMuiTheme({
   typography: {
@@ -261,10 +261,10 @@ class Header extends React.Component {
   }
 
   reload = () => {
-    let self = this
+    var self = this
     self.opener = self
     window.close()
-    window.open('https://hawawa.co')
+    window.open('https://funhub.co.kr')
   }
 
   render() {

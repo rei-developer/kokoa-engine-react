@@ -6,7 +6,7 @@ const topic = require('./topic')
 
 const app = new Router()
 
-const VERSION = 13
+const VERSION = 14
 
 app.get('/version', ctx => ctx.body = { version: VERSION, status: 'ok' })
 app.use('/auth', auth.routes())
