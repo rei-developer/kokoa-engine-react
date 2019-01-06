@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 9
+const VERSION = 10
 
 const theme = createMuiTheme({
   typography: {
@@ -260,6 +260,11 @@ class Header extends React.Component {
     })
   }
 
+  reload = () => {
+    console.log('reload')
+    window.location.reload()
+  }
+
   render() {
     const { anchorEl, mobileMoreAnchorEl, version } = this.state
     const { classes, option, user } = this.props
@@ -354,7 +359,7 @@ class Header extends React.Component {
             {sideList}
           </div>
         </Drawer>
-        {VERSION < version && (<div className={classes.message}>하와와가 최신 버전이 아닙니다. 캐시를 비우고 다시 접속해주세요.</div>)}
+        {VERSION < version && (<div className={classes.message} onClick={this.reload}>하와와가 최신 버전이 아닙니다. 브라우저를 닫고 다시 열어주세요.</div>)}
         <AppBar position='static' className={classes.root}>
           <Grid container>
             <Hidden lgDown>
