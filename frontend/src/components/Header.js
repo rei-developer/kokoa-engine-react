@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 11
+const VERSION = 12
 
 const theme = createMuiTheme({
   typography: {
@@ -261,8 +261,9 @@ class Header extends React.Component {
   }
 
   reload = () => {
-    console.log('reload')
-    window.location.reload()
+    self.opener = self
+    window.close()
+    window.open('https://hawawa.co')
   }
 
   render() {
@@ -359,7 +360,7 @@ class Header extends React.Component {
             {sideList}
           </div>
         </Drawer>
-        {VERSION < version && (<div className={classes.message} onClick={this.reload}>하와와가 최신 버전이 아닙니다. 브라우저를 닫고 다시 열어주세요.</div>)}
+        {VERSION < version && (<div className={classes.message} onClick={this.reload}>하와와가 최신 버전이 아닙니다. 이곳을 클릭하여 새로 업데이트하세요.</div>)}
         <AppBar position='static' className={classes.root}>
           <Grid container>
             <Hidden lgDown>
