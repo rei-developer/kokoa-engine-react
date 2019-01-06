@@ -158,13 +158,21 @@ class Content extends React.Component {
   }
 
   getTopic = async id => {
-    const response = await axios.get(`/api/topic/read/${id}`)
+    const { user } = this.props
+    const token = localStorage.token
+    const response = await axios.get(
+      `/api/topic/read/${id}`,
+      {
+        headers: { 'x-access-token': token }
+      }
+    )
     const data = await response.data
     if (data.status === 'fail') return toast.error(data.message)
     this.setState({
       loading: false,
       ...data.topic
     }, () => {
+      if (user.isLogged) user.setNoticeCount(data.count)
       window.scrollTo(0, 0)
     })
   }
@@ -207,6 +215,7 @@ class Content extends React.Component {
   }
 
   render() {
+    const tag = this.props.match.params.tag
     const { classes, user } = this.props
     const { loading, userId, category, author, title, content, created, isBest, hits, likes, hates, profile, admin } = this.state
     const override = {
@@ -299,7 +308,11 @@ class Content extends React.Component {
                 </Button>
               </div>
             )*/}
-            <PostLists id={this.state.id} />
+            <PostLists
+              id={this.state.id}
+              tag={tag}
+              topicUserId={userId}
+            />
           </>
         )}
       </MuiThemeProvider>

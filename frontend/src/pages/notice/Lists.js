@@ -1,9 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
-import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
@@ -19,8 +17,7 @@ import {
   Typography,
   Divider,
   Menu,
-  MenuItem,
-  Collapse
+  MenuItem
 } from '@material-ui/core'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state/index'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -57,10 +54,6 @@ const styles = theme => ({
   pl: {
     paddingLeft: theme.spacing.unit
   },
-  reply: {
-    paddingLeft: theme.spacing.unit * 2,
-    background: '#FAFAFA'
-  },
   confirm: {
     borderLeft: '.5rem solid #01CEA2'
   },
@@ -81,7 +74,11 @@ const styles = theme => ({
   },
   listItem: {
     margin: 0,
-    padding: 0
+    padding: 0,
+    cursor: 'pointer',
+    '&:hover': {
+      background: '#' + (localStorage.mode === 'dark' ? '363636' : 'F5F5F5')
+    }
   },
   IconButton: {
     width: 48,
@@ -155,8 +152,7 @@ const styles = theme => ({
 
 const init = {
   loading: true,
-  posts: [],
-  count: 0,
+  notices: [],
   page: 0
 }
 
@@ -172,52 +168,35 @@ class Lists extends React.Component {
   }
 
   componentWillMount() {
-    const { id } = this.props
-    this.getPosts(id)
+    this.getNotices()
   }
 
-  getPosts = id => {
+  getNotices = () => {
+    const token = localStorage.token
+    if (!token) return
     const { page } = this.state
     this.setState({
       loading: true
     }, async () => {
-      const response = await axios.post('/api/topic/list/post', { id, page })
+      const response = await axios.post(
+        '/api/notice/list',
+        { page },
+        { headers: { 'x-access-token': token } }
+      )
       const data = await response.data
       this.setState({
         loading: false,
-        posts: data.posts ? [...data.posts] : [],
-        count: data.count
-      }, () => {
-        if (!this.someRefName) return
-        const domNode = ReactDOM.findDOMNode(this.someRefName)
-        window.scrollTo(0, domNode.getBoundingClientRect().top)
+        notices: data.notices ? [...data.notices] : []
       })
     })
   }
 
-  reply = async item => {
-    this.setState({
-      [`re${this.state.tempSelectedReplyId}`]: null,
-      [`re${item.id}`]: !this.state[item.id],
-      tempSelectedReplyId: item.id
-    })
+  view = async item => {
+    this.props.history.push(`/b/${item.boardDomain}/${item.topicId}/${item.postId}`)
   }
 
   delete = async item => {
     alert('미안하다 게이들아... 1월 3일 안으론 만들게 시간이 없다')
-  }
-
-  handleCreate = (postsCount, posts) => {
-    this.setState({
-      loading: true
-    }, async () => {
-      this.setState({
-        loading: false,
-        [`re${this.state.tempSelectedReplyId}`]: null,
-        posts: posts,
-        count: postsCount
-      })
-    })
   }
 
   reset = () => {
@@ -225,23 +204,25 @@ class Lists extends React.Component {
   }
 
   render() {
-    const { id, tag, topicUserId, classes, user } = this.props
-    const { loading, posts } = this.state
+    const { classes, user } = this.props
+    const { loading, notices } = this.state
     const extract = item => (
       item.map((i, index) => {
         return (
           <React.Fragment key={index}>
-            <List className={classes.listItem} ref={el => Number(tag) === i.id ? this.someRefName = el : null}>
+            <List
+              className={classes.listItem}
+              onClick={() => this.view(i)}
+            >
               {index > 0 && (<Divider />)}
-              <ListItem className={cn(classes.pl, i.tagUserId ? classes.reply : null, Number(tag) === i.id ? classes.confirm : null)}>
-                {i.tagUserId && (<img src={ReplyIcon} className={classes.star} alt='Reply' />)}
+              <ListItem className={cn(classes.pl, i.confirm < 1 && classes.confirm)}>
                 <ListItemAvatar>
                   <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={
                     <Typography component='span' className={classes.inline} color='textPrimary'>
-                      {i.tagUserId && (
+                      {i.tagAuthor && (
                         <Chip
                           label={i.tagAuthor}
                           color='primary'
@@ -260,47 +241,8 @@ class Lists extends React.Component {
                     </>
                   }
                 />
-                {user.isLogged && (
-                  <ListItemSecondaryAction>
-                    <PopupState variant='popover' popupId='demo-popup-menu'>
-                      {popupState => (
-                        <React.Fragment>
-                          <IconButton className={classes.IconButton} {...bindTrigger(popupState)}>
-                            <FontAwesomeIcon icon='ellipsis-v' />
-                          </IconButton>
-                          <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={() => {
-                              this.reply(i)
-                              popupState.close()
-                            }}>
-                              댓글
-                            </MenuItem>
-                            {user.id === i.userId && (
-                              <MenuItem onClick={() => {
-                                this.delete(i)
-                                popupState.close()
-                              }}>
-                                삭제
-                              </MenuItem>
-                            )}
-                          </Menu>
-                        </React.Fragment>
-                      )}
-                    </PopupState>
-                  </ListItemSecondaryAction>
-                )}
               </ListItem>
             </List>
-            <Collapse in={this.state[`re${i.id}`]} timeout='auto' unmountOnExit>
-              <PostWrite
-                topicId={id}
-                topicUserId={topicUserId}
-                postUserId={i.userId}
-                postRootId={i.postRootId ? i.postRootId : i.id}
-                postParentId={i.id}
-                onCreate={this.handleCreate}
-              />
-            </Collapse>
           </React.Fragment>
         )
       })
@@ -326,19 +268,8 @@ class Lists extends React.Component {
           />
         </div>
         <Card className={cn(classes.card, classes.mb)}>
-          {extract(posts)}
+          {extract(notices)}
         </Card>
-        {
-          user.isLogged
-          ? (
-            <PostWrite
-              topicId={id}
-              topicUserId={topicUserId}
-              onCreate={this.handleCreate}
-            />
-          )
-          : ''
-        }
       </MuiThemeProvider>
     )
   }

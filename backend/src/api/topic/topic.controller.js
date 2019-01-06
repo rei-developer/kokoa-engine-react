@@ -3,12 +3,15 @@ const redis = require('redis')
 const moment = require('moment')
 const Filter = require('../../lib/filter')
 const User = require('../../lib/user')
+const createNotice = require('../../database/notice/createNotice')
 const createTopic = require('../../database/topic/createTopic')
 const createPost = require('../../database/topic/createPost')
 const getBoard = require('../../database/board/getBoard')
+const getNotice = require('../../database/notice/getNotice')
 const getTopic = require('../../database/topic/getTopic')
 const getPost = require('../../database/topic/getPost')
 const getUser = require('../../database/user/getUser')
+const updateNotice = require('../../database/notice/updateNotice')
 const updateTopic = require('../../database/topic/updateTopic')
 
 const client = redis.createClient()
@@ -17,12 +20,12 @@ const BURN_LIMIT = 3
 const BEST_LIMIT = 5
 const DELETE_LIMIT = 10
 
-exports.getListToWidget = async ctx => {
+module.exports.getListToWidget = async ctx => {
   const topics = await getTopic.topicsToWidget(20)
   ctx.body = topics
 }
 
-exports.getTopics = async ctx => {
+module.exports.getTopics = async ctx => {
   const { ...body } = ctx.request.body
   const domain = body.domain || 'all'
   const category = body.category || ''
@@ -52,7 +55,7 @@ exports.getTopics = async ctx => {
   ctx.body = { count, notices, topics }
 }
 
-exports.getPosts = async ctx => {
+module.exports.getPosts = async ctx => {
   const { ...body } = ctx.request.body
   const topicId = body.id || 0
   const page = body.page || 0
@@ -64,7 +67,7 @@ exports.getPosts = async ctx => {
   ctx.body = { count, posts }
 }
 
-exports.getBoardName = async ctx => {
+module.exports.getBoardName = async ctx => {
   const { domain } = ctx.params
   if (domain === 'all') return ctx.body = '전체글'
   else if (domain === 'best') return ctx.body = '인기글'
@@ -73,15 +76,16 @@ exports.getBoardName = async ctx => {
   ctx.body = board
 }
 
-exports.getCategories = async ctx => {
+module.exports.getCategories = async ctx => {
   const { domain } = ctx.params
   const categories = await getBoard.categories(domain)
   ctx.body = categories
 }
 
-exports.getContent = async ctx => {
+module.exports.getContent = async ctx => {
   const { id } = ctx.params
   if (id < 1) return
+  const user = await User.getUser(ctx.get('x-access-token'))
   const topic = await getTopic(id)
   if (!topic) return ctx.body = { status: 'fail' }
   if (client.exists(id)) {
@@ -98,10 +102,15 @@ exports.getContent = async ctx => {
     client.set(id, 1)
     topic.hits += 1
   }
-  ctx.body = { topic }
+  let count = 0
+  if (user) {
+    await updateNotice.updateNoticeByConfirm(user.id, id)
+    count = await getNotice.count(user.id)
+  }
+  ctx.body = { topic, count }
 }
 
-exports.createTopic = async ctx => {
+module.exports.createTopic = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
@@ -143,16 +152,20 @@ exports.createTopic = async ctx => {
   ctx.body = { topicId, status: 'ok' }
 }
 
-exports.createPost = async ctx => {
+module.exports.createPost = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
     topicId,
+    topicUserId,
+    postUserId,
     postRootId,
     postParentId,
     content
   } = ctx.request.body
   if (content === '') return
+  topicUserId = Number(topicUserId)
+  if (postUserId) postUserId = Number(postUserId)
   content = Filter.post(content)
   const ip = ctx.get('x-real-ip')
   const header = ctx.header['user-agent']
@@ -171,10 +184,18 @@ exports.createPost = async ctx => {
   const posts = await getPost.posts(topicId, 0, 100)
   await createPost.createPostCounts(postId)
   await User.setUpExpAndPoint(user, 5, 5)
+  const items = []
+  if (user.id !== topicUserId) items.push(topicUserId)
+  if (postUserId && user.id !== postUserId && topicUserId !== postUserId) items.push(postUserId)
+  const jobs = items.map(receiver => new Promise(async resolve => {
+    await createNotice(receiver, topicId, postId)
+    resolve(true)
+  }))
+  await Promise.all(jobs)
   ctx.body = { postId, postsCount, posts, status: 'ok' }
 }
 
-exports.createTopicVotes = async ctx => {
+module.exports.createTopicVotes = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   let {
@@ -231,11 +252,11 @@ exports.createTopicVotes = async ctx => {
   ctx.body = { move, status: 'ok' }
 }
 
-exports.createPostVotes = async ctx => {
+module.exports.createPostVotes = async ctx => {
 
 }
 
-exports.deleteTopic = async ctx => {
+module.exports.deleteTopic = async ctx => {
   const user = await User.getUser(ctx.get('x-access-token'))
   if (!user) return
   const { id } = ctx.request.body

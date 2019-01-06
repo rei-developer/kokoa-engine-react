@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 import { Grid, Hidden } from '@material-ui/core'
 import {
   Home,
+  NoticeLists,
   TopicLists,
   TopicWrite,
   SignIn,
@@ -79,6 +80,7 @@ class App extends Component {
           </Hidden>
           <Grid item sm>
             <Route exact path='/' component={Home} />
+            <Route path='/notices' component={NoticeLists} />
             <Switch>
               <Route path='/b/:domain/write' component={TopicWrite} />
               <Route path='/b/:domain' component={TopicLists} />

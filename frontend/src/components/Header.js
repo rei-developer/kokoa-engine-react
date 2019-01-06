@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 4
+const VERSION = 5
 
 const theme = createMuiTheme({
   typography: {
@@ -71,6 +71,7 @@ const styles = theme => ({
   IconButton: {
     width: 48,
     height: 48,
+    padding: 0,
     '&:hover': {
       background: '#F5F5F5'
     }
@@ -181,12 +182,37 @@ class Header extends React.Component {
     version: 0
   }
 
-  componentWillMount = async () => {
+  componentWillMount = () => {
+    this.getVersion()
+    this.getNotices()
+    this.updateNotices()
+  }
+
+  getVersion = async () => {
     const response = await axios.get('/version')
     const data = await response.data
     if (data) this.setState({
       version: data
     })
+  }
+
+  getNotices = async () => {
+    const token = localStorage.token
+    if (!token) return
+    const { user } = this.props
+    const response = await axios.get(
+      '/api/notice',
+      { headers: { 'x-access-token': token } }
+    )
+    const data = await response.data
+    if (data.count) user.setNoticeCount(data.count)
+  }
+
+  updateNotices = () => {
+    setTimeout(async () => {
+      this.getNotices()
+      this.updateNotices()
+    }, 30000)
   }
 
   handleProfileMenuOpen = event => {
@@ -230,7 +256,6 @@ class Header extends React.Component {
     const { classes, option, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-
     const sideList = (
       <div className={classes.list}>
         <List>
@@ -271,7 +296,6 @@ class Header extends React.Component {
         </List>
       </div>
     )
-
     const renderMenu = (
       <Menu
         anchorEl={anchorEl}
@@ -285,7 +309,6 @@ class Header extends React.Component {
         <MenuItem component={NavLink} to='/' onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
-
     const renderMobileMenu = (
       <Menu
         anchorEl={mobileMoreAnchorEl}
@@ -294,9 +317,9 @@ class Header extends React.Component {
         open={isMobileMenuOpen}
         onClose={this.handleMobileMenuClose}
       >
-        <MenuItem>
+        <MenuItem component={NavLink} to='/notices'>
           <IconButton color='inherit' className={classes.IconButton}>
-            <Badge badgeContent={0} color='secondary'>
+            <Badge badgeContent={user.noticeCount} color='secondary'>
               <FontAwesomeIcon icon='bell' />
             </Badge>
           </IconButton>
@@ -310,7 +333,6 @@ class Header extends React.Component {
         </MenuItem>
       </Menu>
     )
-
     return (
       <MuiThemeProvider theme={theme}>
         <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
@@ -353,8 +375,8 @@ class Header extends React.Component {
                 {user.isLogged ? (
                   <>
                     <div className={classes.sectionDesktop}>
-                      <IconButton color='inherit' className={classes.IconButton}>
-                        <Badge badgeContent={0} color='secondary'>
+                      <IconButton component={NavLink} to='/notices' color='inherit' className={classes.IconButton}>
+                        <Badge badgeContent={user.noticeCount} color='secondary'>
                           <FontAwesomeIcon icon='bell' />
                         </Badge>
                       </IconButton>

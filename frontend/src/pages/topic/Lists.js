@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, Switch } from 'react-router-dom'
 import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
@@ -458,6 +458,10 @@ class Lists extends React.Component {
       left: '50%',
       zIndex: 50000
     }
+    const routes = [
+      `${this.props.match.url}/:id/:tag`,
+      `${this.props.match.url}/:id`
+    ]
     return (
       <MuiThemeProvider theme={theme} className={classes.root}>
         <div className='sweet-loading' style={override}>
@@ -480,7 +484,11 @@ class Lists extends React.Component {
             />
           </div>
         )}
-        <Route path={`${this.props.match.url}/:id`} component={TopicContent} />
+        <Switch>
+          {routes.map(route => (
+            <Route key={route} exact path={route} component={TopicContent} />
+          ))}
+        </Switch>
         <Adsense />
         {user.isLogged && domain !== 'all' && domain !== 'best' && (
           <div className={classes.mb}>

@@ -10,15 +10,27 @@ module.exports.count = async topicId => {
 
 module.exports.posts = async (topicId, page, limit) => {
   const result = await pool.query(
-    `SELECT id, userId, author, content, created,
-    (SELECT likes FROM PostCounts WHERE postId = A.id) likes,
-    (SELECT hates FROM PostCounts WHERE postId = A.id) hates,
-    (SELECT profileImageUrl FROM Users WHERE id = A.userId) profile,
-    (SELECT isAdmin FROM Users WHERE id = A.userId) admin
-    FROM Posts A
-    WHERE topicId = ?
-    ORDER BY id
-    LIMIT ?, ?`,
+    `SELECT
+      p.id,
+      p.userId,
+      p.postRootId,
+      p.postParentId,
+      p.author,
+      p.content,
+      p.created,
+      tp.author tagAuthor,
+      tp.userId tagUserId,
+      pc.likes,
+      pc.hates,
+      u.profileImageUrl profile,
+      u.isAdmin admin
+    FROM Posts p
+    LEFT JOIN Posts tp ON tp.id = p.postParentId
+    LEFT JOIN PostCounts pc ON pc.postId = p.id
+    LEFT JOIN Users u ON u.id = p.userId
+    WHERE p.topicId = ?
+    ORDER BY IF(ISNULL(p.postRootId), p.id, p.postRootId), p.id
+    LIMIt ?, ?`,
     [topicId, page * limit, limit]
   )
   if (result.length < 1) return false

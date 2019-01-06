@@ -1,4 +1,5 @@
 export { default as Home } from './Home'
+export { default as NoticeLists } from './notice/Lists'
 export { default as TopicContent } from './topic/Content'
 export { default as TopicLists } from './topic/Lists'
 export { default as TopicWrite } from './topic/Write'

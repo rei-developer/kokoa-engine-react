@@ -88,7 +88,13 @@ class Write extends React.Component {
     } = this.state
     if (loading) return
     if (content === '') return toast.error('빈 칸을 입력하세요.')
-    const { id } = this.props
+    const {
+      topicId,
+      topicUserId,
+      postUserId,
+      postRootId,
+      postParentId,
+    } = this.props
     this.setState({
       loading: true
     }, async () => {
@@ -97,7 +103,11 @@ class Write extends React.Component {
       const response = await axios.post(
         `/api/topic/write/post`,
         {
-          topicId: id,
+          topicId,
+          topicUserId,
+          postUserId,
+          postRootId,
+          postParentId,
           content
         }, {
           headers: { 'x-access-token': token }
@@ -152,6 +162,7 @@ class Write extends React.Component {
             onChange={this.setContent}
             rows={3}
             multiline
+            autoFocus
           />
         </FormControl>
         <FormControl className={classes.mb} fullWidth>

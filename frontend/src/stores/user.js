@@ -14,6 +14,7 @@ export default class UserStore {
   @observable exp = 0
   @observable point = 0
   @observable isAdmin = false
+  @observable noticeCount = 0
 
   constructor(root) {
     this.root = root
@@ -33,6 +34,7 @@ export default class UserStore {
     this.exp = 0
     this.point = 0
     this.isAdmin = false
+    this.noticeCount = 0
   }
 
   getData = async () => {
@@ -66,11 +68,15 @@ export default class UserStore {
     this.init()
   }
 
-  @action setNickname = (nickname) => {
+  @action setNickname = nickname => {
     this.nickname = nickname
   }
 
-  @action setProfileImage = (url) => {
+  @action setProfileImage = url => {
     this.profileImageUrl = `https://hawawa.r.worldssl.net/img/${url}`
+  }
+
+  @action setNoticeCount = count => {
+    this.noticeCount = count
   }
 }
