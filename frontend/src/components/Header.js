@@ -193,6 +193,9 @@ class Header extends React.Component {
     const data = await response.data
     if (data) this.setState({
       version: data
+    }, () => {
+      console.log(`backend ver: ${data}`)
+      console.log(`frontend ver: ${VERSION}`)
     })
   }
 
