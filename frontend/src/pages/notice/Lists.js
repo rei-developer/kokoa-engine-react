@@ -268,7 +268,11 @@ class Lists extends React.Component {
           />
         </div>
         <Card className={cn(classes.card, classes.mb)}>
-          {extract(notices)}
+          현재 댓글 알림이나 대댓글 기능이 업데이트되었으나, 일부 오류가 있을 수 있습니다. 오류 발견시 지체 없이 바로 신고해주십시오.<br />
+          또한, 나머지 실시간 알림화나 삭제 기능 등은 조만간 지원할 것입니다. 기다려주십시오.
+        </Card>
+        <Card className={cn(classes.card, classes.mb)}>
+          {notices.length > 0 ? extract(notices) : '받은 댓글 알림이 없습니다.'}
         </Card>
       </MuiThemeProvider>
     )
