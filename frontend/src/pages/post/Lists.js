@@ -124,7 +124,8 @@ const styles = theme => ({
     lineHeight: 19
   },
   author: {
-    color: '#01CEA2'
+    color: '#01CEA2',
+    fontWeight: 'bold'
   },
   regdate: {
     width: 120
