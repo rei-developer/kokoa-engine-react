@@ -439,8 +439,8 @@ class Lists extends React.Component {
                     <strong>{i.author}</strong>
                     {' | '}
                     {timeRender(i.created)}
-                    {' | 조회 '}
-                    {i.hits}
+                    {` | 조회 ${i.hits}`}
+                    {i.likes > 0 && ` | 추천 +${i.likes}`}
                   </>
                 }
               />
