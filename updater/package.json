@@ -6,6 +6,8 @@
     "redis": "^2.8.0"
   },
   "scripts": {
-    "start": "pm2 start src --name TOPICS_HITS_UPDATER"
+    "start": "node src",
+    "start:prod": "pm2 start src --name TOPICS_HITS_UPDATER",
+    "start:reprod": "pm2 restart src --name TOPICS_HITS_UPDATER"
   }
 }
