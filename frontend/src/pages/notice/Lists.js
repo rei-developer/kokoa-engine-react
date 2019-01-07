@@ -3,6 +3,7 @@ import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import PropTypes from 'prop-types'
+import Spinner from '../../components/Spinner'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
   Button,
@@ -298,26 +299,8 @@ class Lists extends React.Component {
         )
       })
     )
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
+      <MuiThemeProvider theme={theme} className={classes.root}>
         <Button
           variant='contained'
           color='primary'
@@ -338,7 +321,8 @@ class Lists extends React.Component {
           전부 읽음
         </Button>
         <Card className={cn(classes.card, classes.mb)}>
-          {notices.length > 0 ? extract(notices) : '받은 댓글 알림이 없습니다.'}
+          <Spinner loading={loading} />
+          {extract(notices)}
         </Card>
       </MuiThemeProvider>
     )

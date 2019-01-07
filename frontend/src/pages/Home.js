@@ -4,6 +4,7 @@ import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import PropTypes from 'prop-types'
+import Spinner from '../components/Spinner'
 import {
   Typography,
   Divider,
@@ -16,7 +17,6 @@ import {
 } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import { observer, inject } from 'mobx-react'
-import { HashLoader } from 'react-spinners'
 import StarIcon from '../images/Star.svg'
 import BurnIcon from '../images/Burn.svg'
 import DefaultImage from '../images/Default.png'
@@ -106,7 +106,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true,
+      loading: false,
       topics: []
     }
     const { option } = this.props
@@ -118,12 +118,16 @@ class Home extends React.Component {
     this.updateTopics()
   }
 
-  getTopics = async () => {
-    const response = await axios.get('/api/topic/list/widget')
-    const data = await response.data
+  getTopics = () => {
     this.setState({
-      loading: false,
-      topics: data ? [...data] : []
+      loading: true
+    }, async () => {
+      const response = await axios.get('/api/topic/list/widget')
+      const data = await response.data
+      this.setState({
+        loading: false,
+        topics: data ? [...data] : []
+      })
     })
   }
 
@@ -131,21 +135,12 @@ class Home extends React.Component {
     setTimeout(async () => {
       this.getTopics()
       this.updateTopics()
-    }, 60000)
+    }, 30000)
   }
 
   render() {
     const { classes } = this.props
     const { loading, topics } = this.state
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     const extract = (
       topics.map((i, index) => {
         return (
@@ -186,16 +181,8 @@ class Home extends React.Component {
     )
     return (
       <MuiThemeProvider theme={theme}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
         <Card className={cn(classes.mb, classes.card)}>
+          <Spinner loading={loading} />
           {extract}
         </Card>
       </MuiThemeProvider>

@@ -3,14 +3,31 @@ const _ = require('lodash')
 
 module.exports = async id => {
   const result = await pool.query(
-    `SELECT userId, boardDomain, originBoardDomain, category, author, title, content, ip, header, created, updated, isImage, isBest, isNotice, isAllowed,
-    (SELECT hits FROM TopicCounts WHERE topicId = A.id) hits,
-    (SELECT likes FROM TopicCounts WHERE topicId = A.id) likes,
-    (SELECT hates FROM TopicCounts WHERE topicId = A.id) hates,
-    (SELECT profileImageUrl FROM Users WHERE id = A.userId) profile,
-    (SELECT isAdmin FROM Users WHERE id = A.userId) admin
-    FROM Topics A
-    WHERE id = ?`,
+    `SELECT
+      t.userId,
+      t.boardDomain,
+      t.originBoardDomain,
+      t.category,
+      t.author,
+      t.title,
+      t.content,
+      t.ip,
+      t.header,
+      t.created,
+      t.updated,
+      t.isImage,
+      t.isBest,
+      t.isNotice,
+      t.isAllowed,
+      tc.hits,
+      tc.likes,
+      tc.hates,
+      u.profileImageUrl profile,
+      u.isAdmin admin
+    FROM Topics t
+    LEFT JOIN TopicCounts tc ON tc.topicId = t.id
+    LEFT JOIN Users u ON u.id = t.userId
+    WHERE t.id = ?`,
     [id]
   )
   if (result.length < 1) return false

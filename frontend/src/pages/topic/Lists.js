@@ -5,6 +5,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { TopicContent } from 'pages'
 import Adsense from '../../components/Adsense'
+import Spinner from '../../components/Spinner'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
 import {
@@ -449,30 +450,12 @@ class Lists extends React.Component {
         )
       })
     )
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     const routes = [
       `${this.props.match.url}/:id/:tag`,
       `${this.props.match.url}/:id`
     ]
     return (
       <MuiThemeProvider theme={theme} className={classes.root}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
         {boardName !== '' && (
           <div className={classes.boardTitle}>
             <Chip
@@ -520,6 +503,7 @@ class Lists extends React.Component {
           </div>
         )}
         <Card className={cn(classes.card, classes.mb)}>
+          <Spinner loading={loading} />
           <div className={cn(classes.sectionDesktop, classes.tableWrapper)}>
             <Table className={classes.table}>
               <TableHead>

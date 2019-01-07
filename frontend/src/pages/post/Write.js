@@ -2,13 +2,13 @@ import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
+import Spinner from '../../components/Spinner'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
   InputBase,
   FormControl,
   Button
 } from '@material-ui/core'
-import { HashLoader } from 'react-spinners'
 
 const theme = createMuiTheme({
   typography: {
@@ -131,26 +131,8 @@ class Write extends React.Component {
   render() {
     const { classes } = this.props
     const { loading } = this.state
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     return (
       <MuiThemeProvider theme={theme}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
         <FormControl fullWidth>
           <InputBase
             classes={{
@@ -164,14 +146,17 @@ class Write extends React.Component {
             multiline
           />
         </FormControl>
-        <FormControl className={classes.mb} fullWidth>
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={this.send}
-          >
-            작성
-          </Button>
+        <FormControl fullWidth>
+          <Spinner loading={loading} />
+          {!loading && (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={this.send}
+            >
+              작성
+            </Button>
+          )}
         </FormControl>
       </MuiThemeProvider>
     )

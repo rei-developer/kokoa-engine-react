@@ -29,7 +29,7 @@ import { observer, inject } from 'mobx-react'
 import Logo from '../Logo.png'
 import GirlLogo from '../GirlLogo.png'
 
-const VERSION = 17
+const VERSION = 18
 
 const theme = createMuiTheme({
   typography: {
@@ -241,10 +241,6 @@ class Header extends React.Component {
     this.handleMobileMenuClose()
   }
 
-  handleMobileMenuOpen = event => {
-    this.setState({ mobileMoreAnchorEl: event.currentTarget })
-  }
-
   handleMobileMenuClose = () => {
     this.setState({ mobileMoreAnchorEl: null })
   }
@@ -318,30 +314,6 @@ class Header extends React.Component {
         <MenuItem component={NavLink} to='/' onClick={this.handleSignOut}>로그아웃</MenuItem>
       </Menu>
     )
-    const renderMobileMenu = (
-      <Menu
-        anchorEl={mobileMoreAnchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMobileMenuOpen}
-        onClose={this.handleMobileMenuClose}
-      >
-        <MenuItem component={NavLink} to='/notices'>
-          <IconButton color='inherit' className={classes.IconButton}>
-            <Badge badgeContent={user.noticeCount} color='secondary' className={user.noticeCount > 0 ? classes.notice : null}>
-              <FontAwesomeIcon icon='bell' />
-            </Badge>
-          </IconButton>
-          <p>알림</p>
-        </MenuItem>
-        <MenuItem onClick={this.handleProfileMenuOpen}>
-          <IconButton color='inherit' className={classes.IconButton}>
-            <FontAwesomeIcon icon='user' />
-          </IconButton>
-          <p>프로필 편집</p>
-        </MenuItem>
-      </Menu>
-    )
     return (
       <MuiThemeProvider theme={theme}>
         <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
@@ -383,25 +355,18 @@ class Header extends React.Component {
                 </IconButton>
                 {user.isLogged ? (
                   <>
-                    <div className={classes.sectionDesktop}>
-                      <IconButton component={NavLink} to='/notices' color='inherit' className={classes.IconButton}>
-                        <Badge badgeContent={user.noticeCount} color='secondary' className={user.noticeCount > 0 ? classes.notice : null}>
-                          <FontAwesomeIcon icon='bell' />
-                        </Badge>
-                      </IconButton>
-                      <Avatar
-                        src={user.profileImageUrl}
-                        aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                        aria-haspopup='true'
-                        onClick={this.handleProfileMenuOpen}
-                        className={cn(classes.avatar, classes.rightIcon)}
-                      />
-                    </div>
-                    <div className={classes.sectionMobile}>
-                      <IconButton aria-haspopup='true' onClick={this.handleMobileMenuOpen} color='inherit' className={classes.IconButton}>
-                        <FontAwesomeIcon icon='ellipsis-v' />
-                      </IconButton>
-                    </div>
+                    <IconButton component={NavLink} to='/notices' color='inherit' className={classes.IconButton}>
+                      <Badge badgeContent={user.noticeCount} color='secondary' className={user.noticeCount > 0 ? classes.notice : null}>
+                        <FontAwesomeIcon icon='bell' />
+                      </Badge>
+                    </IconButton>
+                    <Avatar
+                      src={user.profileImageUrl}
+                      aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                      aria-haspopup='true'
+                      onClick={this.handleProfileMenuOpen}
+                      className={cn(classes.avatar, classes.rightIcon)}
+                    />
                   </>
                 ) : (
                     <Button
@@ -422,7 +387,6 @@ class Header extends React.Component {
           </Grid>
         </AppBar>
         {renderMenu}
-        {renderMobileMenu}
         <Fab color='secondary' aria-label='Add' className={classes.fab} onClick={this.toggleDrawer('left', true)}>
           <FontAwesomeIcon icon='bars' />
         </Fab>

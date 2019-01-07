@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
+import Spinner from '../../components/Spinner'
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import {
   InputBase,
@@ -15,7 +16,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
 import { Editor } from '@tinymce/tinymce-react'
-import { HashLoader } from 'react-spinners'
 
 const theme = createMuiTheme({
   typography: {
@@ -211,26 +211,8 @@ class Write extends React.Component {
   render() {
     const { classes, user } = this.props
     const { loading, title, images, selectedImage } = this.state
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     return (
       <MuiThemeProvider theme={theme}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
         {user.isAdmin && (
           <FormControl className={classes.mb} fullWidth>
             <FormControlLabel
@@ -308,13 +290,16 @@ class Write extends React.Component {
           )}
         </div>
         <FormControl fullWidth>
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={this.send}
-          >
-            글쓰기
-          </Button>
+          <Spinner loading={loading} />
+          {!loading && (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={this.send}
+            >
+              글쓰기
+            </Button>
+          )}
         </FormControl>
       </MuiThemeProvider>
     )

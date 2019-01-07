@@ -18,8 +18,8 @@ const deletePost = require('../../database/topic/deletePost')
 
 const client = redis.createClient()
 
-const BURN_LIMIT = 3
-const BEST_LIMIT = 5
+const BURN_LIMIT = 2
+const BEST_LIMIT = 4
 const DELETE_LIMIT = 10
 
 module.exports.getListToWidget = async ctx => {
@@ -42,6 +42,17 @@ module.exports.getTopics = async ctx => {
   obj.isAllowed = 1
   const count = await getTopic.count(obj)
   const notices = await getTopic.notices(domain)
+  if (notices.length > 0) {
+    const jobs = notices.map(notice => new Promise(resolve => {
+      client.get(notice.id, (err, value) => {
+        if (err) return resolve(true)
+        const hits = Number(value) || 0
+        notice.hits += hits
+        resolve(true)
+      })
+    }))
+    await Promise.all(jobs)
+  }
   const topics = await getTopic.topics(obj, page, limit)
   if (topics.length > 0) {
     const jobs = topics.map(topic => new Promise(resolve => {

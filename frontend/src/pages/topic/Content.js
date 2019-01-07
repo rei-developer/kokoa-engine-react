@@ -20,12 +20,14 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
-import { HashLoader } from 'react-spinners'
+import { BarLoader } from 'react-spinners'
 import StarIcon from '../../images/Star.svg'
 import BurnIcon from '../../images/Burn.svg'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
 import DefaultImage from '../../images/Default.png'
+import UpImage from '../../images/Up.png'
+import DownImage from '../../images/Down.png'
 
 const theme = createMuiTheme({
   typography: {
@@ -220,21 +222,16 @@ class Content extends React.Component {
     const { loading, userId, category, author, title, content, created, isBest, hits, likes, hates, profile, admin } = this.state
     const override = {
       position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
+      width: '100%',
+      top: '0',
       zIndex: 50000
     }
     return (
       <MuiThemeProvider theme={theme}>
         <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
+          <BarLoader
+            width='100%'
+            color='#01CEA2'
             loading={loading}
           />
         </div>
@@ -287,16 +284,24 @@ class Content extends React.Component {
                 className={classes.mb}
               >
                 <Chip
-                  label={`좋아요 ${likes}`}
-                  color='primary'
-                  icon={<FontAwesomeIcon icon='thumbs-up' />}
+                  label={
+                    <>
+                      <img src={UpImage} className={classes.leftIcon} alt='Up' />
+                      {'데뷔'}
+                      <div style={{ marginLeft: 4, color: 'red' }}>{likes}</div>
+                    </>
+                  }
                   className={classes.leftIcon}
                   onClick={() => this.handleVotes(true)}
                 />
                 <Chip
-                  label={`싫어요 ${hates}`}
-                  color='primary'
-                  icon={<FontAwesomeIcon icon='thumbs-down' />}
+                  label={
+                    <>
+                      <img src={DownImage} className={classes.leftIcon} alt='Down' />
+                      {'탈락'}
+                      <div style={{ marginLeft: 4, color: 'red' }}>{likes}</div>
+                    </>
+                  }
                   onClick={() => this.handleVotes(false)}
                 />
               </Grid>

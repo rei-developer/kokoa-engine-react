@@ -4,6 +4,7 @@ import cn from 'classnames'
 import axios from 'axios'
 import moment from 'moment'
 import { toast } from 'react-toastify'
+import Spinner from '../../components/Spinner'
 import { PostWrite } from 'pages'
 import PropTypes from 'prop-types'
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles'
@@ -26,7 +27,6 @@ import {
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state/index'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { observer, inject } from 'mobx-react'
-import { HashLoader } from 'react-spinners'
 import AdminIcon from '../../images/Admin.png'
 import UserIcon from '../../images/User.png'
 import DefaultImage from '../../images/Default.png'
@@ -124,7 +124,7 @@ const styles = theme => ({
     lineHeight: 19
   },
   author: {
-    width: 140
+    color: '#01CEA2'
   },
   regdate: {
     width: 120
@@ -270,7 +270,10 @@ class Lists extends React.Component {
                           className={cn(classes.category, classes.leftIcon)}
                         />
                       )}
-                      <div dangerouslySetInnerHTML={{ __html: i.content }} />
+                      <div
+                        dangerouslySetInnerHTML={{ __html: i.content }}
+                        className={topicUserId === i.userId ? classes.author : null}
+                      />
                     </Typography>
                   }
                   secondary={
@@ -327,27 +330,10 @@ class Lists extends React.Component {
         )
       })
     )
-    const override = {
-      position: 'fixed',
-      width: '80px',
-      height: '80px',
-      margin: '-40px 0 0 -40px',
-      top: '50%',
-      left: '50%',
-      zIndex: 50000
-    }
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className='sweet-loading' style={override}>
-          <HashLoader
-            sizeUnit='px'
-            size={80}
-            margin='2px'
-            color='#4A4A4A'
-            loading={loading}
-          />
-        </div>
+      <MuiThemeProvider theme={theme} className={classes.root}>
         <Card className={cn(classes.card, classes.mb)}>
+          <Spinner loading={loading} />
           {extract(posts)}
         </Card>
         {
