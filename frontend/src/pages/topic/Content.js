@@ -299,7 +299,7 @@ class Content extends React.Component {
                     <>
                       <img src={DownImage} className={classes.leftIcon} alt='Down' />
                       {'탈락'}
-                      <div style={{ marginLeft: 4, color: 'red' }}>{likes}</div>
+                      <div style={{ marginLeft: 4, color: 'red' }}>{hates}</div>
                     </>
                   }
                   onClick={() => this.handleVotes(false)}
