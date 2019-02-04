@@ -414,7 +414,7 @@ class Lists extends React.Component {
             >
               <ListItemAvatar>
                 <Avatar
-                  src={i.imageUrl ? `https://hawawa.r.worldssl.net/img/thumb/${i.imageUrl}` : DefaultImage}
+                  src={i.imageUrl ? `https://hawawa.co.kr/img/thumb/${i.imageUrl}` : DefaultImage}
                   className={classes.avatar}
                 />
               </ListItemAvatar>
