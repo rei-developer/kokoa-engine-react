@@ -269,7 +269,7 @@ class Lists extends React.Component {
               {index > 0 && (<Divider />)}
               <ListItem className={cn(classes.pl, i.confirm < 1 && classes.confirm)}>
                 <ListItemAvatar>
-                  <Avatar src={i.profile ? `https://hawawa.co.kr/img/${i.profile}` : DefaultImage} className={classes.avatar} />
+                  <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={

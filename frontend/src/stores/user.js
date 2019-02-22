@@ -51,7 +51,7 @@ export default class UserStore {
     this.username = data.user.username
     this.nickname = data.user.nickname
     this.email = data.user.email
-    this.profileImageUrl = `https://hawawa.co.kr/img/${data.user.profileImageUrl}`
+    this.profileImageUrl = `https://hawawa.r.worldssl.net/img/${data.user.profileImageUrl}`
     this.registerDate = data.user.registerDate
     this.blockDate = data.user.blockDate
     this.level = data.user.level
@@ -73,7 +73,7 @@ export default class UserStore {
   }
 
   @action setProfileImage = url => {
-    this.profileImageUrl = `https://hawawa.co.kr/img/${url}`
+    this.profileImageUrl = `https://hawawa.r.worldssl.net/img/${url}`
   }
 
   @action setNoticeCount = count => {
