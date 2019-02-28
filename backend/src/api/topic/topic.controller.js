@@ -279,21 +279,23 @@ module.exports.deleteTopic = async ctx => {
   if (!userId) return ctx.body = { status: 'fail' }
   if (user.isAdmin < 1 && userId !== user.id) return
   const images = await getTopic.topicImages(id)
-  const jobs = images.map(image => new Promise(async resolve => {
-    fs.unlink(`./img/${image.imageUrl}`, err => {
-      if (err) console.log(err)
-      resolve(true)
-    })
-  }))
-  await Promise.all(jobs)
-  const jobsForThumb = images.map(image => new Promise(async resolve => {
-    fs.unlink(`./img/thumb/${image.imageUrl}`, err => {
-      if (err) console.log(err)
-      resolve(true)
-    })
-  }))
-  await Promise.all(jobsForThumb)
-  await deleteTopic.topicImages(id)
+  if (images) {
+    const jobs = images.map(image => new Promise(async resolve => {
+      fs.unlink(`./img/${image.imageUrl}`, err => {
+        if (err) console.log(err)
+        resolve(true)
+      })
+    }))
+    await Promise.all(jobs)
+    const jobsForThumb = images.map(image => new Promise(async resolve => {
+      fs.unlink(`./img/thumb/${image.imageUrl}`, err => {
+        if (err) console.log(err)
+        resolve(true)
+      })
+    }))
+    await Promise.all(jobsForThumb)
+    await deleteTopic.topicImages(id)
+  }
   await deleteTopic(id)
   ctx.body = { status: 'ok' }
 }

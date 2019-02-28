@@ -210,6 +210,7 @@ class Content extends React.Component {
     const data = response.data
     if (data.status === 'fail') return toast.error(data.message)
     toast.success('삭제했습니다.')
+    this.props.history.go(-1)
   }
 
   reset() {
