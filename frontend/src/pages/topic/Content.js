@@ -306,13 +306,13 @@ class Content extends React.Component {
                 />
               </Grid>
             </Card>
-            {/*user.isLogged && user.id === userId && (
+            {user.isLogged && (user.isAdmin || user.id === userId) && (
               <div className={classes.mb}>
                 <Button onClick={this.handleDelete} variant='contained' color='primary'>
                   삭제
                 </Button>
               </div>
-            )*/}
+            )}
             <PostLists
               id={this.state.id}
               tag={tag}

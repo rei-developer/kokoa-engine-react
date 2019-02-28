@@ -6,6 +6,7 @@ const User = require('../../lib/user')
 const createNotice = require('../../database/notice/createNotice')
 const createTopic = require('../../database/topic/createTopic')
 const createPost = require('../../database/topic/createPost')
+const deleteTopic = require('../../database/topic/deleteTopic')
 const getBoard = require('../../database/board/getBoard')
 const getNotice = require('../../database/notice/getNotice')
 const getTopic = require('../../database/topic/getTopic')
@@ -276,10 +277,24 @@ module.exports.deleteTopic = async ctx => {
   if (id < 1) return ctx.body = { status: 'fail' }
   const userId = await getTopic.userId(id)
   if (!userId) return ctx.body = { status: 'fail' }
-  if (userId !== user.id) return
-
-  console.log(user)
-
+  if (user.isAdmin < 1 && userId !== user.id) return
+  const images = await getTopic.topicImages(id)
+  const jobs = images.map(image => new Promise(async resolve => {
+    fs.unlink(`./img/${image.imageUrl}`, err => {
+      if (err) console.log(err)
+      resolve(true)
+    })
+  }))
+  await Promise.all(jobs)
+  const jobsForThumb = images.map(image => new Promise(async resolve => {
+    fs.unlink(`./img/thumb/${image.imageUrl}`, err => {
+      if (err) console.log(err)
+      resolve(true)
+    })
+  }))
+  await Promise.all(jobsForThumb)
+  await deleteTopic.topicImages(id)
+  await deleteTopic(id)
   ctx.body = { status: 'ok' }
 }
 
