@@ -282,6 +282,9 @@ class Header extends React.Component {
           }, {
             name: '서브컬쳐',
             path: '/b/anime'
+          }, {
+            name: '사회',
+            path: '/b/social'
           }].map(node => (
             <>
               <ListItem button key={node.name} component={NavLink} to={node.path}>
@@ -348,6 +351,7 @@ class Header extends React.Component {
                   <Button component={NavLink} to='/b/talk' color='inherit' className={classes.button}>자유</Button>
                   <Button component={NavLink} to='/b/girl' color='inherit' className={classes.button}>연예</Button>
                   <Button component={NavLink} to='/b/anime' color='inherit' className={classes.button}>서브컬쳐</Button>
+                  <Button component={NavLink} to='/b/social' color='inherit' className={classes.button}>사회</Button>
                 </div>
                 <div className={classes.grow} />
                 <IconButton color='inherit' className={classes.IconButton}>

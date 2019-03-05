@@ -196,21 +196,23 @@ class Content extends React.Component {
   }
 
   handleDelete = async () => {
-    const { id } = this.state
-    if (id < 1) return
-    const token = localStorage.token
-    if (!token) return toast.error('토큰을 새로 발급하세요.')
-    const response = await axios.delete(
-      '/api/topic/delete',
-      {
-        data: { id },
-        headers: { 'x-access-token': token }
-      }
-    )
-    const data = response.data
-    if (data.status === 'fail') return toast.error(data.message)
-    toast.success('삭제했습니다.')
-    this.props.history.go(-1)
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const { id } = this.state
+      if (id < 1) return
+      const token = localStorage.token
+      if (!token) return toast.error('토큰을 새로 발급하세요.')
+      const response = await axios.delete(
+        '/api/topic/delete',
+        {
+          data: { id },
+          headers: { 'x-access-token': token }
+        }
+      )
+      const data = response.data
+      if (data.status === 'fail') return toast.error(data.message)
+      toast.success('삭제했습니다.')
+      this.props.history.go(-1)
+    }
   }
 
   reset() {
