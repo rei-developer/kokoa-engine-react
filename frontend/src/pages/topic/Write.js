@@ -168,7 +168,7 @@ class Write extends React.Component {
       const data = await response.data
       if (data.status === 'ok') {
         const name = files[index].name
-        const filename = `https://hawawa.r.worldssl.net/img/${data.filename}`
+        const filename = `https://hawawa.co.kr/img/${data.filename}`
         toast.success(`${index + 1}번째 이미지 (${name}) 업로드 성공!`)
         this.setState({
           images: [

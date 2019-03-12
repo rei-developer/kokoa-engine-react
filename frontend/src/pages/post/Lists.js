@@ -259,7 +259,7 @@ class Lists extends React.Component {
               <ListItem className={cn(classes.pl, i.tagUserId ? classes.reply : null, Number(tag) === i.id ? classes.confirm : null)}>
                 {i.tagUserId && (<img src={ReplyIcon} className={classes.star} alt='Reply' />)}
                 <ListItemAvatar>
-                  <Avatar src={i.profile ? `https://hawawa.r.worldssl.net/img/${i.profile}` : DefaultImage} className={classes.avatar} />
+                  <Avatar src={i.profile ? `https://hawawa.co.kr/img/${i.profile}` : DefaultImage} className={classes.avatar} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={
